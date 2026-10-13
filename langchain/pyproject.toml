@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "langchain-openpath"
+version = "0.1.0"
+description = "LangChain tools for Openpath: live listings across the US (jobs, local businesses and services, homes, products) for your agent. No key and no sign-up."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Openpath", email = "contact@openpath.sh" }]
+keywords = ["langchain", "openpath", "tools", "listings", "jobs", "local-business", "search", "agents", "llm"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=0.1.0"]
+
+[project.urls]
+Homepage = "https://openpath.sh"
+Documentation = "https://openpath.sh/docs/jobs"
+Source = "https://github.com/openpath-sh/clients/tree/main/langchain"
+
+[tool.setuptools.packages.find]
+where = ["src"]

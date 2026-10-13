@@ -11,6 +11,7 @@ Search live listings across the US from code: job openings, local businesses and
 | JavaScript ([js](js)) | `npm install @openpath/sdk` | `await search("plumber near Austin, TX")` |
 | Python ([python](python)) | `pip install openpath-sh` | `search("plumber near Austin, TX")` |
 | Vercel AI SDK ([ai-sdk-tools](ai-sdk-tools)) | `npm install @openpath/ai-sdk-tools` | `tools: openpathTools()` |
+| LangChain ([langchain](langchain)) | `pip install langchain-openpath` | `tools=openpath_tools()` |
 | Any | | `curl -s -X POST https://api.openpath.sh/v1/connect -H 'Content-Type: application/json' -d '{}'`, then `curl -s -G https://api.openpath.sh/v1/search -H "Authorization: Bearer $TOKEN" --data-urlencode 'q=plumber near Austin, TX'` |
 
 Both clients connect on the first call (one request, no account) and share the token the [Openpath CLI](https://github.com/openpath-sh/cli) saves.
