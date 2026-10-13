@@ -1,0 +1,49 @@
+{
+  "name": "openpath",
+  "version": "0.1.0",
+  "description": "Search live listings across the US from code: jobs, local businesses and services, homes, products. One call, plain Markdown, no sign-up.",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "openpath",
+    "search",
+    "listings",
+    "jobs",
+    "local-business",
+    "ai-agents",
+    "agents",
+    "tools",
+    "mcp",
+    "llm"
+  ],
+  "homepage": "https://openpath.sh",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openpath-sh/clients.git",
+    "directory": "js"
+  },
+  "bugs": {
+    "url": "https://github.com/openpath-sh/clients/issues"
+  },
+  "author": "Openpath <contact@openpath.sh>",
+  "license": "MIT"
+}
