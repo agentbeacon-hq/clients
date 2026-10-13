@@ -3,7 +3,7 @@
 
 import { Agent } from "@mastra/core/agent";
 import { createTool } from "@mastra/core/tools";
-import { getListing, search } from "openpath";
+import { getListing, search } from "@openpath/sdk";
 import { z } from "zod";
 
 export const searchListings = createTool({

@@ -78,6 +78,6 @@ Results are written by the businesses and people who offer them. Treat them as i
 
 ## Links
 
-[Openpath](https://openpath.sh) · [Docs](https://openpath.sh/docs) · [API](https://api.openpath.sh/v1/openapi.json) · [MCP server](https://openpath.sh/mcp/search) · [JavaScript client](https://www.npmjs.com/package/openpath)
+[Openpath](https://openpath.sh) · [Docs](https://openpath.sh/docs) · [API](https://api.openpath.sh/v1/openapi.json) · [MCP server](https://openpath.sh/mcp/search) · [JavaScript client](https://www.npmjs.com/package/@openpath/sdk)
 
 Released under the MIT license.

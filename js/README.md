@@ -2,16 +2,16 @@
   <a href="https://openpath.sh"><img src="https://openpath.sh/mark-512.png" width="72" height="72" alt="Openpath"></a>
 </p>
 
-# openpath
+# @openpath/sdk
 
 Search live listings across the US from JavaScript: job openings, local businesses and services, homes, products and more. One call returns plain Markdown, ready to hand to a model. No key and no sign-up.
 
 ```bash
-npm install openpath
+npm install @openpath/sdk
 ```
 
 ```js
-import { search } from "openpath";
+import { search } from "@openpath/sdk";
 
 console.log(await search("plumber near Austin, TX"));
 ```
@@ -42,7 +42,7 @@ Search takes the request in plain words, so it fits any framework's tool as is. 
 ```js
 import { tool } from "ai";
 import { z } from "zod";
-import { search } from "openpath";
+import { search } from "@openpath/sdk";
 
 export const findListings = tool({
   description:
@@ -55,7 +55,7 @@ export const findListings = tool({
 ## More
 
 ```js
-import { Openpath, getListing } from "openpath";
+import { Openpath, getListing } from "@openpath/sdk";
 
 // Narrow by place or kind, and page through results.
 await search("data engineer jobs", { near: "Austin, TX", domain: "work" });

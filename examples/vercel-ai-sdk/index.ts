@@ -3,7 +3,7 @@
 
 import { anthropic } from "@ai-sdk/anthropic";
 import { generateText, stepCountIs, tool } from "ai";
-import { getListing, search } from "openpath";
+import { getListing, search } from "@openpath/sdk";
 import { z } from "zod";
 
 const tools = {

@@ -8,7 +8,7 @@ Search live listings across the US from code: job openings, local businesses and
 
 | Language | Install | Search |
 |---|---|---|
-| JavaScript ([js](js)) | `npm install openpath` | `await search("plumber near Austin, TX")` |
+| JavaScript ([js](js)) | `npm install @openpath/sdk` | `await search("plumber near Austin, TX")` |
 | Python ([python](python)) | `pip install openpath-sh` | `search("plumber near Austin, TX")` |
 | Any | | `curl -s -X POST https://api.openpath.sh/v1/connect -H 'Content-Type: application/json' -d '{}'`, then `curl -s -G https://api.openpath.sh/v1/search -H "Authorization: Bearer $TOKEN" --data-urlencode 'q=plumber near Austin, TX'` |
 
