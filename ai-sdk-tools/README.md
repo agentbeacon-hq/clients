@@ -2,17 +2,17 @@
   <a href="https://openpath.sh"><img src="https://openpath.sh/mark-512.png" width="72" height="72" alt="Openpath"></a>
 </p>
 
-# @openpath/ai-sdk
+# @openpath/ai-sdk-tools
 
 Openpath tools for the [Vercel AI SDK](https://ai-sdk.dev): live listings across the US (job openings, local businesses and services, homes, products and more) as tools a model can call. Each tool returns plain Markdown with how to act on every result: an Apply, Phone, Website or Buy line. No key and no sign-up.
 
 ```bash
-npm install @openpath/ai-sdk
+npm install @openpath/ai-sdk-tools
 ```
 
 ```js
 import { generateText, isStepCount } from "ai";
-import { openpathTools } from "@openpath/ai-sdk";
+import { openpathTools } from "@openpath/ai-sdk-tools";
 
 const { text } = await generateText({
   model: "anthropic/claude-sonnet-5-5",
