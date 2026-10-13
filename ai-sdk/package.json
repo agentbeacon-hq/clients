@@ -1,0 +1,63 @@
+{
+  "name": "@openpath/ai-sdk",
+  "version": "0.1.0",
+  "description": "Openpath tools for the Vercel AI SDK: live listings across the US (jobs, local businesses and services, homes, products) as tools a model can call. No key and no sign-up.",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@openpath/sdk": "^0.1.0"
+  },
+  "peerDependencies": {
+    "ai": "^6.0.0 || ^7.0.0",
+    "zod": "^3.25.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "ai": "^7.0.139",
+    "zod": "^4.6.7"
+  },
+  "keywords": [
+    "openpath",
+    "ai-sdk",
+    "vercel-ai-sdk",
+    "tools",
+    "listings",
+    "jobs",
+    "local-business",
+    "search",
+    "agents",
+    "llm"
+  ],
+  "homepage": "https://openpath.sh/docs/ai-sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openpath-sh/clients.git",
+    "directory": "ai-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/openpath-sh/clients/issues"
+  },
+  "author": "Openpath <contact@openpath.sh>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
