@@ -1,0 +1,2 @@
+openai-agents>=0.23.1
+openpath-sh>=0.1.0
