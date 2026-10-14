@@ -49,7 +49,7 @@ describe("search", () => {
     ]);
     assert.equal(api.calls[1].headers.Authorization, "Bearer agt_first");
     assert.equal(api.calls[1].headers.Accept, "text/markdown");
-    const saved = JSON.parse(await readFile(join(home, ".config/ads/credentials.json"), "utf8"));
+    const saved = JSON.parse(await readFile(join(home, ".config/openpath/credentials.json"), "utf8"));
     assert.equal(saved["https://api.openpath.sh"].agent_token, "agt_first");
   });
 

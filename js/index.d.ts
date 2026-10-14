@@ -11,13 +11,13 @@ export declare class OpenpathError extends Error {
 }
 
 export interface OpenpathOptions {
-  /** Defaults to https://api.openpath.sh, or ADS_API_URL. */
+  /** Defaults to https://api.openpath.sh, or OPENPATH_API_URL. */
   apiUrl?: string;
-  /** An agent token from POST /v1/connect. Defaults to ADS_AGENT_TOKEN, then the saved one. */
+  /** An agent token from POST /v1/connect. Defaults to OPENPATH_AGENT_TOKEN, then the saved one. */
   token?: string;
   /** Your app's name, sent first in the User-Agent, such as "MyAgent/1.0". */
   app?: string;
-  /** Save the token where the Openpath CLI keeps it (~/.config/ads). Default true. */
+  /** Save the token where the Openpath CLI keeps it (~/.config/openpath). Default true. */
   saveToken?: boolean;
   fetch?: typeof fetch;
   env?: NodeJS.ProcessEnv;

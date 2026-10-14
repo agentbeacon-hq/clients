@@ -15,7 +15,7 @@ import { generateText, isStepCount } from "ai";
 import { openpathTools } from "@openpath/ai-sdk-tools";
 
 const { text } = await generateText({
-  model: "anthropic/claude-sonnet-5-5",
+  model: "anthropic/claude-sonnet-5.5",
   prompt: "Find a plumber near Austin, TX I can call today.",
   tools: openpathTools(),
   stopWhen: isStepCount(5),

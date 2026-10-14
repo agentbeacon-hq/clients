@@ -28,13 +28,13 @@ export class OpenpathError extends Error {
 }
 
 /**
- * A setting from the environment, named `ADS_<NAME>` as the CLI and the skill
+ * A setting from the environment, named `OPENPATH_<NAME>` as the CLI and the skill
  * name them. Empty when unset.
  * @param {NodeJS.ProcessEnv} env
  * @param {string} name
  */
 function setting(env, name) {
-  return env[`ADS_${name}`]?.trim() || "";
+  return env[`OPENPATH_${name}`]?.trim() || "";
 }
 
 /**
@@ -59,8 +59,8 @@ function credentialsFile(env, home) {
   if (chosen) return join(chosen, "credentials.json");
   const base =
     process.platform === "win32" && env.APPDATA?.trim()
-      ? join(env.APPDATA.trim(), "ads")
-      : join(env.XDG_CONFIG_HOME?.trim() || join(home, ".config"), "ads");
+      ? join(env.APPDATA.trim(), "openpath")
+      : join(env.XDG_CONFIG_HOME?.trim() || join(home, ".config"), "openpath");
   return join(base, "credentials.json");
 }
 

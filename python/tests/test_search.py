@@ -52,7 +52,7 @@ class SearchTest(unittest.TestCase):
         )
         self.assertEqual(api.calls[1][2]["Authorization"], "Bearer agt_first")
         self.assertEqual(api.calls[1][2]["Accept"], "text/markdown")
-        saved = json.loads((home / ".config/ads/credentials.json").read_text())
+        saved = json.loads((home / ".config/openpath/credentials.json").read_text())
         self.assertEqual(saved["https://api.openpath.sh"]["agent_token"], "agt_first")
 
     def test_reuses_the_saved_token_as_the_cli_does(self):

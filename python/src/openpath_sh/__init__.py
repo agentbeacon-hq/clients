@@ -45,8 +45,8 @@ class OpenpathError(Exception):
 
 
 def _setting(env: dict, name: str) -> str:
-    """A setting named ADS_<NAME>, as the CLI and the skill name them."""
-    return (env.get(f"ADS_{name}") or "").strip()
+    """A setting named OPENPATH_<NAME>, as the CLI and the skill name them."""
+    return (env.get(f"OPENPATH_{name}") or "").strip()
 
 
 def _detect_agent(env: dict) -> str | None:
@@ -72,9 +72,9 @@ def _credentials_file(env: dict, home: Path) -> Path:
     if chosen:
         return Path(chosen) / "credentials.json"
     if sys.platform == "win32" and (env.get("APPDATA") or "").strip():
-        return Path(env["APPDATA"].strip()) / "ads" / "credentials.json"
+        return Path(env["APPDATA"].strip()) / "openpath" / "credentials.json"
     config = (env.get("XDG_CONFIG_HOME") or "").strip() or str(home / ".config")
-    return Path(config) / "ads" / "credentials.json"
+    return Path(config) / "openpath" / "credentials.json"
 
 
 def _read_all(path: Path) -> dict:

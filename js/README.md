@@ -68,7 +68,7 @@ const openpath = new Openpath({ app: "JobFinder/1.0" });
 await openpath.search("nurse jobs in Austin");
 ```
 
-The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/ads/credentials.json`), so later calls and the CLI reuse it. Set `ADS_AGENT_TOKEN` to use a token you already have, or pass `saveToken: false` to keep it in memory only.
+The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_AGENT_TOKEN` to use a token you already have, or pass `saveToken: false` to keep it in memory only.
 
 When Openpath refuses a call, `search` throws an `OpenpathError` with Openpath's own explanation, its `status`, and `retryAfter` in seconds when it asks you to wait.
 
