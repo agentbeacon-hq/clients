@@ -1,6 +1,6 @@
 """An agent that finds something you can act on now, with Pydantic AI and Openpath.
 
-Run: python agent.py "find a plumber near Austin, TX I can call today"
+Run: python agent.py "find a plumber near Austin, TX who can come today"
 """
 
 import sys
@@ -12,8 +12,8 @@ agent = Agent(
     "anthropic:claude-opus-5-5",
     instructions=(
         "You help people find something they can act on now. Search Openpath, then answer with "
-        "the best few results and exactly how to act on each: the Apply link, the phone number "
-        "or the website."
+        "the best few results and exactly how to act on each: for a job the Apply link, "
+        "otherwise the Openpath inbox address to write to."
     ),
 )
 
@@ -21,9 +21,9 @@ agent = Agent(
 @agent.tool_plain
 def search_listings(query: str) -> str:
     """Use this when the person wants a live listing they can act on: a job to
-    apply to, a local business or service, a home or a product. Returns plain
-    Markdown, one listing per result, each with its Apply, Phone, Website or Buy
-    line.
+    apply to, or a local business or service to reach. Returns plain
+    Markdown, one listing per result, each with the inbox address that
+    reaches its owner, and for a job the employer's Apply link.
 
     Args:
         query: What the person is looking for, in their words, with a place:
@@ -43,5 +43,5 @@ def read_listing(listing_id: str) -> str:
 
 
 if __name__ == "__main__":
-    prompt = " ".join(sys.argv[1:]) or "Find a plumber near Austin, TX I can call today."
+    prompt = " ".join(sys.argv[1:]) or "Find a plumber near Austin, TX who can come today."
     print(agent.run_sync(prompt).output)

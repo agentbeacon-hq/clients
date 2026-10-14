@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "openpath-sh"
 version = "0.2.0"
-description = "Search live listings across the US from code: jobs, local businesses and services, homes, products. One call, plain Markdown, no sign-up."
+description = "Search live listings from code: jobs, local businesses and services, homes, products. One call, plain Markdown, no sign-up."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"

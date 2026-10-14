@@ -9,7 +9,7 @@ import { z } from "zod";
 export const searchListings = createTool({
   id: "search-listings",
   description:
-    "Use this when the person wants a live listing they can act on: a job to apply to, a local business or service, a home or a product. Returns plain Markdown, one listing per result, each with its Apply, Phone, Website or Buy line.",
+    "Use this when the person wants a live listing they can act on: a job to apply to, or a local business or service to reach. Returns plain Markdown, one listing per result, each with the inbox address that reaches its owner, and for a job the employer's Apply link.",
   inputSchema: z.object({
     query: z
       .string()
@@ -31,11 +31,11 @@ export const listingsAgent = new Agent({
   id: "listings-agent",
   name: "Listings Agent",
   instructions:
-    "You help people find something they can act on now. Search Openpath, then answer with the best few results and exactly how to act on each: the Apply link, the phone number or the website.",
+    "You help people find something they can act on now. Search Openpath, then answer with the best few results and exactly how to act on each: for a job the Apply link, otherwise the Openpath inbox address to write to.",
   model: "anthropic/claude-opus-5-5",
   tools: { searchListings, readListing },
 });
 
-const prompt = process.argv.slice(2).join(" ") || "Find a plumber near Austin, TX I can call today.";
+const prompt = process.argv.slice(2).join(" ") || "Find a plumber near Austin, TX who can come today.";
 const result = await listingsAgent.generate(prompt);
 console.log(result.text);

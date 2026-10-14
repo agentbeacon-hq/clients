@@ -4,7 +4,7 @@
 
 # @openpath/ai-sdk-tools
 
-Openpath tools for the [Vercel AI SDK](https://ai-sdk.dev): live listings across the US (job openings, local businesses and services, homes, products and more) as tools a model can call. Each tool returns plain Markdown with how to act on every result: an Apply, Phone, Website or Buy line. No key and no sign-up.
+Openpath tools for the [Vercel AI SDK](https://ai-sdk.dev): live listings (job openings, local businesses and services, homes, products and more) as tools a model can call. Each tool returns plain Markdown with how to act on every result: the inbox address that reaches its owner, and for a job the employer's Apply link. No key and no sign-up.
 
 ```bash
 npm install @openpath/ai-sdk-tools
@@ -16,7 +16,7 @@ import { openpathTools } from "@openpath/ai-sdk-tools";
 
 const { text } = await generateText({
   model: "anthropic/claude-sonnet-5.5",
-  prompt: "Find a plumber near Austin, TX I can call today.",
+  prompt: "Find a plumber near Austin, TX who can come today.",
   tools: openpathTools(),
   stopWhen: isStepCount(5),
 });

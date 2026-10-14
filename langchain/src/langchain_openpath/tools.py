@@ -36,14 +36,14 @@ class ReadInput(BaseModel):
 
 
 class OpenpathSearch(BaseTool):
-    """Live listings across the US that fit what the person asked for, as plain Markdown."""
+    """Live listings that fit what the person asked for, as plain Markdown."""
 
     name: str = "openpath_search"
     description: str = (
-        "Use this when the person wants a live listing they can act on, anywhere in the US: "
-        "a job to apply to, a local business or service to call, a home, a product, a car or an event. "
+        "Use this when the person wants a live listing they can act on: "
+        "a job to apply to, or a local business or service to reach. "
         "Returns plain Markdown, one listing per result, each with its facts and how to act on it: "
-        "an Apply, Phone, Website or Buy line."
+        "the inbox address that reaches its owner, and for a job the employer's Apply link."
     )
     args_schema: type[BaseModel] = SearchInput
     # An openpath_sh.Openpath, or anything with the same methods.

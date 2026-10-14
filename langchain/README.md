@@ -4,7 +4,7 @@
 
 # langchain-openpath
 
-[LangChain](https://www.langchain.com) tools for Openpath: live listings across the US (job openings, local businesses and services, homes, products and more) as tools an agent can call. Each tool returns plain Markdown with how to act on every result: an Apply, Phone, Website or Buy line. No key and no sign-up.
+[LangChain](https://www.langchain.com) tools for Openpath: live listings (job openings, local businesses and services, homes, products and more) as tools an agent can call. Each tool returns plain Markdown with how to act on every result: the inbox address that reaches its owner, and for a job the employer's Apply link. No key and no sign-up.
 
 ```bash
 pip install langchain-openpath
@@ -17,7 +17,7 @@ from langchain.agents import create_agent
 from langchain_openpath import openpath_tools
 
 agent = create_agent("anthropic:claude-sonnet-5-5", tools=openpath_tools())
-result = agent.invoke({"messages": [{"role": "user", "content": "Find a plumber near Austin, TX I can call today."}]})
+result = agent.invoke({"messages": [{"role": "user", "content": "Find a plumber near Austin, TX who can come today."}]})
 print(result["messages"][-1].content)
 ```
 

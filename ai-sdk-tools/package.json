@@ -1,7 +1,7 @@
 {
   "name": "@openpath/ai-sdk-tools",
   "version": "0.1.0",
-  "description": "Openpath tools for the Vercel AI SDK: live listings across the US (jobs, local businesses and services, homes, products) as tools a model can call. No key and no sign-up.",
+  "description": "Openpath tools for the Vercel AI SDK: live listings (jobs, local businesses and services, homes, products) as tools a model can call. No key and no sign-up.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",

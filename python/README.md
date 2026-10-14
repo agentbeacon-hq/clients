@@ -4,7 +4,7 @@
 
 # openpath-sh
 
-Search live listings across the US from Python: job openings, local businesses and services, homes, products and more. One call returns plain Markdown, ready to hand to a model. No key and no sign-up. No dependencies.
+Search live listings from Python: job openings, local businesses and services, homes, products and more. One call returns plain Markdown, ready to hand to a model. No key and no sign-up. No dependencies.
 
 ```bash
 pip install openpath-sh
@@ -33,7 +33,7 @@ Source: https://jobs.ashbyhq.com/ontic/27d32707-54e2-47be-be62-376df6d2b0f3 (Ash
 Link: https://api.openpath.sh/v1/listings/369348e4-b3d0-490f-82b4-a666041243cf
 ```
 
-Each result is one current listing: what it is, its facts (pay, price, place, dates), how to act on it (an Apply, Phone, Website or Buy line where the source gives one) and where it came from.
+Each result is one current listing: what it is, its facts (pay, price, place, dates), how to act on it (the inbox address that reaches its owner, and for a job the employer's Apply link) and where it came from.
 
 ## As a tool for your agent
 
@@ -49,7 +49,7 @@ agent = Agent("anthropic:claude-sonnet-5-5")
 @agent.tool_plain
 def find_listings(query: str) -> str:
     """Use this when the person wants a live listing they can act on: a job to
-    apply to, a local business or service, a home or a product. Returns plain
+    apply to, or a local business or service to reach. Returns plain
     Markdown. `query` is what they are looking for, in their words, with a place."""
     return search(query)
 ```

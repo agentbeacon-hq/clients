@@ -1,4 +1,4 @@
-"""LangChain tools for Openpath: live listings across the US, as tools an agent can call.
+"""LangChain tools for Openpath: live listings, as tools an agent can call.
 
 Each tool returns plain Markdown from the openpath-sh client, which connects to
 Openpath by itself the first time: no key and no sign-up.

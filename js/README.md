@@ -4,7 +4,7 @@
 
 # @openpath/sdk
 
-Search live listings across the US from JavaScript: job openings, local businesses and services, homes, products and more. One call returns plain Markdown, ready to hand to a model. No key and no sign-up.
+Search live listings from JavaScript: job openings, local businesses and services, homes, products and more. One call returns plain Markdown, ready to hand to a model. No key and no sign-up.
 
 ```bash
 npm install @openpath/sdk
@@ -26,14 +26,13 @@ Searched: local services, Austin, TX. 100 results shown at most; narrow the sear
 Plumber.
 4809 S Congress Ave Ste B 210, Austin, TX 78745.
 
-Phone: +1 512-361-0502
-Website: https://www.myplumbernearme.com/
 Contact: https://openpath.sh/to/rt6crf9xanqz
+The owner has not joined Openpath yet. Messages wait for them for 30 days.
 Source: Overture Maps, checked yesterday.
 Link: https://api.openpath.sh/v1/listings/505d3c17-b873-4765-aea6-224aa8b02f40
 ```
 
-Each result is one current listing: what it is, its facts (pay, price, place, dates), how to act on it (an Apply, Phone, Website or Buy line where the source gives one) and where it came from.
+Each result is one current listing: what it is, its facts (pay, price, place, dates), how to act on it (the inbox address that reaches its owner, and for a job the employer's Apply link) and where it came from.
 
 ## As a tool for your agent
 
@@ -46,7 +45,7 @@ import { search } from "@openpath/sdk";
 
 export const findListings = tool({
   description:
-    "Use this when the person wants a live listing they can act on: a job to apply to, a local business or service, a home or a product. Returns plain Markdown.",
+    "Use this when the person wants a live listing they can act on: a job to apply to, or a local business or service to reach. Returns plain Markdown.",
   inputSchema: z.object({ query: z.string().describe("What the person is looking for, in their words, with a place.") }),
   execute: ({ query }) => search(query),
 });

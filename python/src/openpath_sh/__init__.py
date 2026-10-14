@@ -1,4 +1,4 @@
-"""Openpath for Python: search live listings across the US in one call.
+"""Openpath for Python: search live listings in one call.
 
 The first call connects this agent to Openpath (one request, no sign-up) and
 saves the token where the Openpath CLI keeps it, so every later call, and the
@@ -182,7 +182,7 @@ class Openpath:
         cursor: str | None = None,
     ) -> str:
         """Live listings that fit what the person asked for, as plain Markdown: each
-        result's facts, how to act on it (Apply, Phone, Website or Buy) and where it
+        result's facts, how to act on it (the inbox address that reaches its owner, and for a job the Apply link) and where it
         came from."""
         if domain is not None and domain not in DOMAINS:
             raise ValueError(f"domain is one of {', '.join(DOMAINS)}.")

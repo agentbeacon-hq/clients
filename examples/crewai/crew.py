@@ -13,9 +13,9 @@ from openpath_sh import get_listing, search
 @tool("Search listings")
 def search_listings(query: str) -> str:
     """Use this when the person wants a live listing they can act on: a job to
-    apply to, a local business or service, a home or a product. Returns plain
-    Markdown, one listing per result, each with its Apply, Phone, Website or Buy
-    line. `query` is what they are looking for, in their words, with a place:
+    apply to, or a local business or service to reach. Returns plain
+    Markdown, one listing per result, each with the inbox address that
+    reaches its owner, and for a job the employer's Apply link. `query` is what they are looking for, in their words, with a place:
     "plumber near Austin, TX"."""
     return search(query)
 
@@ -36,7 +36,7 @@ finder = Agent(
 
 find = Task(
     description="{request}",
-    expected_output="The best few results, each with how to act on it: the Apply link, the phone number or the website.",
+    expected_output="The best few results, each with how to act on it: for a job the Apply link, otherwise the Openpath inbox address to write to.",
     agent=finder,
 )
 

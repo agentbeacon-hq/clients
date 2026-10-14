@@ -1,4 +1,4 @@
-// Openpath's tools for the Vercel AI SDK: live listings across the US, as
+// Openpath's tools for the Vercel AI SDK: live listings, as
 // tools a model can call. Each returns plain Markdown from @openpath/sdk, which
 // connects to Openpath by itself the first time: no key and no sign-up.
 
@@ -28,7 +28,7 @@ export function searchListings(options = {}) {
   const openpath = clientFor(options);
   return tool({
     description:
-      "Use this when the person wants a live listing they can act on, anywhere in the US: a job to apply to, a local business or service to call, a home, a product, a car or an event. Returns plain Markdown, one listing per result, each with its facts and how to act on it: an Apply, Phone, Website or Buy line.",
+      "Use this when the person wants a live listing they can act on: a job to apply to, or a local business or service to reach. Returns plain Markdown, one listing per result, each with its facts and how to act on it: the inbox address that reaches its owner, and for a job the employer's Apply link.",
     inputSchema: z.object({
       query: z
         .string()

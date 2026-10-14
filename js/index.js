@@ -1,4 +1,4 @@
-// Openpath for JavaScript: search live listings across the US in one call.
+// Openpath for JavaScript: search live listings in one call.
 // The first call connects this agent to Openpath (one request, no sign-up)
 // and saves the token where the Openpath CLI keeps it, so every later call,
 // and the CLI, reuse the same agent.
@@ -147,7 +147,7 @@ export class Openpath {
 
   /**
    * Live listings that fit what the person asked for, as plain Markdown: each
-   * result's facts, how to act on it (Apply, Phone, Website or Buy) and where
+   * result's facts, how to act on it (the inbox address that reaches its owner, and for a job the Apply link) and where
    * it came from.
    * @param {string} query What the person is looking for, in their words.
    * @param {SearchOptions} [options]

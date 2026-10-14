@@ -4,7 +4,7 @@
 
 # Openpath clients
 
-Search live listings across the US from code: job openings, local businesses and services, homes, products and more. One call returns plain Markdown. No key and no sign-up.
+Search live listings from code: job openings, local businesses and services, homes, products and more. One call returns plain Markdown. No key and no sign-up.
 
 | Language | Install | Search |
 |---|---|---|

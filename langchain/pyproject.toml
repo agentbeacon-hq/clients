@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "langchain-openpath"
 version = "0.1.0"
-description = "LangChain tools for Openpath: live listings across the US (jobs, local businesses and services, homes, products) for your agent. No key and no sign-up."
+description = "LangChain tools for Openpath: live listings (jobs, local businesses and services, homes, products) for your agent. No key and no sign-up."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
