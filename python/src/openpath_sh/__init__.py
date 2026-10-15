@@ -26,7 +26,7 @@ from typing import Callable, Optional
 
 __all__ = ["Openpath", "OpenpathError", "search", "get_listing", "VERSION", "DEFAULT_API"]
 
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 DEFAULT_API = "https://api.openpath.sh"
 CATEGORIES = ("jobs", "businesses", "homes", "products")
 

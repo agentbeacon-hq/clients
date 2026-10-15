@@ -6,7 +6,7 @@ import { Openpath } from "@openpath/sdk";
 import { tool } from "ai";
 import { z } from "zod";
 
-const CATEGORIES = /** @type {const} */ (["jobs", "businesses", "homes", "products"]);
+const CATEGORIES = /** @type {const} */ (["jobs", "businesses"]);
 
 /**
  * @typedef {{ app?: string, token?: string, saveToken?: boolean, apiUrl?: string, client?: Openpath }} OpenpathToolOptions
@@ -20,15 +20,15 @@ function clientFor(options) {
 }
 
 /**
- * Search Openpath for live listings: jobs, local businesses, homes and
- * products.
+ * Search Openpath: jobs in Austin, Texas and remote jobs, and local businesses
+ * in Austin.
  * @param {OpenpathToolOptions} [options]
  */
 export function searchListings(options = {}) {
   const openpath = clientFor(options);
   return tool({
     description:
-      "Use this when the person wants a live listing they can act on: a job to apply to, or a local business or service to reach. Returns plain Markdown, one listing per result, each with its facts and how to act on it: the inbox address that reaches its owner, and for a job the employer's Apply link.",
+      "Use this when the person wants a job in Austin, Texas or a remote job, or a local business in or around Austin. Returns plain Markdown, one listing per result, each with its facts and how to act on it: a job's Apply link, or a business's Openpath inbox address. Openpath shows no phone numbers or websites.",
     inputSchema: z.object({
       query: z
         .string()

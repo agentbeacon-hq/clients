@@ -8,7 +8,7 @@ from langchain_core.tools import BaseTool
 from openpath_sh import Openpath
 from pydantic import BaseModel, Field
 
-Category = Literal["jobs", "businesses", "homes", "products"]
+Category = Literal["jobs", "businesses"]
 
 
 class SearchInput(BaseModel):
@@ -46,10 +46,11 @@ class OpenpathSearch(BaseTool):
 
     name: str = "openpath_search"
     description: str = (
-        "Use this when the person wants a live listing they can act on: "
-        "a job to apply to, or a local business or service to reach. "
+        "Use this when the person wants a job in Austin, Texas or a remote job, "
+        "or a local business in or around Austin. "
         "Returns plain Markdown, one listing per result, each with its facts and how to act on it: "
-        "the inbox address that reaches its owner, and for a job the employer's Apply link."
+        "a job's Apply link, or a business's Openpath inbox address. "
+        "Openpath shows no phone numbers or websites."
     )
     args_schema: type[BaseModel] = SearchInput
     # An openpath_sh.Openpath, or anything with the same methods.

@@ -12,10 +12,11 @@ from openpath_sh import get_listing, search
 
 @tool("Search listings")
 def search_listings(query: str) -> str:
-    """Use this when the person wants a live listing they can act on: a job to
-    apply to, or a local business or service to reach. Returns plain
-    Markdown, one listing per result, each with the inbox address that
-    reaches its owner, and for a job the employer's Apply link. `query` is what they are looking for, in their words, with a place:
+    """Use this when the person wants a job in Austin, Texas or a remote job, or
+    a local business in or around Austin. Returns plain Markdown, one listing per result,
+    each with how to act on it: a job's Apply link, or a business's Openpath
+    inbox address. Openpath shows no phone numbers or websites.
+    `query` is what they are looking for, in their words, with a place:
     "plumber near Austin, TX"."""
     return search(query)
 
@@ -29,7 +30,7 @@ def read_listing(listing_id: str) -> str:
 finder = Agent(
     role="Listings finder",
     goal="Find live listings the person can act on now, and say exactly how to act on each.",
-    backstory="You search Openpath for current jobs, local businesses and services, homes and products.",
+    backstory="You search Openpath for current jobs in Austin, Texas and remote jobs, and local businesses in and around Austin.",
     tools=[search_listings, read_listing],
     llm=LLM(model="anthropic/claude-opus-5-5"),
 )

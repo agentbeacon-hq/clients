@@ -3,8 +3,8 @@
 One small agent per framework, each with two tools: `search_listings` (live listings, as Markdown) and `read_listing` (one listing in full). Ask any of them for a job to apply to or a business to reach:
 
 - "Find me a data engineer job in Austin, TX and give me the link to apply."
-- "Find a plumber near Austin, TX who can come today."
-- "Find taco places in Austin, TX and tell me how to reach them."
+- "Find part-time cook jobs in Austin, TX and tell me how to apply."
+- "Find taco places in Austin, TX and give me their addresses."
 
 Openpath itself needs no key: the first search connects this agent with one request. The model does need one: set `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY` for the OpenAI Agents SDK).
 

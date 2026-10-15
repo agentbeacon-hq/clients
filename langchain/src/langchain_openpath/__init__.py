@@ -7,4 +7,4 @@ Openpath by itself the first time: no key and no sign-up.
 from langchain_openpath.tools import OpenpathReadListing, OpenpathSearch, openpath_tools
 
 __all__ = ["OpenpathSearch", "OpenpathReadListing", "openpath_tools", "__version__"]
-__version__ = "0.2.0"
+__version__ = "0.2.1"

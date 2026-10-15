@@ -12,10 +12,10 @@ from openpath_sh import get_listing, search
 
 @function_tool
 def search_listings(query: str) -> str:
-    """Use this when the person wants a live listing they can act on: a job to
-    apply to, or a local business or service to reach. Returns plain
-    Markdown, one listing per result, each with the inbox address that
-    reaches its owner, and for a job the employer's Apply link.
+    """Use this when the person wants a job in Austin, Texas or a remote job, or
+    a local business in or around Austin. Returns plain Markdown, one listing per result,
+    each with how to act on it: a job's Apply link, or a business's Openpath
+    inbox address. Openpath shows no phone numbers or websites.
 
     Args:
         query: What the person is looking for, in their words, with a place:
@@ -45,5 +45,5 @@ agent = Agent(
 )
 
 if __name__ == "__main__":
-    prompt = " ".join(sys.argv[1:]) or "Find taco places in Austin, TX and tell me how to reach them."
+    prompt = " ".join(sys.argv[1:]) or "Find taco places in Austin, TX and give me their addresses."
     print(Runner.run_sync(agent, prompt).final_output)

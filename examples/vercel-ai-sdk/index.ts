@@ -1,5 +1,5 @@
 // An agent that finds something you can act on now, with the Vercel AI SDK
-// and Openpath. Run: npx tsx index.ts "find a plumber near Austin, TX who can come today"
+// and Openpath. Run: npx tsx index.ts "find part-time cook jobs in Austin, TX and tell me how to apply"
 
 import { anthropic } from "@ai-sdk/anthropic";
 import { generateText, stepCountIs, tool } from "ai";
@@ -9,7 +9,7 @@ import { z } from "zod";
 const tools = {
   searchListings: tool({
     description:
-      "Use this when the person wants a live listing they can act on: a job to apply to, or a local business or service to reach. Returns plain Markdown, one listing per result, each with the inbox address that reaches its owner, and for a job the employer's Apply link.",
+      "Use this when the person wants a job in Austin, Texas or a remote job, or a local business in or around Austin. Returns plain Markdown, one listing per result, each with how to act on it: a job's Apply link, or a business's Openpath inbox address. Openpath shows no phone numbers or websites.",
     inputSchema: z.object({
       query: z
         .string()

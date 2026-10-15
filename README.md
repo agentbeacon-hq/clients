@@ -4,7 +4,7 @@
 
 # Openpath clients
 
-Search live listings from code: job openings, local businesses and services, homes, products and more. One call returns plain Markdown. No key and no sign-up.
+Search Openpath from code: jobs in Austin, Texas and remote jobs, and local businesses in and around Austin. One call returns plain Markdown. A job has the employer's Apply link. A business has an Openpath inbox address instead of a phone number or website; owners who haven't joined Openpath aren't notified yet. No key and no sign-up.
 
 | Language | Install | Search |
 |---|---|---|

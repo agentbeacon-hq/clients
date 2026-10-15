@@ -12,10 +12,11 @@ from openpath_sh import get_listing, search
 
 @tool
 def search_listings(query: str) -> str:
-    """Use this when the person wants a live listing they can act on: a job to
-    apply to, or a local business or service to reach. Returns plain
-    Markdown, one listing per result, each with the inbox address that
-    reaches its owner, and for a job the employer's Apply link. `query` is what they are looking for, in their words, with a place:
+    """Use this when the person wants a job in Austin, Texas or a remote job, or
+    a local business in or around Austin. Returns plain Markdown, one listing per result,
+    each with how to act on it: a job's Apply link, or a business's Openpath
+    inbox address. Openpath shows no phone numbers or websites.
+    `query` is what they are looking for, in their words, with a place:
     "plumber near Austin, TX"."""
     return search(query)
 

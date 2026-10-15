@@ -9,7 +9,7 @@ import { z } from "zod";
 export const searchListings = createTool({
   id: "search-listings",
   description:
-    "Use this when the person wants a live listing they can act on: a job to apply to, or a local business or service to reach. Returns plain Markdown, one listing per result, each with the inbox address that reaches its owner, and for a job the employer's Apply link.",
+    "Use this when the person wants a job in Austin, Texas or a remote job, or a local business in or around Austin. Returns plain Markdown, one listing per result, each with how to act on it: a job's Apply link, or a business's Openpath inbox address. Openpath shows no phone numbers or websites.",
   inputSchema: z.object({
     query: z
       .string()
@@ -36,6 +36,6 @@ export const listingsAgent = new Agent({
   tools: { searchListings, readListing },
 });
 
-const prompt = process.argv.slice(2).join(" ") || "Find a plumber near Austin, TX who can come today.";
+const prompt = process.argv.slice(2).join(" ") || "Find part-time cook jobs in Austin, TX and tell me how to apply.";
 const result = await listingsAgent.generate(prompt);
 console.log(result.text);
