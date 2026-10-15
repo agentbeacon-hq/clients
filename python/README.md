@@ -60,7 +60,7 @@ def find_listings(query: str) -> str:
 from openpath_sh import Openpath, get_listing, search
 
 # Narrow by place or kind, and page through results.
-search("data engineer jobs", near="Austin, TX", domain="work")
+search("data engineer jobs", near="Austin, TX", category="jobs")
 
 # Read one result in full by the id at the end of its Link line.
 get_listing("369348e4-b3d0-490f-82b4-a666041243cf")
@@ -70,7 +70,7 @@ openpath = Openpath(app="JobFinder/1.0")
 openpath.search("nurse jobs in Austin")
 ```
 
-The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_AGENT_TOKEN` to use a token you already have (from 0.2.0, tagged here but not yet on PyPI: the published 0.1.0 is described on its PyPI page, and every version takes a token you pass in), or pass `save_token=False` to keep it in memory only.
+The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_AGENT_TOKEN` to use a token you already have, or pass `save_token=False` to keep it in memory only.
 
 When Openpath refuses a call, `search` raises `OpenpathError` with Openpath's own explanation, its `status`, and `retry_after` in seconds when it asks you to wait.
 

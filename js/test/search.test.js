@@ -18,7 +18,7 @@ function fakeApi({ tokens = ["agt_first", "agt_second"], refuse = null } = {}) {
     if (u.pathname === "/v1/connect") {
       const token = tokens.shift();
       valid.add(token);
-      return Response.json({ agent_id: "a1", agent_token: token });
+      return Response.json({ agent_id: "a1", token });
     }
     if (refuse) return refuse();
     const bearer = (init.headers?.Authorization ?? "").replace("Bearer ", "");
@@ -41,16 +41,16 @@ describe("search", () => {
   it("connects on the first call, saves the token, and returns Markdown", async () => {
     const api = fakeApi();
     const { home, op } = await client(api);
-    const page = await op.search("plumber near Austin, TX", { domain: "services" });
+    const page = await op.search("plumber near Austin, TX", { category: "businesses", offset: 10 });
     assert.equal(page, RESULTS);
     assert.deepEqual(api.calls.map((c) => c.method + " " + c.path), [
       "POST /v1/connect",
-      "GET /v1/search?q=plumber+near+Austin%2C+TX&domain=services",
+      "GET /v1/search?q=plumber+near+Austin%2C+TX&category=businesses&offset=10",
     ]);
     assert.equal(api.calls[1].headers.Authorization, "Bearer agt_first");
     assert.equal(api.calls[1].headers.Accept, "text/markdown");
     const saved = JSON.parse(await readFile(join(home, ".config/openpath/credentials.json"), "utf8"));
-    assert.equal(saved["https://api.openpath.sh"].agent_token, "agt_first");
+    assert.equal(saved["https://api.openpath.sh"].token, "agt_first");
   });
 
   it("reuses the saved token, as the Openpath CLI does", async () => {

@@ -6,7 +6,7 @@ import { Openpath } from "@openpath/sdk";
 import { tool } from "ai";
 import { z } from "zod";
 
-const DOMAINS = /** @type {const} */ (["homes", "work", "services", "businesses", "goods", "cars", "events"]);
+const CATEGORIES = /** @type {const} */ (["jobs", "businesses", "homes", "products"]);
 
 /**
  * @typedef {{ app?: string, token?: string, saveToken?: boolean, apiUrl?: string, client?: Openpath }} OpenpathToolOptions
@@ -20,8 +20,8 @@ function clientFor(options) {
 }
 
 /**
- * Search Openpath for live listings: jobs, local businesses and services,
- * homes, products, cars and events.
+ * Search Openpath for live listings: jobs, local businesses, homes and
+ * products.
  * @param {OpenpathToolOptions} [options]
  */
 export function searchListings(options = {}) {
@@ -39,9 +39,16 @@ export function searchListings(options = {}) {
         .string()
         .optional()
         .describe('A place ("Austin, TX", "78701") or "lat,lng". Overrides a place in the query.'),
-      domain: z.enum(DOMAINS).optional().describe("Only one kind of listing. Read from the query when left out."),
+      category: z.enum(CATEGORIES).optional().describe("Only one kind of listing. Read from the query when left out."),
+      offset: z
+        .number()
+        .int()
+        .min(0)
+        .max(100)
+        .optional()
+        .describe("Where the page starts: 10 results a page, up to 100. A result page's Next page line gives it."),
     }),
-    execute: ({ query, near, domain }) => openpath.search(query, { near, domain }),
+    execute: ({ query, near, category, offset }) => openpath.search(query, { near, category, offset }),
   });
 }
 

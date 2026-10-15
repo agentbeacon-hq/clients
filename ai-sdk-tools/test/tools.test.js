@@ -26,14 +26,17 @@ test("search passes the query and its options to Openpath", async () => {
   assert.match(search.description, /Use this when/);
   const out = await search.execute({ query: "plumber near Austin, TX", near: "78701" }, context);
   assert.equal(out, '# Results for "plumber near Austin, TX"');
-  assert.deepEqual(client.calls, [["search", "plumber near Austin, TX", { near: "78701", domain: undefined }]]);
+  assert.deepEqual(client.calls, [
+    ["search", "plumber near Austin, TX", { near: "78701", category: undefined, offset: undefined }],
+  ]);
 });
 
-test("the search input is checked: a query, a known domain", () => {
+test("the search input is checked: a query, a known category, an offset up to 100", () => {
   const schema = searchListings({ client: fakeClient() }).inputSchema;
-  assert.equal(schema.safeParse({ query: "jobs in Austin", domain: "work" }).success, true);
+  assert.equal(schema.safeParse({ query: "jobs in Austin", category: "jobs", offset: 10 }).success, true);
   assert.equal(schema.safeParse({ query: "" }).success, false);
-  assert.equal(schema.safeParse({ query: "jobs", domain: "weather" }).success, false);
+  assert.equal(schema.safeParse({ query: "jobs", category: "weather" }).success, false);
+  assert.equal(schema.safeParse({ query: "jobs", offset: 110 }).success, false);
 });
 
 test("reading a listing asks for it by id", async () => {

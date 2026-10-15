@@ -8,7 +8,7 @@ from langchain_core.tools import BaseTool
 from openpath_sh import Openpath
 from pydantic import BaseModel, Field
 
-Domain = Literal["homes", "work", "services", "businesses", "goods", "cars", "events"]
+Category = Literal["jobs", "businesses", "homes", "products"]
 
 
 class SearchInput(BaseModel):
@@ -23,9 +23,15 @@ class SearchInput(BaseModel):
         default=None,
         description='A place ("Austin, TX", "78701") or "lat,lng". Overrides a place in the query.',
     )
-    domain: Optional[Domain] = Field(
+    category: Optional[Category] = Field(
         default=None,
         description="Only one kind of listing. Read from the query when left out.",
+    )
+    offset: Optional[int] = Field(
+        default=None,
+        ge=0,
+        le=100,
+        description="Where the page starts: 10 results a page, up to 100. A result page's Next page line gives it.",
     )
 
 
@@ -49,8 +55,15 @@ class OpenpathSearch(BaseTool):
     # An openpath_sh.Openpath, or anything with the same methods.
     client: Any = Field(default_factory=Openpath, exclude=True)
 
-    def _run(self, query: str, near: Optional[str] = None, domain: Optional[str] = None, **_: object) -> str:
-        return self.client.search(query, near=near, domain=domain)
+    def _run(
+        self,
+        query: str,
+        near: Optional[str] = None,
+        category: Optional[str] = None,
+        offset: Optional[int] = None,
+        **_: object,
+    ) -> str:
+        return self.client.search(query, near=near, category=category, offset=offset)
 
 
 class OpenpathReadListing(BaseTool):

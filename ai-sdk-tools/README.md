@@ -26,7 +26,7 @@ console.log(text);
 
 ## Tools
 
-- `searchListings()`: live listings that fit what the person asked for, in their words: `software engineer jobs in Austin, TX`, `plumber near 78704`, `taco places in Austin`. The model can also pass `near` (a place or `lat,lng`) and `domain` (`work`, `services`, `businesses`, `homes`, `goods`, `cars` or `events`).
+- `searchListings()`: live listings that fit what the person asked for, in their words: `software engineer jobs in Austin, TX`, `plumber near 78704`, `taco places in Austin`. The model can also pass `near` (a place or `lat,lng`), `category` (`jobs`, `businesses`, `homes` or `products`) and `offset` (10 results a page, up to 100).
 - `readListing()`: one listing in full, by the id at the end of a result's `Link:` line, to re-read before acting on it.
 - `openpathTools()`: both, sharing one client.
 

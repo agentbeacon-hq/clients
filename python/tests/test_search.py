@@ -25,7 +25,7 @@ class FakeApi:
         if u.path == "/v1/connect":
             token = self.tokens.pop(0)
             self.valid.add(token)
-            return 200, {}, json.dumps({"agent_id": "a1", "agent_token": token})
+            return 200, {}, json.dumps({"agent_id": "a1", "token": token})
         if self.refuse:
             return self.refuse()
         bearer = headers.get("Authorization", "").replace("Bearer ", "")
@@ -45,15 +45,15 @@ class SearchTest(unittest.TestCase):
     def test_connects_saves_the_token_and_returns_markdown(self):
         api = FakeApi()
         home, op = self.client(api)
-        self.assertEqual(op.search("plumber near Austin, TX", domain="services"), RESULTS)
+        self.assertEqual(op.search("plumber near Austin, TX", category="businesses", offset=10), RESULTS)
         self.assertEqual(
             [f"{m} {p}" for m, p, _ in api.calls],
-            ["POST /v1/connect", "GET /v1/search?q=plumber+near+Austin%2C+TX&domain=services"],
+            ["POST /v1/connect", "GET /v1/search?q=plumber+near+Austin%2C+TX&category=businesses&offset=10"],
         )
         self.assertEqual(api.calls[1][2]["Authorization"], "Bearer agt_first")
         self.assertEqual(api.calls[1][2]["Accept"], "text/markdown")
         saved = json.loads((home / ".config/openpath/credentials.json").read_text())
-        self.assertEqual(saved["https://api.openpath.sh"]["agent_token"], "agt_first")
+        self.assertEqual(saved["https://api.openpath.sh"]["token"], "agt_first")
 
     def test_reuses_the_saved_token_as_the_cli_does(self):
         api = FakeApi()
@@ -85,10 +85,10 @@ class SearchTest(unittest.TestCase):
         self.assertEqual(caught.exception.retry_after, 30)
         self.assertEqual(str(caught.exception), "Too many searches.")
 
-    def test_rejects_an_unknown_domain(self):
+    def test_rejects_an_unknown_category(self):
         _, op = self.client(FakeApi())
         with self.assertRaises(ValueError):
-            op.search("plumber", domain="plumbers")
+            op.search("plumber", category="plumbers")
 
 
 if __name__ == "__main__":

@@ -9,8 +9,8 @@ class FakeClient:
     def __init__(self):
         self.calls = []
 
-    def search(self, query, near=None, domain=None, cursor=None):
-        self.calls.append(("search", query, near, domain))
+    def search(self, query, near=None, category=None, offset=None):
+        self.calls.append(("search", query, near, category, offset))
         return f'# Results for "{query}"'
 
     def get_listing(self, listing_id):
@@ -23,12 +23,12 @@ def test_search_passes_the_query_and_its_options():
     tool = OpenpathSearch(client=client)
     out = tool.invoke({"query": "plumber near Austin, TX", "near": "78701"})
     assert out == '# Results for "plumber near Austin, TX"'
-    assert client.calls == [("search", "plumber near Austin, TX", "78701", None)]
+    assert client.calls == [("search", "plumber near Austin, TX", "78701", None, None)]
 
 
 def test_the_search_input_is_checked():
     tool = OpenpathSearch(client=FakeClient())
-    for bad in ({"query": ""}, {"query": "jobs", "domain": "weather"}):
+    for bad in ({"query": ""}, {"query": "jobs", "category": "weather"}, {"query": "jobs", "offset": 110}):
         try:
             tool.invoke(bad)
         except Exception:

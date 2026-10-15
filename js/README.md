@@ -57,7 +57,7 @@ export const findListings = tool({
 import { Openpath, getListing } from "@openpath/sdk";
 
 // Narrow by place or kind, and page through results.
-await search("data engineer jobs", { near: "Austin, TX", domain: "work" });
+await search("data engineer jobs", { near: "Austin, TX", category: "jobs" });
 
 // Read one result in full by the id at the end of its Link line.
 await getListing("505d3c17-b873-4765-aea6-224aa8b02f40");
@@ -67,7 +67,7 @@ const openpath = new Openpath({ app: "JobFinder/1.0" });
 await openpath.search("nurse jobs in Austin");
 ```
 
-The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_AGENT_TOKEN` to use a token you already have (from 0.2.0, tagged here but not yet on npm: the published 0.1.0 is described on its npm page, and every version takes a token you pass in), or pass `saveToken: false` to keep it in memory only.
+The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_AGENT_TOKEN` to use a token you already have, or pass `saveToken: false` to keep it in memory only.
 
 When Openpath refuses a call, `search` throws an `OpenpathError` with Openpath's own explanation, its `status`, and `retryAfter` in seconds when it asks you to wait.
 

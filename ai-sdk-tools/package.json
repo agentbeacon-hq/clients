@@ -1,6 +1,6 @@
 {
   "name": "@openpath/ai-sdk-tools",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Openpath tools for the Vercel AI SDK: live listings (jobs, local businesses and services, homes, products) as tools a model can call. No key and no sign-up.",
   "type": "module",
   "main": "index.js",
@@ -24,7 +24,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@openpath/sdk": "^0.1.0"
+    "@openpath/sdk": "^0.3.0"
   },
   "peerDependencies": {
     "ai": "^6.0.0 || ^7.0.0",

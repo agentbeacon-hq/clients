@@ -1,2 +1,2 @@
 crewai[anthropic]>=1.15.27
-openpath-sh>=0.1.0
+openpath-sh>=0.3.0

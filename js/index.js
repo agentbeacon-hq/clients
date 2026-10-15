@@ -7,7 +7,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-export const VERSION = "0.2.0";
+export const VERSION = "0.3.0";
 export const DEFAULT_API = "https://api.openpath.sh";
 
 /** A refusal from Openpath, with what it said and how long to wait. */
@@ -74,7 +74,7 @@ async function readAll(file) {
   }
 }
 
-/** @param {string} file @param {string} api @param {{ agent_id: string, agent_token: string }} credentials */
+/** @param {string} file @param {string} api @param {{ agent_id: string, token: string }} credentials */
 async function saveToken(file, api, credentials) {
   const all = await readAll(file);
   all[api] = { ...credentials, connected_at: new Date().toISOString() };
@@ -96,8 +96,8 @@ async function saveToken(file, api, credentials) {
  * }} OpenpathOptions
  * @typedef {{
  *   near?: string,
- *   domain?: "homes" | "work" | "services" | "businesses" | "goods" | "cars" | "events",
- *   cursor?: string,
+ *   category?: "jobs" | "businesses" | "homes" | "products",
+ *   offset?: number,
  * }} SearchOptions
  */
 
@@ -128,7 +128,7 @@ export class Openpath {
     if (this.token) return this.token;
     this.connecting ??= (async () => {
       const saved = (await readAll(this.file))[this.api];
-      if (saved?.agent_token) return saved.agent_token;
+      if (saved?.token) return saved.token;
       const response = await this.send(`${this.api}/v1/connect`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "User-Agent": this.userAgent },
@@ -136,8 +136,9 @@ export class Openpath {
       });
       if (!response.ok) throw await refusal(response);
       const created = await response.json();
-      if (this.save) await saveToken(this.file, this.api, created).catch(() => {});
-      return created.agent_token;
+      const credentials = { agent_id: created.agent_id, token: created.token };
+      if (this.save) await saveToken(this.file, this.api, credentials).catch(() => {});
+      return created.token;
     })().finally(() => {
       this.connecting = null;
     });
@@ -155,9 +156,9 @@ export class Openpath {
    */
   search(query, options = {}) {
     const params = new URLSearchParams({ q: query });
-    for (const key of /** @type {const} */ (["near", "domain", "cursor"])) {
-      if (options[key]) params.set(key, options[key]);
-    }
+    if (options.near) params.set("near", options.near);
+    if (options.category) params.set("category", options.category);
+    if (options.offset) params.set("offset", String(options.offset));
     return this.get(`/v1/search?${params}`);
   }
 

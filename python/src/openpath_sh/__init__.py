@@ -26,9 +26,9 @@ from typing import Callable, Optional
 
 __all__ = ["Openpath", "OpenpathError", "search", "get_listing", "VERSION", "DEFAULT_API"]
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 DEFAULT_API = "https://api.openpath.sh"
-DOMAINS = ("homes", "work", "services", "businesses", "goods", "cars", "events")
+CATEGORIES = ("jobs", "businesses", "homes", "products")
 
 # (method, url, headers, body) -> (status, headers, body text)
 Send = Callable[[str, str, dict, Optional[bytes]], "tuple[int, dict, str]"]
@@ -148,8 +148,8 @@ class Openpath:
             if self.token:
                 return self.token
             saved = _read_all(self.file).get(self.api) or {}
-            if saved.get("agent_token"):
-                self.token = saved["agent_token"]
+            if saved.get("token"):
+                self.token = saved["token"]
                 return self.token
             status, headers, text = self.send(
                 "POST",
@@ -165,31 +165,31 @@ class Openpath:
                     all_saved = _read_all(self.file)
                     all_saved[self.api] = {
                         "agent_id": created.get("agent_id"),
-                        "agent_token": created["agent_token"],
+                        "token": created["token"],
                         "connected_at": datetime.now(timezone.utc).isoformat(),
                     }
                     _write_all(self.file, all_saved)
                 except OSError:
                     pass
-            self.token = created["agent_token"]
+            self.token = created["token"]
             return self.token
 
     def search(
         self,
         query: str,
         near: str | None = None,
-        domain: str | None = None,
-        cursor: str | None = None,
+        category: str | None = None,
+        offset: int | None = None,
     ) -> str:
         """Live listings that fit what the person asked for, as plain Markdown: each
         result's facts, how to act on it (the inbox address that reaches its owner, and for a job the Apply link) and where it
         came from."""
-        if domain is not None and domain not in DOMAINS:
-            raise ValueError(f"domain is one of {', '.join(DOMAINS)}.")
+        if category is not None and category not in CATEGORIES:
+            raise ValueError(f"category is one of {', '.join(CATEGORIES)}.")
         params = {"q": query}
-        for key, value in (("near", near), ("domain", domain), ("cursor", cursor)):
+        for key, value in (("near", near), ("category", category), ("offset", offset)):
             if value:
-                params[key] = value
+                params[key] = str(value)
         return self._get(f"/v1/search?{urllib.parse.urlencode(params)}")
 
     def get_listing(self, listing_id: str) -> str:
@@ -241,9 +241,11 @@ def _client() -> Openpath:
     return _shared
 
 
-def search(query: str, near: str | None = None, domain: str | None = None, cursor: str | None = None) -> str:
+def search(
+    query: str, near: str | None = None, category: str | None = None, offset: int | None = None
+) -> str:
     """Search Openpath with a client shared across calls."""
-    return _client().search(query, near=near, domain=domain, cursor=cursor)
+    return _client().search(query, near=near, category=category, offset=offset)
 
 
 def get_listing(listing_id: str) -> str:

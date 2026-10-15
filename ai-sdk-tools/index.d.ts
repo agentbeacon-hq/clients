@@ -12,7 +12,9 @@ export interface SearchListingsInput {
   /** A place ("Austin, TX", "78701") or "lat,lng". Overrides a place in the query. */
   near?: string;
   /** Only one kind of listing. Read from the query when left out. */
-  domain?: SearchOptions["domain"];
+  category?: SearchOptions["category"];
+  /** Where the page starts: 10 results a page, up to 100. */
+  offset?: SearchOptions["offset"];
 }
 
 /** Search Openpath for live listings. Returns plain Markdown. */

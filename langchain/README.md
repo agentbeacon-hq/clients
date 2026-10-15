@@ -31,7 +31,7 @@ print(OpenpathSearch().invoke({"query": "software engineer jobs in Austin, TX"})
 
 ## Tools
 
-- `OpenpathSearch` (`openpath_search`): live listings that fit what the person asked for, in their words: `software engineer jobs in Austin, TX`, `plumber near 78704`, `taco places in Austin`. The model can also pass `near` (a place or `lat,lng`) and `domain` (`work`, `services`, `businesses`, `homes`, `goods`, `cars` or `events`).
+- `OpenpathSearch` (`openpath_search`): live listings that fit what the person asked for, in their words: `software engineer jobs in Austin, TX`, `plumber near 78704`, `taco places in Austin`. The model can also pass `near` (a place or `lat,lng`), `category` (`jobs`, `businesses`, `homes` or `products`) and `offset` (10 results a page, up to 100).
 - `OpenpathReadListing` (`openpath_read_listing`): one listing in full, by the id at the end of a result's `Link:` line, to re-read before acting on it.
 - `openpath_tools(app="MyAgent/1.0")`: both, sharing one client. `app` names your app to Openpath, so it can show you how it is used.
 

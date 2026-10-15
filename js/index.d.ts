@@ -27,10 +27,10 @@ export interface OpenpathOptions {
 export interface SearchOptions {
   /** A place ("Austin, TX", "11211") or "lat,lng". Overrides a place in the query. */
   near?: string;
-  /** Only one kind of thing. Read from the query when left out. */
-  domain?: "homes" | "work" | "services" | "businesses" | "goods" | "cars" | "events";
-  /** The cursor from a result page's "Next page" link. */
-  cursor?: string;
+  /** Only one kind of listing. Read from the query when left out. */
+  category?: "jobs" | "businesses" | "homes" | "products";
+  /** Where the page starts: 10 results a page, up to 100. A result page's "Next page" line gives it. */
+  offset?: number;
 }
 
 /** One agent's way into Openpath. Most code needs only `search`. */
