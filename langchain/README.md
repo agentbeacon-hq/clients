@@ -4,7 +4,7 @@
 
 # langchain-openpath
 
-[LangChain](https://www.langchain.com) tools for Openpath: jobs in Austin, Texas and remote jobs, and local businesses in and around Austin, as tools an agent can call. Each tool returns plain Markdown with how to act on every result: a job's Apply link, or a business's Openpath inbox address (Openpath shows no phone numbers or websites). No key and no sign-up.
+[LangChain](https://www.langchain.com) tools for Openpath: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs, as tools an agent can call. Each tool returns plain Markdown with how to act on every result: a job's Apply link, or a business's Openpath inbox address (Openpath shows no phone numbers or websites). No key and no sign-up.
 
 ```bash
 pip install langchain-openpath

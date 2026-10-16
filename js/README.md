@@ -4,7 +4,7 @@
 
 # @openpath/sdk
 
-Search Openpath from JavaScript: jobs in Austin, Texas and remote jobs, and local businesses in and around Austin. One call returns plain Markdown, ready to hand to a model. No key and no sign-up.
+Search Openpath from JavaScript: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs. One call returns plain Markdown, ready to hand to a model. No key and no sign-up.
 
 ```bash
 npm install @openpath/sdk
@@ -48,7 +48,7 @@ Data: Microsoft via Overture Maps, CDLA-Permissive-2.0.
 Link: https://api.openpath.sh/v1/listings/6f7c5138-e740-4d3e-921b-092464102ff7
 ```
 
-Each result is one current listing: what it is, its facts (pay, place, dates), how to act on it and where it came from. A job has the employer's Apply link. A business has an Openpath inbox address, the Contact line, instead of a phone number or website; owners who haven't joined Openpath aren't notified yet. Today Openpath holds jobs in Austin, Texas and remote jobs, and local businesses in and around Austin.
+Each result is one current listing: what it is, its facts (pay, place, dates), how to act on it and where it came from. A job has the employer's Apply link. A business has an Openpath inbox address, the Contact line, instead of a phone number or website; owners who haven't joined Openpath aren't notified yet. Today Openpath holds jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs.
 
 ## As a tool for your agent
 

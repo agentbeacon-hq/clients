@@ -46,11 +46,13 @@ class OpenpathSearch(BaseTool):
 
     name: str = "openpath_search"
     description: str = (
-        "Use this when the person wants a job in Austin, Texas or a remote job, "
-        "or a local business in or around Austin. "
-        "Returns plain Markdown, one listing per result, each with its facts and how to act on it: "
-        "a job's Apply link, or a business's Openpath inbox address. "
-        "Openpath shows no phone numbers or websites."
+        "Jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, "
+        "Georgetown), plus remote jobs. Use this when the person wants a job to apply to (barista, "
+        "nurse, warehouse, software, remote data roles) or a local business to reach (plumber, "
+        "electrician, dentist, gym, daycare, restaurant). Each result is one current listing: the "
+        "role or business, the pay when stated, the place, and the employer's Apply link or the "
+        "owner's Openpath inbox. Write the query as the person said it, with place and pay: "
+        '"plumber near Austin, TX". Not for news, reviews, or places outside the Austin area.'
     )
     args_schema: type[BaseModel] = SearchInput
     # An openpath_sh.Openpath, or anything with the same methods.

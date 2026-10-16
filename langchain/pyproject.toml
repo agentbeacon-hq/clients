@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "langchain-openpath"
-version = "0.2.1"
-description = "LangChain tools for Openpath: jobs in Austin, Texas and remote jobs, and local businesses in and around Austin, for your agent. No key and no sign-up."
+version = "0.2.2"
+description = "LangChain tools for Openpath: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs, for your agent. No key and no sign-up."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -17,7 +17,7 @@ classifiers = [
   "Operating System :: OS Independent",
   "Topic :: Internet :: WWW/HTTP",
 ]
-dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=0.3.1"]
+dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=0.3.2"]
 
 [project.urls]
 Homepage = "https://openpath.sh"

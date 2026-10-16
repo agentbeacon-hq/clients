@@ -30,7 +30,7 @@ def read_listing(listing_id: str) -> str:
 finder = Agent(
     role="Listings finder",
     goal="Find live listings the person can act on now, and say exactly how to act on each.",
-    backstory="You search Openpath for current jobs in Austin, Texas and remote jobs, and local businesses in and around Austin.",
+    backstory="You search Openpath for current jobs and local businesses in Austin, Texas and nearby towns, plus remote jobs.",
     tools=[search_listings, read_listing],
     llm=LLM(model="anthropic/claude-opus-5-5"),
 )

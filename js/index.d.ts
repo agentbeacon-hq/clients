@@ -8,6 +8,8 @@ export declare class OpenpathError extends Error {
   code: string | null;
   /** Seconds to wait before trying again, when Openpath asked for a wait. */
   retryAfter: number | null;
+  /** What Openpath says to do next, when it said; the message ends with it too. */
+  next: string | null;
 }
 
 export interface OpenpathOptions {

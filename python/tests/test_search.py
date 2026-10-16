@@ -84,6 +84,16 @@ class SearchTest(unittest.TestCase):
         self.assertEqual(caught.exception.code, "rate_limited")
         self.assertEqual(caught.exception.retry_after, 30)
         self.assertEqual(str(caught.exception), "Too many searches.")
+        self.assertIsNone(caught.exception.next)
+
+    def test_keeps_what_openpath_says_to_do_next(self):
+        next_ = "Search again for something like it: the listing may have been removed."
+        body = json.dumps({"code": "not_found", "detail": "No listing has this id.", "next": next_})
+        _, op = self.client(FakeApi(refuse=lambda: (404, {}, body)))
+        with self.assertRaises(OpenpathError) as caught:
+            op.search("plumber")
+        self.assertEqual(caught.exception.next, next_)
+        self.assertEqual(str(caught.exception), f"No listing has this id. {next_}")
 
     def test_rejects_an_unknown_category(self):
         _, op = self.client(FakeApi())

@@ -100,6 +100,21 @@ describe("search", () => {
       assert.equal(error.code, "rate_limited");
       assert.equal(error.retryAfter, 30);
       assert.equal(error.message, "Too many searches.");
+      assert.equal(error.next, null);
+      return true;
+    });
+  });
+
+  it("keeps what Openpath says to do next, as a field and at the end of the message", async () => {
+    const next = "Search again for something like it: the listing may have been removed.";
+    const api = fakeApi({
+      refuse: () =>
+        Response.json({ code: "not_found", detail: "No listing has this id.", next }, { status: 404 }),
+    });
+    const { op } = await client(api);
+    await assert.rejects(op.search("plumber"), (error) => {
+      assert.equal(error.next, next);
+      assert.equal(error.message, `No listing has this id. ${next}`);
       return true;
     });
   });

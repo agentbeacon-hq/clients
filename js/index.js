@@ -7,7 +7,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-export const VERSION = "0.3.1";
+export const VERSION = "0.3.2";
 export const DEFAULT_API = "https://api.openpath.sh";
 
 /** A refusal from Openpath, with what it said and how long to wait. */
@@ -17,13 +17,15 @@ export class OpenpathError extends Error {
    * @param {string} message
    * @param {string | null} code
    * @param {number | null} retryAfter
+   * @param {string | null} [next] What Openpath says to do next; also the end of the message.
    */
-  constructor(status, message, code, retryAfter) {
-    super(message);
+  constructor(status, message, code, retryAfter, next = null) {
+    super(next ? `${message} ${next}` : message);
     this.name = "OpenpathError";
     this.status = status;
     this.code = code;
     this.retryAfter = retryAfter;
+    this.next = next;
   }
 }
 
@@ -210,10 +212,12 @@ async function refusal(response) {
   const text = await response.text();
   let detail = text.slice(0, 500);
   let code = null;
+  let next = null;
   try {
     const problem = JSON.parse(text);
     if (typeof problem.detail === "string") detail = problem.detail;
     if (typeof problem.code === "string") code = problem.code;
+    if (typeof problem.next === "string") next = problem.next;
   } catch {
     // Not a problem document; keep the text.
   }
@@ -223,6 +227,7 @@ async function refusal(response) {
     detail || `Openpath answered ${response.status}.`,
     code,
     Number.isFinite(retry) && retry > 0 ? retry : null,
+    next,
   );
 }
 

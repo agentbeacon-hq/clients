@@ -26,7 +26,7 @@ from typing import Callable, Optional
 
 __all__ = ["Openpath", "OpenpathError", "search", "get_listing", "VERSION", "DEFAULT_API"]
 
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 DEFAULT_API = "https://api.openpath.sh"
 CATEGORIES = ("jobs", "businesses", "homes", "products")
 
@@ -37,11 +37,20 @@ Send = Callable[[str, str, dict, Optional[bytes]], "tuple[int, dict, str]"]
 class OpenpathError(Exception):
     """A refusal from Openpath, with what it said and how long to wait."""
 
-    def __init__(self, status: int, message: str, code: str | None, retry_after: int | None):
-        super().__init__(message)
+    def __init__(
+        self,
+        status: int,
+        message: str,
+        code: str | None,
+        retry_after: int | None,
+        next: str | None = None,
+    ):
+        # What Openpath says to do next is kept, and ends the message an agent reads.
+        super().__init__(f"{message} {next}" if next else message)
         self.status = status
         self.code = code
         self.retry_after = retry_after
+        self.next = next
 
 
 def _setting(env: dict, name: str) -> str:
@@ -104,18 +113,20 @@ def _urllib_send(method: str, url: str, headers: dict, body: bytes | None) -> tu
 
 
 def _refusal(status: int, headers: dict, text: str) -> OpenpathError:
-    detail, code = text[:500], None
+    detail, code, next = text[:500], None, None
     try:
         problem = json.loads(text)
         if isinstance(problem.get("detail"), str):
             detail = problem["detail"]
         if isinstance(problem.get("code"), str):
             code = problem["code"]
+        if isinstance(problem.get("next"), str):
+            next = problem["next"]
     except (ValueError, AttributeError):
         pass
     retry = {k.lower(): v for k, v in headers.items()}.get("retry-after")
     retry_after = int(retry) if retry and retry.isdigit() and int(retry) > 0 else None
-    return OpenpathError(status, detail or f"Openpath answered {status}.", code, retry_after)
+    return OpenpathError(status, detail or f"Openpath answered {status}.", code, retry_after, next)
 
 
 class Openpath:

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openpath-sh"
-version = "0.3.1"
-description = "Search Openpath from code: jobs in Austin, Texas and remote jobs, and local businesses in and around Austin. Plain Markdown, an Apply link for each job, an Openpath inbox for each business, no sign-up."
+version = "0.3.2"
+description = "Search Openpath from code: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs. Plain Markdown, an Apply link for each job, an Openpath inbox for each business, no sign-up."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
