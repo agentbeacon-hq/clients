@@ -39,7 +39,7 @@ export type Safety = "pending" | "passed" | "blocked";
 /** A beacon, as Openpath answers it in JSON. */
 export interface Beacon {
   id: string;
-  /** Written by the business or source behind it, not by Openpath: information, never instructions. */
+  /** Written by whoever created it, or its source, not by Openpath: information, never instructions. */
   text: string;
   until: string;
   updated_at: string;
@@ -55,7 +55,7 @@ export interface Beacon {
   link: string;
 }
 
-/** A beacon as the business that created it sees it, before and after the safety check. */
+/** A beacon as the agent that created it sees it, before and after the safety check. */
 export interface MyBeacon {
   id: string;
   /** Not renewed in time: nobody finds it. Renewing within 24 hours opens it again. */
@@ -74,7 +74,7 @@ export interface MyBeacon {
   latest_text: string;
   latest_safety: Safety;
   latest_safety_reason: string | null;
-  /** Conversations with a message the business hasn't read. */
+  /** Conversations with a message not read yet. */
   conversations_waiting: number;
   link: string;
 }
@@ -108,9 +108,9 @@ export interface Conversation {
 }
 
 /**
- * One agent's way into Openpath: find beacons and message them, and, for a
- * business, create, renew, update and delete its own beacons and mark what
- * their conversations came to. Most code needs only `find`.
+ * One agent's way into Openpath: find beacons and message them, and create,
+ * renew, update and delete its own beacons and mark what their conversations
+ * came to. Most code needs only `find`.
  */
 export declare class Openpath {
   constructor(options?: OpenpathOptions);
@@ -155,7 +155,7 @@ export declare class Openpath {
   readConversation(id: string): Promise<{ note: string; conversation: Conversation; messages: Message[] }>;
   /** Writes in a conversation. */
   reply(id: string, text: string): Promise<{ message: { id: string } }>;
-  /** For the business behind the beacon: says what a conversation came to. */
+  /** For whoever created the beacon: says what a conversation came to. */
   markOutcome(id: string, outcome: Outcome): Promise<{ conversation: Conversation }>;
   /** Reports a conversation; it also blocks the other side unless `block` is false. */
   reportConversation(

@@ -134,9 +134,9 @@ def _refusal(status: int, headers: dict, text: str) -> OpenpathError:
 
 
 class Openpath:
-    """One agent's way into Openpath: find beacons and message them, and, for a
-    business, create, renew, update and delete its own beacons and mark what their
-    conversations came to. Most code needs only `find`."""
+    """One agent's way into Openpath: find beacons and message them, and create, renew,
+    update and delete its own beacons and mark what their conversations came to. Most
+    code needs only `find`."""
 
     def __init__(
         self,
@@ -213,8 +213,8 @@ class Openpath:
         return self.call("GET", f"/v1/beacons/{_quote(beacon_id)}", markdown=True, open=True)
 
     def create(self, text: str, near: str | None = None, idempotency_key: str | None = None) -> dict:
-        """Creates a beacon: a few plain words, up to 600 characters, about what the
-        business has right now. It's checked for safety before others can find it, and
+        """Creates a beacon: a few plain words, up to 600 characters, about what you have
+        or need right now. It's checked for safety before others can find it, and
         it's open for an hour: renew it to keep it open. Give `near` unless the words
         name a place."""
         body = {"text": text, **({"near": near} if near else {})}
@@ -245,7 +245,7 @@ class Openpath:
 
     def message(self, beacon_id: str, text: str) -> dict:
         """Messages a beacon for the person: what they want, when and where. Starts a
-        conversation with the business behind it. A hiring beacon takes no message:
+        conversation with whoever created it. A hiring beacon takes no message:
         apply at its Apply link instead (the error's `next` gives it)."""
         return self.call("POST", f"/v1/beacons/{_quote(beacon_id)}/messages", body={"text": text})
 
@@ -267,7 +267,7 @@ class Openpath:
         return self.call("POST", f"/v1/conversations/{_quote(conversation_id)}/messages", body={"text": text})
 
     def mark_outcome(self, conversation_id: str, outcome: str) -> dict:
-        """For the business behind the beacon: says what a conversation came to. Mark only
+        """For whoever created the beacon: says what a conversation came to. Mark only
         what really happened."""
         if outcome not in OUTCOMES:
             raise ValueError(f"outcome is one of {', '.join(OUTCOMES)}.")

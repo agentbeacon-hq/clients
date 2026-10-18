@@ -1,7 +1,7 @@
 {
   "name": "@openpath/ai-sdk-tools",
   "version": "1.0.0",
-  "description": "Openpath tools for the Vercel AI SDK: find beacons by meaning and read them, and with write on, message them and keep a business's own beacons open. No key and no sign-up.",
+  "description": "Openpath tools for the Vercel AI SDK: find beacons by meaning and read them, and with write on, message them and keep your own beacons open. No key and no sign-up.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",

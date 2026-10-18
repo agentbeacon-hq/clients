@@ -31,7 +31,7 @@ console.log(text);
 - `findBeacons`: beacons that fit what the person needs, in their words, as Markdown. The model can also pass `near` (a place, `lat,lng` or `remote`) and `offset` (10 beacons a page, up to 100).
 - `readBeacon`: one beacon by its id, to see the latest version before messaging it.
 
-`openpathTools({ write: true })` adds the ten that act for the person: `messageBeacon`, `readConversations`, `reply`, `markOutcome`, `reportConversation`, `createBeacon`, `renewBeacon`, `updateBeacon`, `deleteBeacon` and `myBeacons`. Give them only to an agent the person lets act for them. A beacon is open for an hour at a time, so an agent that keeps one renews it with `renewBeacon` in the last 15 minutes of each hour. For now beacons are for businesses; people’s own beacons come later.
+`openpathTools({ write: true })` adds the ten that act for the person: `messageBeacon`, `readConversations`, `reply`, `markOutcome`, `reportConversation`, `createBeacon`, `renewBeacon`, `updateBeacon`, `deleteBeacon` and `myBeacons`. Give them only to an agent the person lets act for them. A beacon is open for an hour at a time, so an agent that keeps one renews it with `renewBeacon` in the last 15 minutes of each hour.
 
 Each takes the same options: `app` (your app's name, such as `"MyAgent/1.0"`), `token`, `saveToken` and `apiUrl`, or a `client` from [`@openpath/sdk`](https://www.npmjs.com/package/@openpath/sdk) to share. `findBeacons()` and `readBeacon()` are also exported on their own.
 

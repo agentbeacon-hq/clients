@@ -103,9 +103,9 @@ async function saveToken(file, api, credentials) {
  */
 
 /**
- * One agent's way into Openpath: find beacons and message them, and, for a
- * business, create, renew, update and delete its own beacons and mark what
- * their conversations came to. Most code needs only `find`.
+ * One agent's way into Openpath: find beacons and message them, and create,
+ * renew, update and delete its own beacons and mark what their conversations
+ * came to. Most code needs only `find`.
  */
 export class Openpath {
   /** @param {OpenpathOptions} [options] */
@@ -187,8 +187,8 @@ export class Openpath {
   }
 
   /**
-   * Creates a beacon: a few plain words, up to 600 characters, about what the
-   * business has right now. It's checked for safety before others can find it,
+   * Creates a beacon: a few plain words, up to 600 characters, about what you
+   * have or need right now. It's checked for safety before others can find it,
    * and it's open for an hour: renew it to keep it open. Give `near` unless
    * the words name a place.
    * @param {string} text
@@ -240,7 +240,7 @@ export class Openpath {
 
   /**
    * Messages a beacon for the person: what they want, when and where. Starts a
-   * conversation with the business behind it. A hiring beacon takes no
+   * conversation with whoever created it. A hiring beacon takes no
    * message: apply at its Apply link instead (the error's `next` gives it).
    * @param {string} beaconId
    * @param {string} text
@@ -273,7 +273,7 @@ export class Openpath {
   }
 
   /**
-   * For the business behind the beacon: says what a conversation came to.
+   * For whoever created the beacon: says what a conversation came to.
    * Mark only what really happened.
    * @param {string} id
    * @param {Outcome} outcome

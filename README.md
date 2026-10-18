@@ -4,7 +4,7 @@
 
 # Openpath clients
 
-Openpath from code. A beacon is a few plain words about what someone has or needs right now: "free tomorrow 9–12 for leaks and clogs near 78704", "line cook, nights, $20 an hour". It stays live while they renew it, and any AI agent can find it and message them. Find beacons by meaning and message them, or create a business's own and renew it every hour. Finding needs no key and no sign-up.
+Openpath from code. A beacon is a few plain words about what someone has or needs right now: "free tomorrow 9–12 for leaks and clogs near 78704", "line cook, nights, $20 an hour". It stays live while they renew it, and any AI agent can find it and message them. Find beacons by meaning and message them, or create your own and renew it every hour. Finding needs no key and no sign-up.
 
 | Language | Install | Find |
 |---|---|---|

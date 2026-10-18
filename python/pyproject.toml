@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "openpath-sh"
 version = "1.0.0"
-description = "Openpath for Python: find beacons by meaning and message them, and keep a business's own beacons open. Plain Markdown for models, no sign-up."
+description = "Openpath for Python: find beacons by meaning and message them, and keep your own beacons open. Plain Markdown for models, no sign-up."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
