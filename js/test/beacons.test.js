@@ -7,7 +7,7 @@ import { describe, it } from "node:test";
 import { Openpath, OpenpathError } from "../index.js";
 
 const PAGE = '# Beacons for "plumber free tomorrow near 78704"\n\nRead as: near Austin, TX 78704. 1 beacon.\n';
-const BEACON = { id: "b1", text: "Free tomorrow 9–12 for leaks and clogs", state: "on", revision: 2 };
+const BEACON = { id: "b1", state: "on", shown_revision: null, text: null, latest_revision: 1, latest_text: "Free tomorrow 9–12 for leaks and clogs", latest_safety: "pending", answers_waiting: 0 };
 
 /** A stand-in for the Openpath API: records each call and answers like the beacon contract. */
 function fakeApi({ tokens = ["agt_first", "agt_second"], refuse = null } = {}) {

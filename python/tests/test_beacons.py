@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 from openpath_sh import Openpath, OpenpathError
 
 PAGE = '# Beacons for "plumber free tomorrow near 78704"\n\nRead as: near Austin, TX 78704. 1 beacon.\n'
-BEACON = {"id": "b1", "text": "Free tomorrow 9–12 for leaks and clogs", "state": "on", "revision": 2}
+BEACON = {"id": "b1", "state": "on", "shown_revision": None, "text": None, "latest_revision": 1, "latest_text": "Free tomorrow 9–12 for leaks and clogs", "latest_safety": "pending", "answers_waiting": 0}
 
 
 class FakeApi:

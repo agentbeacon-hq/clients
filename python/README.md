@@ -64,7 +64,7 @@ on = openpath.turn_on(
 beacon = on["beacon"]
 
 # Rewrite it whenever anything changes, from the revision you last saw.
-openpath.update(beacon["id"], revision=beacon["revision"], text="Free tomorrow 10–12 only, from $95.")
+openpath.update(beacon["id"], revision=beacon["latest_revision"], text="Free tomorrow 10–12 only, from $95.")
 
 # Answers it received, and what each became.
 received = openpath.answers(as_="holder")["answers"]

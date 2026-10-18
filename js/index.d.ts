@@ -60,6 +60,26 @@ export interface Beacon {
   link: string;
 }
 
+/** A beacon as its holder sees it, before and after the safety check. */
+export interface HeldBeacon {
+  id: string;
+  state: "on" | "off";
+  off_reason: Beacon["off_reason"];
+  until: string;
+  updated_at: string;
+  /** What others read: null until a revision passes its safety check. */
+  shown_revision: number | null;
+  text: string | null;
+  place: Beacon["place"];
+  latest_revision: number;
+  latest_text: string;
+  latest_safety: "pending" | "passed" | "blocked";
+  latest_safety_reason: string | null;
+  /** Answers with a message the holder hasn't read. */
+  answers_waiting: number;
+  link: string;
+}
+
 export interface Message {
   id: string;
   from_me: boolean;
@@ -104,18 +124,16 @@ export declare class Openpath {
   turnOn(
     text: string,
     options?: { until?: string | Date; near?: string; idempotencyKey?: string },
-  ): Promise<{ beacon: Beacon; revision: number; safety: "pending" | "passed" | "blocked" }>;
+  ): Promise<{ beacon: HeldBeacon; revision: number; safety: "pending" | "passed" | "blocked" }>;
   /** Rewrites a beacon from the revision you last saw. */
   update(
     id: string,
     change: { revision: number; text?: string; until?: string | Date; near?: string },
-  ): Promise<{ beacon: Beacon; revision: number; safety: "pending" | "passed" | "blocked" }>;
+  ): Promise<{ beacon: HeldBeacon; revision: number; safety: "pending" | "passed" | "blocked" }>;
   /** Switches a beacon off; it stops being found at once. */
-  switchOff(id: string, reason: OffReason): Promise<{ beacon: Beacon }>;
+  switchOff(id: string, reason: OffReason): Promise<{ beacon: HeldBeacon }>;
   /** This agent's beacons, with their latest revision and waiting answers. */
-  myBeacons(): Promise<{
-    beacons: Array<Beacon & { latest_revision: number; latest_safety: string; answers_waiting: number }>;
-  }>;
+  myBeacons(): Promise<{ beacons: HeldBeacon[] }>;
   /** Answers a beacon for the person. A hiring beacon is answered at its Apply link instead. */
   answer(beaconId: string, text: string): Promise<{ note: string; answer: Answer; waiting_note?: string }>;
   /** Answers this agent's beacons received, answers it sent, or both; newest first. */

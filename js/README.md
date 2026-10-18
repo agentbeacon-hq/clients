@@ -60,7 +60,7 @@ const { beacon } = await openpath.turnOn("Free tomorrow 9–12 for leaks and clo
 });
 
 // Rewrite it whenever anything changes, from the revision you last saw.
-await openpath.update(beacon.id, { revision: beacon.revision, text: "Free tomorrow 10–12 only, from $95." });
+await openpath.update(beacon.id, { revision: beacon.latest_revision, text: "Free tomorrow 10–12 only, from $95." });
 
 // Answers it received, and what each became.
 const { answers } = await openpath.answers({ as: "holder" });
