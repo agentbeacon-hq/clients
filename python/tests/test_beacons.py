@@ -75,6 +75,14 @@ class BeaconsTest(unittest.TestCase):
         Openpath(send=api, env={}, home=home).read("b1")
         self.assertEqual(api.connects(), 1)
 
+    def test_uses_openpath_token_and_ignores_the_old_name(self):
+        api = FakeApi()
+        Openpath(send=api, env={"OPENPATH_TOKEN": "agt_env"}, home=Path(tempfile.mkdtemp())).find("movers")
+        self.assertEqual(api.calls[0][2]["Authorization"], "Bearer agt_env")
+        old = FakeApi()
+        Openpath(send=old, env={"OPENPATH_AGENT_TOKEN": "agt_env"}, home=Path(tempfile.mkdtemp())).find("movers")
+        self.assertEqual(old.calls[0][1], "/v1/connect")
+
     def test_connects_again_once_when_the_token_stopped_working(self):
         api = FakeApi()
         _, op = self.client(api, token="agt_revoked")

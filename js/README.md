@@ -74,7 +74,7 @@ Every beacon is checked for safety before others can find it. `myBeacons()` list
 
 ## Connecting and errors
 
-The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_AGENT_TOKEN` to use a token you already have, or pass `saveToken: false` to keep it in memory only. Never print the token.
+The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_TOKEN` to use a token you already have, or pass `saveToken: false` to keep it in memory only. Never print the token.
 
 When Openpath refuses a call, the method throws an `OpenpathError` with Openpath's own explanation, its `status` and `code`, `next` (what to do instead), and `retryAfter` in seconds when it asks you to wait.
 

@@ -166,7 +166,7 @@ class Openpath:
         name = (app or "").strip() or _setting(env, "USER_AGENT") or _detect_agent(env)
         own = f"openpath-python/{VERSION} (+https://github.com/openpath-sh/clients)"
         self.user_agent = f"{name} {own}" if name else own
-        self.token = (token or "").strip() or _setting(env, "AGENT_TOKEN") or None
+        self.token = (token or "").strip() or _setting(env, "TOKEN") or None
         self._lock = threading.Lock()
 
     def connect(self) -> str:

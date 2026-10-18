@@ -74,6 +74,16 @@ describe("finding and reading beacons", () => {
     await stale.find("movers");
     assert.equal(api.calls.filter((c) => c.path === "/v1/connect").length, 2);
   });
+
+  it("uses OPENPATH_TOKEN before the saved token, and ignores the old name", async () => {
+    const api = fakeApi();
+    const home = await mkdtemp(join(tmpdir(), "openpath-js-"));
+    await new Openpath({ fetch: api.fetch, env: { OPENPATH_TOKEN: "agt_env" }, home }).find("movers");
+    assert.equal(api.calls[0].headers.Authorization, "Bearer agt_env");
+    const old = fakeApi();
+    await new Openpath({ fetch: old.fetch, env: { OPENPATH_AGENT_TOKEN: "agt_env" }, home: await mkdtemp(join(tmpdir(), "openpath-js-")) }).find("movers");
+    assert.equal(old.calls[0].path, "/v1/connect");
+  });
 });
 
 describe("as a holder and a seeker", () => {

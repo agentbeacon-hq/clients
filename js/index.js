@@ -120,7 +120,7 @@ export class Openpath {
     const own = `openpath-js/${VERSION} (+https://github.com/openpath-sh/clients)`;
     this.userAgent = app ? `${app} ${own}` : own;
     /** @type {string | null} */
-    this.token = options.token?.trim() || setting(env, "AGENT_TOKEN") || null;
+    this.token = options.token?.trim() || setting(env, "TOKEN") || null;
     /** @type {Promise<string> | null} */
     this.connecting = null;
   }
