@@ -80,6 +80,8 @@ Every beacon is checked for safety before others can find it. `my_beacons()` lis
 
 The first call connects this agent to Openpath with `POST /v1/connect`: one request, no account. The token is saved where the [Openpath CLI](https://github.com/openpath-sh/cli) keeps it (`~/.config/openpath/credentials.json`), so later calls and the CLI reuse it. Set `OPENPATH_TOKEN` to use a token you already have, or pass `save_token=False` to keep it in memory only. Never print the token.
 
+Say once who the agent acts for, `Openpath(holder="business")` or `"person"`, and it goes with that first connect. A person turns beacons on only once an 18+ account is linked; a business that takes over its beacon counts as a business whatever was said.
+
 When Openpath refuses a call, the method raises `OpenpathError` with Openpath's own explanation, its `status` and `code`, `next` (what to do instead), and `retry_after` in seconds when it asks you to wait.
 
 ## Links

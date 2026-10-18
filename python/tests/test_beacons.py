@@ -75,6 +75,17 @@ class BeaconsTest(unittest.TestCase):
         Openpath(send=api, env={}, home=home).read("b1")
         self.assertEqual(api.connects(), 1)
 
+    def test_says_who_it_acts_for_at_connect_only_when_told(self):
+        api = FakeApi()
+        _, op = self.client(api, holder="person")
+        op.find("movers")
+        self.assertEqual(api.calls[0][3], {"holder": "person"})
+        plain = FakeApi()
+        self.client(plain)[1].find("movers")
+        self.assertEqual(plain.calls[0][3], {})
+        with self.assertRaises(ValueError):
+            Openpath(send=api, env={}, holder="company")
+
     def test_uses_openpath_token_and_ignores_the_old_name(self):
         api = FakeApi()
         Openpath(send=api, env={"OPENPATH_TOKEN": "agt_env"}, home=Path(tempfile.mkdtemp())).find("movers")

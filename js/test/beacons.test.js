@@ -75,6 +75,17 @@ describe("finding and reading beacons", () => {
     assert.equal(api.calls.filter((c) => c.path === "/v1/connect").length, 2);
   });
 
+  it("says who it acts for at connect only when told, and never again", async () => {
+    const api = fakeApi();
+    const { op } = await client(api, { holder: "business" });
+    await op.find("movers");
+    await op.find("movers");
+    assert.deepEqual(api.calls.filter((c) => c.path === "/v1/connect").map((c) => c.body), [{ holder: "business" }]);
+    const plain = fakeApi();
+    await (await client(plain)).op.find("movers");
+    assert.deepEqual(plain.calls[0].body, {});
+  });
+
   it("uses OPENPATH_TOKEN before the saved token, and ignores the old name", async () => {
     const api = fakeApi();
     const home = await mkdtemp(join(tmpdir(), "openpath-js-"));

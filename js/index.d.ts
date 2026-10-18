@@ -19,6 +19,12 @@ export interface OpenpathOptions {
   token?: string;
   /** Your app's name, sent first in the User-Agent, such as "MyAgent/1.0". */
   app?: string;
+  /**
+   * Who this agent acts for, said once when it first connects: "business" or
+   * "person". A person turns beacons on only with an 18+ account linked; a
+   * proven takeover makes it a business anyway.
+   */
+  holder?: "business" | "person";
   /** Save the token where the Openpath CLI keeps it (~/.config/openpath). Default true. */
   saveToken?: boolean;
   fetch?: typeof fetch;

@@ -92,6 +92,7 @@ async function saveToken(file, api, credentials) {
  *   token?: string,
  *   app?: string,
  *   saveToken?: boolean,
+ *   holder?: "business" | "person",
  *   fetch?: typeof fetch,
  *   env?: NodeJS.ProcessEnv,
  *   home?: string,
@@ -115,6 +116,8 @@ export class Openpath {
     this.api = (options.apiUrl || setting(env, "API_URL") || DEFAULT_API).replace(/\/+$/, "");
     this.send = options.fetch ?? globalThis.fetch;
     this.save = options.saveToken ?? true;
+    /** Said once, when this agent first connects. */
+    this.holder = options.holder ?? null;
     this.file = credentialsFile(env, options.home ?? homedir());
     const app = options.app?.trim() || setting(env, "USER_AGENT") || detectAgent(env);
     const own = `openpath-js/${VERSION} (+https://github.com/openpath-sh/clients)`;
@@ -138,7 +141,7 @@ export class Openpath {
       const response = await this.send(`${this.api}/v1/connect`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "User-Agent": this.userAgent },
-        body: "{}",
+        body: JSON.stringify(this.holder ? { holder: this.holder } : {}),
       });
       if (!response.ok) throw await refusal(response);
       const created = await response.json();

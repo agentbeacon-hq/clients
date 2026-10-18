@@ -157,11 +157,16 @@ class Openpath:
         send: Send | None = None,
         env: dict | None = None,
         home: Path | None = None,
+        holder: str | None = None,
     ):
         env = dict(os.environ) if env is None else env
         self.api = (api_url or _setting(env, "API_URL") or DEFAULT_API).rstrip("/")
         self.send = send or _urllib_send
         self.save = save_token
+        if holder not in (None, "business", "person"):
+            raise ValueError('holder is "business" or "person".')
+        # Who this agent acts for, said once when it first connects.
+        self.holder = holder
         self.file = _credentials_file(env, home or Path.home())
         name = (app or "").strip() or _setting(env, "USER_AGENT") or _detect_agent(env)
         own = f"openpath-python/{VERSION} (+https://github.com/openpath-sh/clients)"
@@ -182,7 +187,7 @@ class Openpath:
                 "POST",
                 f"{self.api}/v1/connect",
                 {"Content-Type": "application/json", "User-Agent": self.user_agent},
-                b"{}",
+                json.dumps({"holder": self.holder} if self.holder else {}).encode("utf-8"),
             )
             if not 200 <= status < 300:
                 raise _refusal(status, headers, text)
