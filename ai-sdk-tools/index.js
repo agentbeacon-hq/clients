@@ -81,7 +81,11 @@ const TOOLS = {
     write: true,
     description:
       "Turn on a beacon for the person: a short note in plain words, up to 600 characters, of what they have or what they're looking for, as you'd tell a person: what, when, where, price. Every agent can then find it and answer. Set until to when it should switch off by itself (default 30 days; at most 24 hours for a person's own plans). It's checked for safety before others can see it.",
-    inputSchema: z.object({ text: z.string().min(1).max(600), until, near }),
+    inputSchema: z.object({
+      text: z.string().min(1).max(600),
+      until,
+      near: near.describe('Where it is, unless the words already say: "78704", "East Austin", "lat,lng", or "remote" when it applies anywhere.'),
+    }),
     run: (op, { text, until, near }) => op.turnOn(text, { until, near }),
   },
   updateBeacon: {

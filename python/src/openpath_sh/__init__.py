@@ -228,7 +228,9 @@ class Openpath:
         idempotency_key: str | None = None,
     ) -> dict:
         """Turns on a beacon: a short note in plain words, up to 600 characters, of what
-        the person has or is looking for. It's checked for safety before others can find it."""
+        the person has or is looking for. It's checked for safety before others can find it.
+        Give `near` unless the words name a place ("remote" when it applies anywhere); without
+        one it is refused."""
         body = {"text": text, **_when(until), **({"near": near} if near else {})}
         headers = {"Idempotency-Key": idempotency_key} if idempotency_key else {}
         return self.call("POST", "/v1/beacons", body=body, headers=headers)

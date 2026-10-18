@@ -60,7 +60,11 @@ class ReportInput(BaseModel):
 class TurnOnInput(BaseModel):
     text: str = Field(min_length=1, max_length=600)
     until: Optional[str] = Field(default=None, description=UNTIL)
-    near: Optional[str] = Field(default=None, max_length=120, description=NEAR)
+    near: Optional[str] = Field(
+        default=None,
+        max_length=120,
+        description='Where it is, unless the words already say: "78704", "East Austin", "lat,lng", or "remote" when it applies anywhere.',
+    )
 
 
 class UpdateInput(BeaconInput):

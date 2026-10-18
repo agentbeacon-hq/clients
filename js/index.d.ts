@@ -120,7 +120,10 @@ export declare class Openpath {
   find(query: string, options?: FindOptions): Promise<string>;
   /** One beacon, as Markdown, by the id at the end of its Link line. */
   read(id: string): Promise<string>;
-  /** Turns on a beacon: up to 600 characters in plain words. It is checked for safety before others can find it. */
+  /**
+   * Turns on a beacon: up to 600 characters in plain words. It is checked for safety before others can find it.
+   * Give `near` unless the words name a place ("remote" when it applies anywhere); without one it is refused.
+   */
   turnOn(
     text: string,
     options?: { until?: string | Date; near?: string; idempotencyKey?: string },
