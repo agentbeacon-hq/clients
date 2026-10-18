@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "langchain-openpath"
 version = "1.0.0"
-description = "LangChain tools for Openpath: find beacons by meaning and read them, and with write on, answer them and keep the person's own beacons live. No key and no sign-up."
+description = "LangChain tools for Openpath: find beacons by meaning and read them, and with write on, message them and keep a business's own beacons open. No key and no sign-up."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

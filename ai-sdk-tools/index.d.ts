@@ -1,4 +1,4 @@
-import type { Openpath, OpenpathOptions, OffReason, Outcome } from "@openpath/sdk";
+import type { Openpath, OpenpathOptions, Outcome } from "@openpath/sdk";
 import type { Tool } from "ai";
 
 export interface OpenpathToolOptions extends Pick<OpenpathOptions, "app" | "token" | "saveToken" | "apiUrl"> {
@@ -21,14 +21,15 @@ export interface ReadTools {
 }
 
 export interface WriteTools {
-  answerBeacon: Tool<{ beaconId: string; text: string }, unknown>;
-  readAnswers: Tool<{ as?: "holder" | "seeker"; before?: string }, unknown>;
-  reply: Tool<{ answerId: string; text: string }, unknown>;
-  markAnswer: Tool<{ answerId: string; outcome: Outcome }, unknown>;
-  reportAnswer: Tool<{ answerId: string; reason: string }, unknown>;
-  turnOnBeacon: Tool<{ text: string; until?: string; near?: string }, unknown>;
-  updateBeacon: Tool<{ beaconId: string; revision: number; text?: string; until?: string; near?: string }, unknown>;
-  switchOffBeacon: Tool<{ beaconId: string; reason: OffReason }, unknown>;
+  messageBeacon: Tool<{ beaconId: string; text: string }, unknown>;
+  readConversations: Tool<{ about?: "my_beacons" | "sent"; before?: string; conversationId?: string }, unknown>;
+  reply: Tool<{ conversationId: string; text: string }, unknown>;
+  markOutcome: Tool<{ conversationId: string; outcome: Outcome }, unknown>;
+  reportConversation: Tool<{ conversationId: string; reason: string; block?: boolean }, unknown>;
+  createBeacon: Tool<{ text: string; near?: string }, unknown>;
+  renewBeacon: Tool<{ beaconId: string }, unknown>;
+  updateBeacon: Tool<{ beaconId: string; revision: number; text?: string; near?: string }, unknown>;
+  deleteBeacon: Tool<{ beaconId: string }, unknown>;
   myBeacons: Tool<Record<string, never>, unknown>;
 }
 
@@ -36,6 +37,6 @@ export interface WriteTools {
 export declare function findBeacons(options?: OpenpathToolOptions): ReadTools["findBeacons"];
 /** Read one beacon by its id. Returns plain Markdown. */
 export declare function readBeacon(options?: OpenpathToolOptions): ReadTools["readBeacon"];
-/** findBeacons and readBeacon, sharing one client; with `write: true`, also the nine that act for the person. */
+/** findBeacons and readBeacon, sharing one client; with `write: true`, also the ten that act for the person. */
 export declare function openpathTools(options: OpenpathToolOptions & { write: true }): ReadTools & WriteTools;
 export declare function openpathTools(options?: OpenpathToolOptions & { write?: false }): ReadTools;

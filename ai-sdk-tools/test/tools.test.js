@@ -15,14 +15,16 @@ function fakeClient() {
     calls,
     find: record("find", (query) => `# Beacons for "${query}"`),
     read: record("read", (id) => `## Beacon ${id}`),
-    answer: record("answer"),
-    answers: record("answers"),
+    message: record("message"),
+    conversations: record("conversations"),
+    readConversation: record("readConversation"),
     reply: record("reply"),
-    markAnswer: record("markAnswer"),
-    reportAnswer: record("reportAnswer"),
-    turnOn: record("turnOn"),
+    markOutcome: record("markOutcome"),
+    reportConversation: record("reportConversation"),
+    create: record("create"),
+    renew: record("renew"),
     update: record("update"),
-    switchOff: record("switchOff"),
+    delete: record("delete"),
     myBeacons: record("myBeacons"),
   };
 }
@@ -53,33 +55,51 @@ test("readBeacon asks for it by id", async () => {
   assert.equal(readBeacon({ client }).inputSchema.safeParse({ beaconId: "abc" }).success, false);
 });
 
-test("only the two read-only tools unless asked for write", () => {
+test("only the two read-only tools unless asked for write, and then the ten that act for the person", () => {
   assert.deepEqual(Object.keys(openpathTools({ client: fakeClient() })), ["findBeacons", "readBeacon"]);
-  assert.equal(Object.keys(openpathTools({ client: fakeClient(), write: true })).length, 11);
+  assert.deepEqual(Object.keys(openpathTools({ client: fakeClient(), write: true })), [
+    "findBeacons",
+    "readBeacon",
+    "messageBeacon",
+    "readConversations",
+    "reply",
+    "markOutcome",
+    "reportConversation",
+    "createBeacon",
+    "renewBeacon",
+    "updateBeacon",
+    "deleteBeacon",
+    "myBeacons",
+  ]);
 });
 
 test("the write tools share one client and call the matching method", async () => {
   const client = fakeClient();
   const t = openpathTools({ client, write: true });
-  await t.answerBeacon.execute({ beaconId: ID, text: "Can you come at 10?" }, context);
-  await t.readAnswers.execute({ as: "holder" }, context);
-  await t.reply.execute({ answerId: ID, text: "Yes" }, context);
-  await t.markAnswer.execute({ answerId: ID, outcome: "booked" }, context);
-  await t.reportAnswer.execute({ answerId: ID, reason: "spam" }, context);
-  await t.turnOnBeacon.execute({ text: "Free tomorrow 9–12", near: "78704" }, context);
+  await t.messageBeacon.execute({ beaconId: ID, text: "Can you come at 10?" }, context);
+  await t.readConversations.execute({ about: "my_beacons" }, context);
+  await t.readConversations.execute({ conversationId: ID }, context);
+  await t.reply.execute({ conversationId: ID, text: "Yes" }, context);
+  await t.markOutcome.execute({ conversationId: ID, outcome: "booked" }, context);
+  await t.reportConversation.execute({ conversationId: ID, reason: "spam", block: true }, context);
+  await t.createBeacon.execute({ text: "Free tomorrow 9–12", near: "78704" }, context);
+  await t.renewBeacon.execute({ beaconId: ID }, context);
   await t.updateBeacon.execute({ beaconId: ID, revision: 2, text: "Free 10–12" }, context);
-  await t.switchOffBeacon.execute({ beaconId: ID, reason: "taken" }, context);
+  await t.deleteBeacon.execute({ beaconId: ID }, context);
   await t.myBeacons.execute({}, context);
   assert.deepEqual(client.calls, [
-    ["answer", ID, "Can you come at 10?"],
-    ["answers", { as: "holder", before: undefined }],
+    ["message", ID, "Can you come at 10?"],
+    ["conversations", { about: "my_beacons", before: undefined }],
+    ["readConversation", ID],
     ["reply", ID, "Yes"],
-    ["markAnswer", ID, "booked"],
-    ["reportAnswer", ID, "spam"],
-    ["turnOn", "Free tomorrow 9–12", { until: undefined, near: "78704" }],
+    ["markOutcome", ID, "booked"],
+    ["reportConversation", ID, "spam", { block: true }],
+    ["create", "Free tomorrow 9–12", { near: "78704" }],
+    ["renew", ID],
     ["update", ID, { revision: 2, text: "Free 10–12" }],
-    ["switchOff", ID, "taken"],
+    ["delete", ID],
     ["myBeacons"],
   ]);
-  assert.equal(t.markAnswer.inputSchema.safeParse({ answerId: ID, outcome: "won" }).success, false);
+  assert.equal(t.markOutcome.inputSchema.safeParse({ conversationId: ID, outcome: "won" }).success, false);
+  assert.deepEqual(Object.keys(t.createBeacon.inputSchema.shape).sort(), ["near", "text"]);
 });

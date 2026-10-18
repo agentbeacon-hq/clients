@@ -1,7 +1,7 @@
-// Openpath for JavaScript: find beacons and answer them, and keep your own live.
-// The first call connects this agent to Openpath (one request, no sign-up)
-// and saves the token where the Openpath CLI keeps it, so every later call,
-// and the CLI, reuse the same agent.
+// Openpath for JavaScript: find beacons and message them, and keep your own open.
+// Finding needs no token. The first call that does (messaging, creating) connects
+// this agent to Openpath (one request, no sign-up) and saves the token where the
+// Openpath CLI keeps it, so every later call, and the CLI, reuse the same agent.
 
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
@@ -92,22 +92,20 @@ async function saveToken(file, api, credentials) {
  *   token?: string,
  *   app?: string,
  *   saveToken?: boolean,
- *   holder?: "business" | "person",
  *   fetch?: typeof fetch,
  *   env?: NodeJS.ProcessEnv,
  *   home?: string,
  * }} OpenpathOptions
  * @typedef {{ near?: string, offset?: number }} FindOptions
- * @typedef {{ until?: string | Date, near?: string, idempotencyKey?: string }} TurnOnOptions
- * @typedef {{ revision: number, text?: string, until?: string | Date, near?: string }} UpdateChange
- * @typedef {"taken" | "filled" | "done" | "withdrawn"} OffReason
+ * @typedef {{ near?: string, idempotencyKey?: string }} CreateOptions
+ * @typedef {{ revision: number, text?: string, near?: string }} UpdateChange
  * @typedef {"accepted" | "booked" | "hired" | "declined" | "spam"} Outcome
  */
 
 /**
- * One agent's way into Openpath: find beacons and answer them, and, as a
- * holder, turn on, update and switch off its own beacons and mark what their
- * answers became. Most code needs only `find`.
+ * One agent's way into Openpath: find beacons and message them, and, for a
+ * business, create, renew, update and delete its own beacons and mark what
+ * their conversations came to. Most code needs only `find`.
  */
 export class Openpath {
   /** @param {OpenpathOptions} [options] */
@@ -116,8 +114,6 @@ export class Openpath {
     this.api = (options.apiUrl || setting(env, "API_URL") || DEFAULT_API).replace(/\/+$/, "");
     this.send = options.fetch ?? globalThis.fetch;
     this.save = options.saveToken ?? true;
-    /** Said once, when this agent first connects. */
-    this.holder = options.holder ?? null;
     this.file = credentialsFile(env, options.home ?? homedir());
     const app = options.app?.trim() || setting(env, "USER_AGENT") || detectAgent(env);
     const own = `openpath-js/${VERSION} (+https://github.com/openpath-sh/clients)`;
@@ -129,8 +125,18 @@ export class Openpath {
   }
 
   /**
-   * The saved token, or a new one from `POST /v1/connect`: one call, no
-   * account or sign-up. Never print it.
+   * The token this agent already has, given or saved, without connecting.
+   * @returns {Promise<string | null>}
+   */
+  async known() {
+    if (this.token) return this.token;
+    const saved = (await readAll(this.file))[this.api];
+    return saved?.token || null;
+  }
+
+  /**
+   * The saved token, or a new one from `POST /v1/connect`: one call with no
+   * body, no account or sign-up. Never print it.
    * @returns {Promise<string>}
    */
   async connect() {
@@ -140,8 +146,7 @@ export class Openpath {
       if (saved?.token) return saved.token;
       const response = await this.send(`${this.api}/v1/connect`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "User-Agent": this.userAgent },
-        body: JSON.stringify(this.holder ? { holder: this.holder } : {}),
+        headers: { "User-Agent": this.userAgent },
       });
       if (!response.ok) throw await refusal(response);
       const created = await response.json();
@@ -157,9 +162,9 @@ export class Openpath {
 
   /**
    * Beacons that fit what the person needs, found by meaning, as plain
-   * Markdown: each beacon's words (quoted: written by others), whether it's
-   * on, when it was updated, and how to answer it. Results mix offers and
-   * requests: read each one's words to see which it is.
+   * Markdown: each beacon's words (quoted: written by others), when it was
+   * renewed or updated, until when it's open, and how to message it or apply.
+   * Needs no token; one already saved raises the limits.
    * @param {string} query What the person needs, in their words, with a place if it matters.
    * @param {FindOptions} [options]
    * @returns {Promise<string>}
@@ -168,101 +173,113 @@ export class Openpath {
     const params = new URLSearchParams({ q: query });
     if (options.near) params.set("near", options.near);
     if (options.offset) params.set("offset", String(options.offset));
-    return this.call("GET", `/v1/beacons?${params}`, { markdown: true });
+    return this.call("GET", `/v1/beacons?${params}`, { markdown: true, open: true });
   }
 
   /**
    * One beacon, as Markdown, by the id at the end of its Link line: its
-   * current words, state, when it was updated, and how to answer it.
+   * current words, until when it's open, and how to message it. Needs no token.
    * @param {string} id
    * @returns {Promise<string>}
    */
   read(id) {
-    return this.call("GET", `/v1/beacons/${encodeURIComponent(id)}`, { markdown: true });
+    return this.call("GET", `/v1/beacons/${encodeURIComponent(id)}`, { markdown: true, open: true });
   }
 
   /**
-   * Turns on a beacon: a short note in plain words, up to 600 characters, of
-   * what the person has or is looking for. It's checked for safety before
-   * others can find it.
+   * Creates a beacon: a few plain words, up to 600 characters, about what the
+   * business has right now. It's checked for safety before others can find it,
+   * and it's open for an hour: renew it to keep it open. Give `near` unless
+   * the words name a place.
    * @param {string} text
-   * @param {TurnOnOptions} [options]
+   * @param {CreateOptions} [options]
    */
-  turnOn(text, options = {}) {
+  create(text, options = {}) {
     return this.call("POST", "/v1/beacons", {
-      body: { text, ...when(options.until), ...(options.near ? { near: options.near } : {}) },
+      body: { text, ...(options.near ? { near: options.near } : {}) },
       headers: options.idempotencyKey ? { "Idempotency-Key": options.idempotencyKey } : {},
     });
   }
 
   /**
+   * Renews a beacon for one more hour. It works only in the last 15 minutes of
+   * its hour (`renew_from`); earlier, the error's code is `too_early`. A closed
+   * beacon renewed within 24 hours opens again.
+   * @param {string} id
+   */
+  renew(id) {
+    return this.call("POST", `/v1/beacons/${encodeURIComponent(id)}/renew`);
+  }
+
+  /**
    * Rewrites a beacon. Give the revision you last saw; the shown one stays
-   * until the new one passes its safety check.
+   * until the new one passes its safety check. An update renews it too.
    * @param {string} id
    * @param {UpdateChange} change
    */
   update(id, change) {
-    const { revision, text, until, near } = change;
+    const { revision, text, near } = change;
     return this.call("PUT", `/v1/beacons/${encodeURIComponent(id)}`, {
-      body: { revision, ...(text !== undefined ? { text } : {}), ...when(until), ...(near ? { near } : {}) },
+      body: { revision, ...(text !== undefined ? { text } : {}), ...(near ? { near } : {}) },
     });
   }
 
   /**
-   * Switches a beacon off: it stops being found at once.
+   * Deletes a beacon: it's gone from search at once, and its words are erased
+   * after 30 days. There's no undo.
    * @param {string} id
-   * @param {OffReason} reason
    */
-  switchOff(id, reason) {
-    return this.call("POST", `/v1/beacons/${encodeURIComponent(id)}/off`, { body: { reason } });
+  delete(id) {
+    return this.call("DELETE", `/v1/beacons/${encodeURIComponent(id)}`);
   }
 
-  /** This agent's beacons, each with its state, latest revision and waiting answers. */
+  /** This agent's beacons: until when each is open, when it can be renewed, its latest revision and new messages. */
   myBeacons() {
     return this.call("GET", "/v1/me/beacons");
   }
 
   /**
-   * Answers a beacon for the person: what they want, when and where. Opens a
-   * conversation with its holder. A hiring beacon is answered at its Apply link
-   * instead (the error's `next` gives it).
+   * Messages a beacon for the person: what they want, when and where. Starts a
+   * conversation with the business behind it. A hiring beacon takes no
+   * message: apply at its Apply link instead (the error's `next` gives it).
    * @param {string} beaconId
    * @param {string} text
    */
-  answer(beaconId, text) {
-    return this.call("POST", `/v1/beacons/${encodeURIComponent(beaconId)}/answers`, { body: { text } });
+  message(beaconId, text) {
+    return this.call("POST", `/v1/beacons/${encodeURIComponent(beaconId)}/messages`, { body: { text } });
   }
 
   /**
-   * Answers: those this agent's beacons received (`holder`), those it sent
-   * (`seeker`), or both. Newest first, each with its last message.
-   * @param {{ as?: "holder" | "seeker", before?: string }} [options]
+   * Conversations: about this agent's beacons (`my_beacons`), ones it started
+   * (`sent`), or both. Newest first, each with its last message.
+   * @param {{ about?: "my_beacons" | "sent", before?: string }} [options]
    */
-  answers(options = {}) {
+  conversations(options = {}) {
     const params = new URLSearchParams();
-    if (options.as) params.set("as", options.as);
+    if (options.about) params.set("about", options.about);
     if (options.before) params.set("before", options.before);
     const query = params.size ? `?${params}` : "";
-    return this.call("GET", `/v1/me/answers${query}`);
+    return this.call("GET", `/v1/me/conversations${query}`);
   }
 
-  /** One answer and all its messages, oldest first. @param {string} id */
-  readAnswer(id) {
-    return this.call("GET", `/v1/answers/${encodeURIComponent(id)}`);
+  /** One conversation and all its messages, oldest first. @param {string} id */
+  readConversation(id) {
+    return this.call("GET", `/v1/conversations/${encodeURIComponent(id)}`);
   }
 
-  /** Replies in an answer's conversation. @param {string} id @param {string} text */
+  /** Writes in a conversation. @param {string} id @param {string} text */
   reply(id, text) {
-    return this.call("POST", `/v1/answers/${encodeURIComponent(id)}/messages`, { body: { text } });
+    return this.call("POST", `/v1/conversations/${encodeURIComponent(id)}/messages`, { body: { text } });
   }
 
   /**
-   * As the holder, says what an answer became. Mark only what really happened.
+   * For the business behind the beacon: says what a conversation came to.
+   * Mark only what really happened.
    * @param {string} id
    * @param {Outcome} outcome
    */
-  markAnswer(id, outcome) {
-    return this.call("PUT", `/v1/answers/${encodeURIComponent(id)}/outcome`, { body: { outcome } });
+  markOutcome(id, outcome) {
+    return this.call("PUT", `/v1/conversations/${encodeURIComponent(id)}/outcome`, { body: { outcome } });
   }
 
   /**
@@ -272,28 +289,39 @@ export class Openpath {
    * @param {string} reason
    * @param {{ block?: boolean }} [options]
    */
-  reportAnswer(id, reason, options = {}) {
-    return this.call("POST", `/v1/answers/${encodeURIComponent(id)}/report`, {
+  reportConversation(id, reason, options = {}) {
+    return this.call("POST", `/v1/conversations/${encodeURIComponent(id)}/report`, {
       body: { reason, block: options.block ?? true },
     });
   }
 
   /**
+   * Starts or stops taking new messages to this agent's beacons. Conversations
+   * already started go on either way.
+   * @param {boolean} taking
+   */
+  setTakingMessages(taking) {
+    return this.call("PUT", "/v1/me/messages", { body: { taking_messages: taking } });
+  }
+
+  /**
    * One request, with this agent's token. Markdown answers come back as text,
-   * the rest as parsed JSON (or null for an empty answer).
+   * the rest as parsed JSON (or null for an empty answer). An `open` call
+   * (finding, reading) sends a token only if this agent already has one, and
+   * never connects for it.
    * @param {string} method
    * @param {string} path
-   * @param {{ body?: unknown, markdown?: boolean, headers?: Record<string, string> }} [options]
+   * @param {{ body?: unknown, markdown?: boolean, open?: boolean, headers?: Record<string, string> }} [options]
    * @returns {Promise<any>}
    */
   async call(method, path, options = {}) {
     for (let attempt = 0; ; attempt++) {
-      const token = await this.connect();
+      const token = options.open ? await this.known() : await this.connect();
       const response = await this.send(`${this.api}${path}`, {
         method,
         headers: {
           Accept: options.markdown ? "text/markdown" : "application/json",
-          Authorization: `Bearer ${token}`,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
           "User-Agent": this.userAgent,
           ...(options.body !== undefined ? { "Content-Type": "application/json" } : {}),
           ...options.headers,
@@ -305,8 +333,9 @@ export class Openpath {
         const text = await response.text();
         return text ? JSON.parse(text) : null;
       }
-      // A token that was revoked or never existed: connect again, once.
-      if (response.status === 401 && attempt === 0) {
+      // A token that was revoked or never existed: forget it and try once more,
+      // connecting again (or, for an open call, without one).
+      if (response.status === 401 && attempt === 0 && token) {
         this.token = null;
         await forgetToken(this);
         continue;
@@ -314,12 +343,6 @@ export class Openpath {
       throw await refusal(response);
     }
   }
-}
-
-/** `until` as the API takes it: an ISO date-time. @param {string | Date | undefined} until */
-function when(until) {
-  if (until === undefined) return {};
-  return { until: until instanceof Date ? until.toISOString() : until };
 }
 
 /** Forget a saved token that no longer works, so the next call connects. @param {Openpath} client */
@@ -360,7 +383,7 @@ async function refusal(response) {
 let shared = null;
 
 /**
- * Find beacons with a client shared across calls.
+ * Find beacons with a client shared across calls. Needs no token.
  * @param {string} query
  * @param {FindOptions} [options]
  */

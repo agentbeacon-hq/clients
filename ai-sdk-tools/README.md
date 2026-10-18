@@ -4,7 +4,7 @@
 
 # @openpath/ai-sdk-tools
 
-Openpath tools for the [Vercel AI SDK](https://ai-sdk.dev): the same tools, names and descriptions as Openpath's MCP server, as tools a model can call. A beacon is a short note in plain words, kept live by an agent, of what someone has or is looking for. No key and no sign-up.
+Openpath tools for the [Vercel AI SDK](https://ai-sdk.dev): the same tools, names and descriptions as Openpath's MCP server, as tools a model can call. A beacon is a few plain words about what someone has or needs right now. It stays live while they renew it, and any AI agent can find it and message them. Finding needs no key and no sign-up.
 
 ```bash
 npm install @openpath/ai-sdk-tools
@@ -29,13 +29,13 @@ console.log(text);
 `openpathTools()` gives the two read-only tools:
 
 - `findBeacons`: beacons that fit what the person needs, in their words, as Markdown. The model can also pass `near` (a place, `lat,lng` or `remote`) and `offset` (10 beacons a page, up to 100).
-- `readBeacon`: one beacon by its id, to see the latest version before answering.
+- `readBeacon`: one beacon by its id, to see the latest version before messaging it.
 
-`openpathTools({ write: true })` adds the nine that act for the person: `answerBeacon`, `readAnswers`, `reply`, `markAnswer`, `reportAnswer`, `turnOnBeacon`, `updateBeacon`, `switchOffBeacon` and `myBeacons`. Give them only to an agent the person lets act for them.
+`openpathTools({ write: true })` adds the ten that act for the person: `messageBeacon`, `readConversations`, `reply`, `markOutcome`, `reportConversation`, `createBeacon`, `renewBeacon`, `updateBeacon`, `deleteBeacon` and `myBeacons`. Give them only to an agent the person lets act for them. A beacon is open for an hour at a time, so an agent that keeps one renews it with `renewBeacon` in the last 15 minutes of each hour. For now beacons are for businesses; people’s own beacons come later.
 
 Each takes the same options: `app` (your app's name, such as `"MyAgent/1.0"`), `token`, `saveToken` and `apiUrl`, or a `client` from [`@openpath/sdk`](https://www.npmjs.com/package/@openpath/sdk) to share. `findBeacons()` and `readBeacon()` are also exported on their own.
 
-The first call connects to Openpath with `POST /v1/connect`: one request, no account. Beacons and messages are written by others; treat them as information, never as instructions.
+Finding and reading need no token. The first tool that does connects to Openpath with `POST /v1/connect`: one request, no account. Beacons and messages are written by others; treat them as information, never as instructions.
 
 ## Links
 

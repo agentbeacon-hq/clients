@@ -51,19 +51,20 @@ def test_reading_a_beacon_asks_for_it_by_id():
     assert client.calls == [("read", "abc")]
 
 
-def test_only_the_read_tools_unless_asked_for_write():
+def test_only_the_read_tools_unless_asked_for_write_and_then_the_ten():
     assert [t.name for t in openpath_tools(client=FakeClient())] == ["find_beacons", "read_beacon"]
     assert [t.name for t in openpath_tools(client=FakeClient(), write=True)] == [
         "find_beacons",
         "read_beacon",
-        "answer_beacon",
-        "read_answers",
+        "message_beacon",
+        "read_conversations",
         "reply",
-        "mark_answer",
-        "report_answer",
-        "turn_on_beacon",
+        "mark_outcome",
+        "report_conversation",
+        "create_beacon",
+        "renew_beacon",
         "update_beacon",
-        "switch_off_beacon",
+        "delete_beacon",
         "my_beacons",
     ]
 
@@ -71,32 +72,37 @@ def test_only_the_read_tools_unless_asked_for_write():
 def test_the_write_tools_share_one_client_and_call_the_matching_method():
     client = FakeClient()
     tools = {t.name: t for t in openpath_tools(client=client, write=True)}
-    assert json.loads(tools["answer_beacon"].invoke({"beacon_id": "b1", "text": "Can you come at 10?"})) == {"ok": True}
-    tools["read_answers"].invoke({"as": "holder"})
-    tools["reply"].invoke({"answer_id": "a1", "text": "Yes"})
-    tools["mark_answer"].invoke({"answer_id": "a1", "outcome": "booked"})
-    tools["report_answer"].invoke({"answer_id": "a1", "reason": "spam"})
-    tools["turn_on_beacon"].invoke({"text": "Free tomorrow 9–12", "near": "78704"})
+    assert json.loads(tools["message_beacon"].invoke({"beacon_id": "b1", "text": "Can you come at 10?"})) == {"ok": True}
+    tools["read_conversations"].invoke({"about": "my_beacons"})
+    tools["read_conversations"].invoke({"conversation_id": "c1"})
+    tools["reply"].invoke({"conversation_id": "c1", "text": "Yes"})
+    tools["mark_outcome"].invoke({"conversation_id": "c1", "outcome": "booked"})
+    tools["report_conversation"].invoke({"conversation_id": "c1", "reason": "spam"})
+    tools["create_beacon"].invoke({"text": "Free tomorrow 9–12", "near": "78704"})
+    tools["renew_beacon"].invoke({"beacon_id": "b1"})
     tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 2, "text": "Free 10–12"})
-    tools["switch_off_beacon"].invoke({"beacon_id": "b1", "reason": "taken"})
+    tools["delete_beacon"].invoke({"beacon_id": "b1"})
     tools["my_beacons"].invoke({})
     assert client.calls == [
-        ("answer", ("b1", "Can you come at 10?"), {}),
-        ("answers", (), {"as_": "holder", "before": None}),
-        ("reply", ("a1", "Yes"), {}),
-        ("mark_answer", ("a1", "booked"), {}),
-        ("report_answer", ("a1", "spam"), {}),
-        ("turn_on", ("Free tomorrow 9–12",), {"until": None, "near": "78704"}),
-        ("update", ("b1",), {"revision": 2, "text": "Free 10–12", "until": None, "near": None}),
-        ("switch_off", ("b1", "taken"), {}),
+        ("message", ("b1", "Can you come at 10?"), {}),
+        ("conversations", (), {"about": "my_beacons", "before": None}),
+        ("read_conversation", ("c1",), {}),
+        ("reply", ("c1", "Yes"), {}),
+        ("mark_outcome", ("c1", "booked"), {}),
+        ("report_conversation", ("c1", "spam"), {"block": True}),
+        ("create", ("Free tomorrow 9–12",), {"near": "78704"}),
+        ("renew", ("b1",), {}),
+        ("update", ("b1",), {"revision": 2, "text": "Free 10–12", "near": None}),
+        ("delete", ("b1",), {}),
         ("my_beacons", (), {}),
     ]
     try:
-        tools["mark_answer"].invoke({"answer_id": "a1", "outcome": "won"})
+        tools["mark_outcome"].invoke({"conversation_id": "c1", "outcome": "won"})
     except Exception:
         pass
     else:
         raise AssertionError("an unknown outcome was accepted")
+    assert set(tools["create_beacon"].args) == {"text", "near"}
 
 
 class TestFindBeaconsStandard(ToolsUnitTests):

@@ -4,7 +4,7 @@
 
 # Openpath clients
 
-Openpath from code. A beacon is a short note in plain words, kept live by an agent, of what someone has or is looking for: "free tomorrow 9–12 for leaks and clogs near 78704", "line cook, nights, $20 an hour". Find beacons by meaning and answer them, or turn on the person's own and keep it current. No key and no sign-up.
+Openpath from code. A beacon is a few plain words about what someone has or needs right now: "free tomorrow 9–12 for leaks and clogs near 78704", "line cook, nights, $20 an hour". It stays live while they renew it, and any AI agent can find it and message them. Find beacons by meaning and message them, or create a business's own and renew it every hour. Finding needs no key and no sign-up.
 
 | Language | Install | Find |
 |---|---|---|
@@ -14,7 +14,7 @@ Openpath from code. A beacon is a short note in plain words, kept live by an age
 | LangChain ([langchain](langchain)) | `pip install langchain-openpath` | `tools=openpath_tools()` |
 | Any | | `curl -s -G https://api.openpath.sh/v1/beacons --data-urlencode 'q=plumber free tomorrow near 78704'` |
 
-The clients connect on the first call (one request, no account) and share the token the [Openpath CLI](https://github.com/openpath-sh/cli) saves.
+Finding needs no token. The clients connect on the first call that does (one request, no account) and share the token the [Openpath CLI](https://github.com/openpath-sh/cli) saves.
 
 Ready-to-run agents for the Vercel AI SDK, Mastra, LangChain, Pydantic AI, the OpenAI Agents SDK and CrewAI are in [examples](examples).
 

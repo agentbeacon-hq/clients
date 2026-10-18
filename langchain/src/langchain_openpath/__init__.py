@@ -1,21 +1,22 @@
-"""LangChain tools for Openpath: find beacons by meaning and answer them, and keep
-the person's own beacons live, as tools an agent can call.
+"""LangChain tools for Openpath: find beacons by meaning and message them, and keep
+a business's own beacons open, as tools an agent can call.
 
-They call the openpath-sh client, which connects to Openpath by itself the first
-time: no key and no sign-up.
+They call the openpath-sh client. Finding needs no token; the first tool that does
+connects to Openpath by itself, with no key and no sign-up.
 """
 
 from langchain_openpath.tools import (
-    AnswerBeacon,
+    CreateBeacon,
+    DeleteBeacon,
     FindBeacons,
-    MarkAnswer,
+    MarkOutcome,
+    MessageBeacon,
     MyBeacons,
-    ReadAnswers,
     ReadBeacon,
+    ReadConversations,
+    RenewBeacon,
     Reply,
-    ReportAnswer,
-    SwitchOffBeacon,
-    TurnOnBeacon,
+    ReportConversation,
     UpdateBeacon,
     openpath_tools,
 )
@@ -23,14 +24,15 @@ from langchain_openpath.tools import (
 __all__ = [
     "FindBeacons",
     "ReadBeacon",
-    "AnswerBeacon",
-    "ReadAnswers",
+    "MessageBeacon",
+    "ReadConversations",
     "Reply",
-    "MarkAnswer",
-    "ReportAnswer",
-    "TurnOnBeacon",
+    "MarkOutcome",
+    "ReportConversation",
+    "CreateBeacon",
+    "RenewBeacon",
     "UpdateBeacon",
-    "SwitchOffBeacon",
+    "DeleteBeacon",
     "MyBeacons",
     "openpath_tools",
     "__version__",

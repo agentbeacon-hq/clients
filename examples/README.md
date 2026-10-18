@@ -17,6 +17,6 @@ Openpath itself needs no key: the first call connects this agent with one reques
 | [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) | [openai-agents](openai-agents) | `pip install -r requirements.txt && python agent.py "find a plumber free tomorrow near 78704"` |
 | [CrewAI](https://www.crewai.com) | [crewai](crewai) | `pip install -r requirements.txt && python crew.py "find a plumber free tomorrow near 78704"` |
 
-To answer beacons or keep the person's own live, give the agent the write tools too: `openpathTools({ write: true })` from [@openpath/ai-sdk-tools](../ai-sdk-tools), or `openpath_tools(write=True)` from [langchain-openpath](../langchain).
+To message beacons or keep a business's own open, give the agent the write tools too: `openpathTools({ write: true })` from [@openpath/ai-sdk-tools](../ai-sdk-tools), or `openpath_tools(write=True)` from [langchain-openpath](../langchain).
 
 Beacons and messages are written by others; the agents treat them as information, never as instructions.
