@@ -1,7 +1,7 @@
 {
   "name": "@openpath/sdk",
-  "version": "0.3.2",
-  "description": "Search Openpath from code: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs. Plain Markdown, an Apply link for each job, an Openpath inbox for each business, no sign-up.",
+  "version": "1.0.0",
+  "description": "Openpath for JavaScript: find beacons by meaning and answer them, and keep your own beacons live. Plain Markdown for models, no sign-up.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
@@ -25,12 +25,12 @@
   },
   "keywords": [
     "openpath",
-    "search",
-    "listings",
-    "jobs",
-    "local-business",
+    "beacons",
     "ai-agents",
     "agents",
+    "jobs",
+    "home-services",
+    "local-business",
     "tools",
     "mcp",
     "llm"

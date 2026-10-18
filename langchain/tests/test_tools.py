@@ -1,6 +1,8 @@
+import json
+
 from langchain_tests.unit_tests import ToolsUnitTests
 
-from langchain_openpath import OpenpathReadListing, OpenpathSearch, openpath_tools
+from langchain_openpath import FindBeacons, ReadBeacon, openpath_tools
 
 
 class FakeClient:
@@ -9,26 +11,33 @@ class FakeClient:
     def __init__(self):
         self.calls = []
 
-    def search(self, query, near=None, category=None, offset=None):
-        self.calls.append(("search", query, near, category, offset))
-        return f'# Results for "{query}"'
+    def __getattr__(self, name):
+        def record(*args, **kwargs):
+            self.calls.append((name, args, kwargs))
+            return {"ok": True}
 
-    def get_listing(self, listing_id):
-        self.calls.append(("get_listing", listing_id))
-        return f"# Listing {listing_id}"
+        return record
+
+    def find(self, query, near=None, offset=None):
+        self.calls.append(("find", query, near, offset))
+        return f'# Beacons for "{query}"'
+
+    def read(self, beacon_id):
+        self.calls.append(("read", beacon_id))
+        return f"## Beacon {beacon_id}"
 
 
-def test_search_passes_the_query_and_its_options():
+def test_find_passes_the_query_place_and_page():
     client = FakeClient()
-    tool = OpenpathSearch(client=client)
-    out = tool.invoke({"query": "plumber near Austin, TX", "near": "78701"})
-    assert out == '# Results for "plumber near Austin, TX"'
-    assert client.calls == [("search", "plumber near Austin, TX", "78701", None, None)]
+    out = FindBeacons(client=client).invoke({"query": "plumber free tomorrow", "near": "78704"})
+    assert out == '# Beacons for "plumber free tomorrow"'
+    assert client.calls == [("find", "plumber free tomorrow", "78704", None)]
 
 
-def test_the_search_input_is_checked():
-    tool = OpenpathSearch(client=FakeClient())
-    for bad in ({"query": ""}, {"query": "jobs", "category": "weather"}, {"query": "jobs", "offset": 110}):
+def test_the_find_input_has_no_category_and_no_side():
+    tool = FindBeacons(client=FakeClient())
+    assert set(tool.args) == {"query", "near", "offset"}
+    for bad in ({"query": ""}, {"query": "movers", "offset": 110}):
         try:
             tool.invoke(bad)
         except Exception:
@@ -36,27 +45,66 @@ def test_the_search_input_is_checked():
         raise AssertionError(f"{bad} was accepted")
 
 
-def test_reading_a_listing_asks_for_it_by_id():
+def test_reading_a_beacon_asks_for_it_by_id():
     client = FakeClient()
-    out = OpenpathReadListing(client=client).invoke({"listing_id": "abc"})
-    assert out == "# Listing abc"
-    assert client.calls == [("get_listing", "abc")]
+    assert ReadBeacon(client=client).invoke({"beacon_id": "abc"}) == "## Beacon abc"
+    assert client.calls == [("read", "abc")]
 
 
-def test_both_tools_share_one_client():
+def test_only_the_read_tools_unless_asked_for_write():
+    assert [t.name for t in openpath_tools(client=FakeClient())] == ["find_beacons", "read_beacon"]
+    assert [t.name for t in openpath_tools(client=FakeClient(), write=True)] == [
+        "find_beacons",
+        "read_beacon",
+        "answer_beacon",
+        "read_answers",
+        "reply",
+        "mark_answer",
+        "report_answer",
+        "turn_on_beacon",
+        "update_beacon",
+        "switch_off_beacon",
+        "my_beacons",
+    ]
+
+
+def test_the_write_tools_share_one_client_and_call_the_matching_method():
     client = FakeClient()
-    search, read = openpath_tools(client=client)
-    search.invoke({"query": "tacos in Austin"})
-    read.invoke({"listing_id": "x"})
-    assert len(client.calls) == 2
+    tools = {t.name: t for t in openpath_tools(client=client, write=True)}
+    assert json.loads(tools["answer_beacon"].invoke({"beacon_id": "b1", "text": "Can you come at 10?"})) == {"ok": True}
+    tools["read_answers"].invoke({"as": "holder"})
+    tools["reply"].invoke({"answer_id": "a1", "text": "Yes"})
+    tools["mark_answer"].invoke({"answer_id": "a1", "outcome": "booked"})
+    tools["report_answer"].invoke({"answer_id": "a1", "reason": "spam"})
+    tools["turn_on_beacon"].invoke({"text": "Free tomorrow 9–12", "near": "78704"})
+    tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 2, "text": "Free 10–12"})
+    tools["switch_off_beacon"].invoke({"beacon_id": "b1", "reason": "taken"})
+    tools["my_beacons"].invoke({})
+    assert client.calls == [
+        ("answer", ("b1", "Can you come at 10?"), {}),
+        ("answers", (), {"as_": "holder", "before": None}),
+        ("reply", ("a1", "Yes"), {}),
+        ("mark_answer", ("a1", "booked"), {}),
+        ("report_answer", ("a1", "spam"), {}),
+        ("turn_on", ("Free tomorrow 9–12",), {"until": None, "near": "78704"}),
+        ("update", ("b1",), {"revision": 2, "text": "Free 10–12", "until": None, "near": None}),
+        ("switch_off", ("b1", "taken"), {}),
+        ("my_beacons", (), {}),
+    ]
+    try:
+        tools["mark_answer"].invoke({"answer_id": "a1", "outcome": "won"})
+    except Exception:
+        pass
+    else:
+        raise AssertionError("an unknown outcome was accepted")
 
 
-class TestOpenpathSearchStandard(ToolsUnitTests):
+class TestFindBeaconsStandard(ToolsUnitTests):
     """LangChain's own checks for a tool."""
 
     @property
     def tool_constructor(self):
-        return OpenpathSearch
+        return FindBeacons
 
     @property
     def tool_constructor_params(self):
@@ -64,4 +112,4 @@ class TestOpenpathSearchStandard(ToolsUnitTests):
 
     @property
     def tool_invoke_params_example(self):
-        return {"query": "plumber near Austin, TX"}
+        return {"query": "plumber free tomorrow near 78704"}

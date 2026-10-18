@@ -1,2 +1,2 @@
 pydantic-ai>=2.55.0
-openpath-sh>=0.3.0
+openpath-sh>=1.0.0

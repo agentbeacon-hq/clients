@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.79",
-    "@openpath/sdk": "^0.3.0",
+    "@openpath/sdk": "^1.0.0",
     "ai": "^7.0.138",
     "zod": "^4.6.7"
   },

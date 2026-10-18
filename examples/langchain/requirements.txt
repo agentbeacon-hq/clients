@@ -1,3 +1,3 @@
 langchain>=1.4.5
 langchain-anthropic>=1.7.6
-openpath-sh>=0.3.0
+openpath-sh>=1.0.0

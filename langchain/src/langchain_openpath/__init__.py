@@ -1,10 +1,38 @@
-"""LangChain tools for Openpath: live listings, as tools an agent can call.
+"""LangChain tools for Openpath: find beacons by meaning and answer them, and keep
+the person's own beacons live, as tools an agent can call.
 
-Each tool returns plain Markdown from the openpath-sh client, which connects to
-Openpath by itself the first time: no key and no sign-up.
+They call the openpath-sh client, which connects to Openpath by itself the first
+time: no key and no sign-up.
 """
 
-from langchain_openpath.tools import OpenpathReadListing, OpenpathSearch, openpath_tools
+from langchain_openpath.tools import (
+    AnswerBeacon,
+    FindBeacons,
+    MarkAnswer,
+    MyBeacons,
+    ReadAnswers,
+    ReadBeacon,
+    Reply,
+    ReportAnswer,
+    SwitchOffBeacon,
+    TurnOnBeacon,
+    UpdateBeacon,
+    openpath_tools,
+)
 
-__all__ = ["OpenpathSearch", "OpenpathReadListing", "openpath_tools", "__version__"]
-__version__ = "0.2.2"
+__all__ = [
+    "FindBeacons",
+    "ReadBeacon",
+    "AnswerBeacon",
+    "ReadAnswers",
+    "Reply",
+    "MarkAnswer",
+    "ReportAnswer",
+    "TurnOnBeacon",
+    "UpdateBeacon",
+    "SwitchOffBeacon",
+    "MyBeacons",
+    "openpath_tools",
+    "__version__",
+]
+__version__ = "1.0.0"

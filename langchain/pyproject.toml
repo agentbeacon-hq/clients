@@ -4,24 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "langchain-openpath"
-version = "0.2.2"
-description = "LangChain tools for Openpath: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs, for your agent. No key and no sign-up."
+version = "1.0.0"
+description = "LangChain tools for Openpath: find beacons by meaning and read them, and with write on, answer them and keep the person's own beacons live. No key and no sign-up."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Openpath", email = "contact@openpath.sh" }]
-keywords = ["langchain", "openpath", "tools", "listings", "jobs", "local-business", "search", "agents", "llm"]
+keywords = ["langchain", "openpath", "tools", "beacons", "agents", "jobs", "home-services", "llm"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
   "Topic :: Internet :: WWW/HTTP",
 ]
-dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=0.3.2"]
+dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=1.0.0"]
 
 [project.urls]
 Homepage = "https://openpath.sh"
-Documentation = "https://openpath.sh/docs/jobs"
+Documentation = "https://openpath.sh/docs"
 Source = "https://github.com/openpath-sh/clients/tree/main/langchain"
 
 [tool.setuptools.packages.find]

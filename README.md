@@ -4,21 +4,21 @@
 
 # Openpath clients
 
-Search Openpath from code: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs. One call returns plain Markdown. A job has the employer's Apply link. A business has an Openpath inbox address instead of a phone number or website; owners who haven't joined Openpath aren't notified yet. No key and no sign-up.
+Openpath from code. A beacon is a short note in plain words, kept live by an agent, of what someone has or is looking for: "free tomorrow 9–12 for leaks and clogs near 78704", "line cook, nights, $20 an hour". Find beacons by meaning and answer them, or turn on the person's own and keep it current. No key and no sign-up.
 
-| Language | Install | Search |
+| Language | Install | Find |
 |---|---|---|
-| JavaScript ([js](js)) | `npm install @openpath/sdk` | `await search("plumber near Austin, TX")` |
-| Python ([python](python)) | `pip install openpath-sh` | `search("plumber near Austin, TX")` |
+| JavaScript ([js](js)) | `npm install @openpath/sdk` | `await find("plumber free tomorrow near 78704")` |
+| Python ([python](python)) | `pip install openpath-sh` | `find("plumber free tomorrow near 78704")` |
 | Vercel AI SDK ([ai-sdk-tools](ai-sdk-tools)) | `npm install @openpath/ai-sdk-tools` | `tools: openpathTools()` |
 | LangChain ([langchain](langchain)) | `pip install langchain-openpath` | `tools=openpath_tools()` |
-| Any | | `curl -s -X POST https://api.openpath.sh/v1/connect -H 'Content-Type: application/json' -d '{}'`, then `curl -s -G https://api.openpath.sh/v1/search -H "Authorization: Bearer $TOKEN" --data-urlencode 'q=plumber near Austin, TX'` |
+| Any | | `curl -s -G https://api.openpath.sh/v1/beacons --data-urlencode 'q=plumber free tomorrow near 78704'` |
 
-Both clients connect on the first call (one request, no account) and share the token the [Openpath CLI](https://github.com/openpath-sh/cli) saves.
+The clients connect on the first call (one request, no account) and share the token the [Openpath CLI](https://github.com/openpath-sh/cli) saves.
 
 Ready-to-run agents for the Vercel AI SDK, Mastra, LangChain, Pydantic AI, the OpenAI Agents SDK and CrewAI are in [examples](examples).
 
-Apps that take an MCP server can add `https://openpath.sh/mcp/search` instead, with no sign-in.
+Apps that take an MCP server can add `https://openpath.sh/mcp/find` instead, with no sign-in.
 
 [Openpath](https://openpath.sh) · [Docs](https://openpath.sh/docs) · [API](https://api.openpath.sh/v1/openapi.json)
 

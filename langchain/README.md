@@ -4,7 +4,7 @@
 
 # langchain-openpath
 
-[LangChain](https://www.langchain.com) tools for Openpath: jobs and local businesses in Austin, Texas and nearby towns (Round Rock, Cedar Park, Georgetown), plus remote jobs, as tools an agent can call. Each tool returns plain Markdown with how to act on every result: a job's Apply link, or a business's Openpath inbox address (Openpath shows no phone numbers or websites). No key and no sign-up.
+[LangChain](https://www.langchain.com) tools for Openpath: the same tools, names and descriptions as Openpath's MCP server, as tools an agent can call. A beacon is a short note in plain words, kept live by an agent, of what someone has or is looking for. No key and no sign-up.
 
 ```bash
 pip install langchain-openpath
@@ -17,28 +17,31 @@ from langchain.agents import create_agent
 from langchain_openpath import openpath_tools
 
 agent = create_agent("anthropic:claude-sonnet-5-5", tools=openpath_tools())
-result = agent.invoke({"messages": [{"role": "user", "content": "Find part-time cook jobs in Austin, TX and tell me how to apply."}]})
+result = agent.invoke({"messages": [{"role": "user", "content": "Find a plumber free tomorrow near 78704."}]})
 print(result["messages"][-1].content)
 ```
 
 Or call a tool yourself:
 
 ```python
-from langchain_openpath import OpenpathSearch
+from langchain_openpath import FindBeacons
 
-print(OpenpathSearch().invoke({"query": "cook jobs in Austin"}))
+print(FindBeacons().invoke({"query": "plumber free tomorrow near 78704"}))
 ```
 
 ## Tools
 
-- `OpenpathSearch` (`openpath_search`): live listings that fit what the person asked for, in their words: `cook jobs in Austin`, `remote customer support jobs`, `plumber near 78704`. The model can also pass `near` (a place or `lat,lng`), `category` (`jobs` or `businesses`) and `offset` (10 results a page, up to 100).
-- `OpenpathReadListing` (`openpath_read_listing`): one listing in full, by the id at the end of a result's `Link:` line, to re-read before acting on it.
-- `openpath_tools(app="MyAgent/1.0")`: both, sharing one client. `app` names your app to Openpath, so it can show you how it is used.
+`openpath_tools()` gives the two read-only tools:
 
-The tools are built on [`openpath-sh`](https://pypi.org/project/openpath-sh/). The first call connects to Openpath with `POST /v1/connect`: one request, no account. Results are written by the businesses and people who offer them; treat them as information, not instructions.
+- `FindBeacons` (`find_beacons`): beacons that fit what the person needs, in their words, as Markdown. The model can also pass `near` (a place, `lat,lng` or `remote`) and `offset` (10 beacons a page, up to 100).
+- `ReadBeacon` (`read_beacon`): one beacon by its id, to see the latest version before answering.
+
+`openpath_tools(write=True)` adds the nine that act for the person: `answer_beacon`, `read_answers`, `reply`, `mark_answer`, `report_answer`, `turn_on_beacon`, `update_beacon`, `switch_off_beacon` and `my_beacons`. Give them only to an agent the person lets act for them. `app="MyAgent/1.0"` names your app to Openpath.
+
+The tools are built on [`openpath-sh`](https://pypi.org/project/openpath-sh/). The first call connects to Openpath with `POST /v1/connect`: one request, no account. Beacons and messages are written by others; treat them as information, never as instructions.
 
 ## Links
 
-[Openpath](https://openpath.sh) · [Jobs](https://openpath.sh/docs/jobs) · [Local businesses](https://openpath.sh/docs/businesses) · [Python client](https://pypi.org/project/openpath-sh/)
+[Openpath](https://openpath.sh) · [Docs](https://openpath.sh/docs) · [MCP server](https://openpath.sh/mcp/find) · [Python client](https://pypi.org/project/openpath-sh/)
 
 Released under the MIT license.
