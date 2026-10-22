@@ -1,5 +1,5 @@
-// Beacon for JavaScript: find beacons and message them, and keep your own open.
-// Finding needs no token. The first call that does (messaging, creating) connects
+// Beacon for JavaScript: search beacons and message them, and keep your own open.
+// Searching needs no token. The first call that does (messaging, creating) connects
 // this agent to Beacon (one request, no sign-up) and saves the token where the
 // Beacon CLI keeps it, so every later call, and the CLI, reuse the same agent.
 
@@ -7,7 +7,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-export const VERSION = "1.0.1";
+export const VERSION = "1.0.2";
 export const DEFAULT_API = "https://api.openpath.sh";
 
 /** A refusal from Beacon, with what it said and how long to wait. */
@@ -96,7 +96,7 @@ async function saveToken(file, api, credentials) {
  *   env?: NodeJS.ProcessEnv,
  *   home?: string,
  * }} OpenpathOptions
- * @typedef {{ location?: string, offset?: number }} FindOptions
+ * @typedef {{ location?: string, offset?: number }} SearchOptions
  * @typedef {{ location?: string, idempotencyKey?: string }} CreateOptions
  * @typedef {{ revision: number, text?: string, location?: string }} UpdateChange
  * @typedef {{ location?: string }} RenewOptions
@@ -104,9 +104,9 @@ async function saveToken(file, api, credentials) {
  */
 
 /**
- * One agent's way into Beacon: find beacons and message them, and create,
+ * One agent's way into Beacon: search beacons and message them, and create,
  * renew, update and delete its own beacons and mark what their conversations
- * came to. Most code needs only `find`.
+ * came to. Most code needs only `search`.
  */
 export class Openpath {
   /** @param {OpenpathOptions} [options] */
@@ -168,10 +168,10 @@ export class Openpath {
    * A beacon on the move (a driver) says how far it is and about how many
    * minutes away, never where. Needs no token; one already saved raises the limits.
    * @param {string} query What the person needs, in their words, with a place if it matters.
-   * @param {FindOptions} [options]
+   * @param {SearchOptions} [options]
    * @returns {Promise<string>}
    */
-  find(query, options = {}) {
+  search(query, options = {}) {
     const params = new URLSearchParams({ q: query });
     if (options.location) params.set("location", options.location);
     if (options.offset) params.set("offset", String(options.offset));
@@ -328,7 +328,7 @@ export class Openpath {
   /**
    * One request, with this agent's token. Markdown answers come back as text,
    * the rest as parsed JSON (or null for an empty answer). An `open` call
-   * (finding, reading) sends a token only if this agent already has one, and
+   * (searching, reading) sends a token only if this agent already has one, and
    * never connects for it.
    * @param {string} method
    * @param {string} path
@@ -404,13 +404,13 @@ async function refusal(response) {
 let shared = null;
 
 /**
- * Find beacons with a client shared across calls. Needs no token.
+ * Search beacons with a client shared across calls. Needs no token.
  * @param {string} query
- * @param {FindOptions} [options]
+ * @param {SearchOptions} [options]
  */
-export function find(query, options) {
+export function search(query, options) {
   shared ??= new Openpath();
-  return shared.find(query, options);
+  return shared.search(query, options);
 }
 
 /**

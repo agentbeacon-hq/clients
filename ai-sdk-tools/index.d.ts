@@ -6,7 +6,7 @@ export interface OpenpathToolOptions extends Pick<OpenpathOptions, "app" | "toke
   client?: Openpath;
 }
 
-export interface FindBeaconsInput {
+export interface SearchBeaconsInput {
   /** What the person needs, in their words, with a place if it matters. */
   query: string;
   /** A place ("78704", "East Austin"), "lat,lng" or "remote". */
@@ -16,7 +16,7 @@ export interface FindBeaconsInput {
 }
 
 export interface ReadTools {
-  findBeacons: Tool<FindBeaconsInput, string>;
+  searchBeacons: Tool<SearchBeaconsInput, string>;
   readBeacon: Tool<{ beaconId: string }, string>;
 }
 
@@ -35,10 +35,10 @@ export interface WriteTools {
   myBeacons: Tool<Record<string, never>, unknown>;
 }
 
-/** Find beacons by meaning. Returns plain Markdown. */
-export declare function findBeacons(options?: OpenpathToolOptions): ReadTools["findBeacons"];
+/** Search beacons by meaning. Returns plain Markdown. */
+export declare function searchBeacons(options?: OpenpathToolOptions): ReadTools["searchBeacons"];
 /** Read one beacon by its id. Returns plain Markdown. */
 export declare function readBeacon(options?: OpenpathToolOptions): ReadTools["readBeacon"];
-/** findBeacons and readBeacon, sharing one client; with `write: true`, also the ten that act for the person. */
+/** searchBeacons and readBeacon, sharing one client; with `write: true`, also the ten that act for the person. */
 export declare function openpathTools(options: OpenpathToolOptions & { write: true }): ReadTools & WriteTools;
 export declare function openpathTools(options?: OpenpathToolOptions & { write?: false }): ReadTools;

@@ -24,7 +24,7 @@ BEACON = {
 
 class FakeApi:
     """A stand-in for the Beacon API that records what it was asked and answers like the
-    beacon contract. Finding and reading need no token; a token that is sent must be valid."""
+    beacon contract. Searching and reading need no token; a token that is sent must be valid."""
 
     def __init__(self, tokens=("agt_first", "agt_second"), refuse=None):
         self.tokens = list(tokens)
@@ -73,7 +73,7 @@ class FindingTest(ClientTest):
     def test_finds_and_reads_with_no_token_and_without_connecting(self):
         api = FakeApi()
         home, op = self.client(api)
-        self.assertEqual(op.find("plumber free tomorrow", location="78704", offset=10), PAGE)
+        self.assertEqual(op.search("plumber free tomorrow", location="78704", offset=10), PAGE)
         self.assertEqual(op.read("b1"), "## Free tomorrow\n")
         self.assertEqual(
             [f"{m} {p}" for m, p, _, _ in api.calls],
@@ -87,26 +87,26 @@ class FindingTest(ClientTest):
         api = FakeApi()
         home, op = self.client(api)
         op.my_beacons()
-        Openpath(send=api, env={}, home=home).find("movers")
+        Openpath(send=api, env={}, home=home).search("movers")
         self.assertEqual(api.calls[-1][2]["Authorization"], "Bearer agt_first")
         _, stale = self.client(api, token="agt_revoked")
-        self.assertEqual(stale.find("movers"), PAGE)
+        self.assertEqual(stale.search("movers"), PAGE)
         self.assertNotIn("Authorization", api.calls[-1][2])
         self.assertEqual(api.connects(), 1)
 
     def test_uses_openpath_token_and_ignores_the_old_name(self):
         api = FakeApi()
-        Openpath(send=api, env={"OPENPATH_TOKEN": "agt_env"}, home=Path(tempfile.mkdtemp())).find("movers")
+        Openpath(send=api, env={"OPENPATH_TOKEN": "agt_env"}, home=Path(tempfile.mkdtemp())).search("movers")
         self.assertEqual(api.calls[0][2]["Authorization"], "Bearer agt_env")
         old = FakeApi()
-        Openpath(send=old, env={"OPENPATH_AGENT_TOKEN": "agt_env"}, home=Path(tempfile.mkdtemp())).find("movers")
+        Openpath(send=old, env={"OPENPATH_AGENT_TOKEN": "agt_env"}, home=Path(tempfile.mkdtemp())).search("movers")
         self.assertNotIn("Authorization", old.calls[0][2])
 
     def test_names_the_app_first_in_the_user_agent(self):
         api = FakeApi()
         _, op = self.client(api, app="JobFinder/1.0")
-        op.find("line cook jobs in Austin")
-        self.assertRegex(api.calls[0][2]["User-Agent"], r"^JobFinder/1\.0 openpath-python/1\.0\.1")
+        op.search("line cook jobs in Austin")
+        self.assertRegex(api.calls[0][2]["User-Agent"], r"^JobFinder/1\.0 openpath-python/1\.0\.2")
 
 
 class ConnectingTest(ClientTest):

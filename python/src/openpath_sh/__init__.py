@@ -1,12 +1,12 @@
-"""Beacon for Python: find beacons by meaning, message them, and keep your own open.
+"""Beacon for Python: search beacons by meaning, message them, and keep your own open.
 
-Finding needs no token. The first call that does (messaging, creating) connects
+Searching needs no token. The first call that does (messaging, creating) connects
 this agent to Beacon (one request, no sign-up) and saves the token where the
 Beacon CLI keeps it, so every later call, and the CLI, reuse the same agent.
 
-    from openpath_sh import find
+    from openpath_sh import search
 
-    print(find("plumber free tomorrow near 78704"))
+    print(search("plumber free tomorrow near 78704"))
 """
 
 from __future__ import annotations
@@ -24,9 +24,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
 
-__all__ = ["Openpath", "OpenpathError", "find", "read", "VERSION", "DEFAULT_API"]
+__all__ = ["Openpath", "OpenpathError", "search", "read", "VERSION", "DEFAULT_API"]
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 DEFAULT_API = "https://api.openpath.sh"
 OUTCOMES = ("accepted", "booked", "hired", "declined", "spam")
 
@@ -134,9 +134,9 @@ def _refusal(status: int, headers: dict, text: str) -> OpenpathError:
 
 
 class Openpath:
-    """One agent's way into Beacon: find beacons and message them, and create, renew,
+    """One agent's way into Beacon: search beacons and message them, and create, renew,
     update and delete its own beacons and mark what their conversations came to. Most
-    code needs only `find`."""
+    code needs only `search`."""
 
     def __init__(
         self,
@@ -197,7 +197,7 @@ class Openpath:
             self.token = created["token"]
             return self.token
 
-    def find(self, query: str, location: str | None = None, offset: int | None = None) -> str:
+    def search(self, query: str, location: str | None = None, offset: int | None = None) -> str:
         """Beacons that fit what the person needs, found by meaning, as plain Markdown:
         each beacon's words, when it was renewed or updated, until when it's open, and how
         to message it or apply. A beacon on the move (a driver) says how far it is and about
@@ -315,7 +315,7 @@ class Openpath:
         open: bool = False,
     ):
         """One request with this agent's token. Markdown answers come back as text, the
-        rest as parsed JSON (or None for an empty answer). An `open` call (finding,
+        rest as parsed JSON (or None for an empty answer). An `open` call (searching,
         reading) sends a token only if this agent already has one, and never connects
         for it."""
         data = None if body is None else json.dumps(body).encode("utf-8")
@@ -364,9 +364,9 @@ def _client() -> Openpath:
     return _shared
 
 
-def find(query: str, location: str | None = None, offset: int | None = None) -> str:
-    """Find beacons with a client shared across calls. Needs no token."""
-    return _client().find(query, location=location, offset=offset)
+def search(query: str, location: str | None = None, offset: int | None = None) -> str:
+    """Search beacons with a client shared across calls. Needs no token."""
+    return _client().search(query, location=location, offset=offset)
 
 
 def read(beacon_id: str) -> str:

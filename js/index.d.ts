@@ -26,7 +26,7 @@ export interface OpenpathOptions {
   home?: string;
 }
 
-export interface FindOptions {
+export interface SearchOptions {
   /** A place ("78704", "East Austin"), "lat,lng" or "remote". Overrides a place in the query. */
   location?: string;
   /** Where the page starts: 10 beacons a page, up to 100. A page's last line gives it. */
@@ -125,9 +125,9 @@ export interface Conversation {
 }
 
 /**
- * One agent's way into Beacon: find beacons and message them, and create,
+ * One agent's way into Beacon: search beacons and message them, and create,
  * renew, update and delete its own beacons and mark what their conversations
- * came to. Most code needs only `find`.
+ * came to. Most code needs only `search`.
  */
 export declare class Openpath {
   constructor(options?: OpenpathOptions);
@@ -136,7 +136,7 @@ export declare class Openpath {
   /** The saved token, or a new one from POST /v1/connect: one call, no account or sign-up. Never print it. */
   connect(): Promise<string>;
   /** Beacons that fit what the person needs, found by meaning, as plain Markdown. Needs no token. */
-  find(query: string, options?: FindOptions): Promise<string>;
+  search(query: string, options?: SearchOptions): Promise<string>;
   /** One beacon, as Markdown, by the id at the end of its Link line. Needs no token. */
   read(id: string): Promise<string>;
   /**
@@ -204,7 +204,7 @@ export declare class Openpath {
   ): Promise<any>;
 }
 
-/** Find beacons with a client shared across calls. Needs no token. */
-export declare function find(query: string, options?: FindOptions): Promise<string>;
+/** Search beacons with a client shared across calls. Needs no token. */
+export declare function search(query: string, options?: SearchOptions): Promise<string>;
 /** Read one beacon with a client shared across calls. Needs no token. */
 export declare function read(id: string): Promise<string>;

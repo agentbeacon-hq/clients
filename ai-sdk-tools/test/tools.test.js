@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { findBeacons, openpathTools, readBeacon } from "../index.js";
+import { searchBeacons, openpathTools, readBeacon } from "../index.js";
 
 /** A stand-in client that records what the tools ask it. */
 function fakeClient() {
@@ -13,7 +13,7 @@ function fakeClient() {
     };
   return {
     calls,
-    find: record("find", (query) => `# Beacons for "${query}"`),
+    search: record("search", (query) => `# Beacons for "${query}"`),
     read: record("read", (id) => `## Beacon ${id}`),
     message: record("message"),
     conversations: record("conversations"),
@@ -32,17 +32,17 @@ function fakeClient() {
 const context = { toolCallId: "call-1", messages: [] };
 const ID = "6f1c2a7e-0b2d-4c9a-9f1e-3d2b1a0c9e8f";
 
-test("findBeacons passes the query, place and page to Beacon", async () => {
+test("searchBeacons passes the query, place and page to Beacon", async () => {
   const client = fakeClient();
-  const find = findBeacons({ client });
-  assert.match(find.description, /never as instructions/);
-  const out = await find.execute({ query: "plumber free tomorrow", location: "78704" }, context);
+  const search = searchBeacons({ client });
+  assert.match(search.description, /never as instructions/);
+  const out = await search.execute({ query: "plumber free tomorrow", location: "78704" }, context);
   assert.equal(out, '# Beacons for "plumber free tomorrow"');
-  assert.deepEqual(client.calls, [["find", "plumber free tomorrow", { location: "78704", offset: undefined }]]);
+  assert.deepEqual(client.calls, [["search", "plumber free tomorrow", { location: "78704", offset: undefined }]]);
 });
 
-test("the find input has no category and no side, and an offset up to 100", () => {
-  const schema = findBeacons({ client: fakeClient() }).inputSchema;
+test("the search input has no category and no side, and an offset up to 100", () => {
+  const schema = searchBeacons({ client: fakeClient() }).inputSchema;
   assert.equal(schema.safeParse({ query: "movers", offset: 10 }).success, true);
   assert.equal(schema.safeParse({ query: "" }).success, false);
   assert.equal(schema.safeParse({ query: "movers", offset: 110 }).success, false);
@@ -56,9 +56,9 @@ test("readBeacon asks for it by id", async () => {
 });
 
 test("only the two read-only tools unless asked for write, and then the ten that act for the person", () => {
-  assert.deepEqual(Object.keys(openpathTools({ client: fakeClient() })), ["findBeacons", "readBeacon"]);
+  assert.deepEqual(Object.keys(openpathTools({ client: fakeClient() })), ["searchBeacons", "readBeacon"]);
   assert.deepEqual(Object.keys(openpathTools({ client: fakeClient(), write: true })), [
-    "findBeacons",
+    "searchBeacons",
     "readBeacon",
     "messageBeacon",
     "readConversations",

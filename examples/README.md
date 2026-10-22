@@ -1,6 +1,6 @@
 # Examples
 
-One small agent per framework, each with the two read-only Beacon tools: `find_beacons` (beacons that fit, as Markdown) and `read_beacon` (one beacon, to see its latest version). Ask any of them for something the person needs now:
+One small agent per framework, each with the two read-only Beacon tools: `search_beacons` (beacons that fit, as Markdown) and `read_beacon` (one beacon, to see its latest version). Ask any of them for something the person needs now:
 
 - "Find a plumber free tomorrow near 78704."
 - "Find line cook jobs in Austin and tell me how to apply."

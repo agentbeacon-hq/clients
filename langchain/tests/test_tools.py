@@ -2,7 +2,7 @@ import json
 
 from langchain_tests.unit_tests import ToolsUnitTests
 
-from langchain_openpath import FindBeacons, ReadBeacon, openpath_tools
+from langchain_openpath import SearchBeacons, ReadBeacon, openpath_tools
 
 
 class FakeClient:
@@ -18,8 +18,8 @@ class FakeClient:
 
         return record
 
-    def find(self, query, location=None, offset=None):
-        self.calls.append(("find", query, location, offset))
+    def search(self, query, location=None, offset=None):
+        self.calls.append(("search", query, location, offset))
         return f'# Beacons for "{query}"'
 
     def read(self, beacon_id):
@@ -29,13 +29,13 @@ class FakeClient:
 
 def test_find_passes_the_query_place_and_page():
     client = FakeClient()
-    out = FindBeacons(client=client).invoke({"query": "plumber free tomorrow", "location": "78704"})
+    out = SearchBeacons(client=client).invoke({"query": "plumber free tomorrow", "location": "78704"})
     assert out == '# Beacons for "plumber free tomorrow"'
-    assert client.calls == [("find", "plumber free tomorrow", "78704", None)]
+    assert client.calls == [("search", "plumber free tomorrow", "78704", None)]
 
 
 def test_the_find_input_has_no_category_and_no_side():
-    tool = FindBeacons(client=FakeClient())
+    tool = SearchBeacons(client=FakeClient())
     assert set(tool.args) == {"query", "location", "offset"}
     for bad in ({"query": ""}, {"query": "movers", "offset": 110}):
         try:
@@ -52,9 +52,9 @@ def test_reading_a_beacon_asks_for_it_by_id():
 
 
 def test_only_the_read_tools_unless_asked_for_write_and_then_the_ten():
-    assert [t.name for t in openpath_tools(client=FakeClient())] == ["find_beacons", "read_beacon"]
+    assert [t.name for t in openpath_tools(client=FakeClient())] == ["search_beacons", "read_beacon"]
     assert [t.name for t in openpath_tools(client=FakeClient(), write=True)] == [
-        "find_beacons",
+        "search_beacons",
         "read_beacon",
         "message_beacon",
         "read_conversations",
@@ -111,12 +111,12 @@ def test_the_write_tools_share_one_client_and_call_the_matching_method():
     assert set(tools["renew_beacon"].args) == {"beacon_id", "location"}
 
 
-class TestFindBeaconsStandard(ToolsUnitTests):
+class TestSearchBeaconsStandard(ToolsUnitTests):
     """LangChain's own checks for a tool."""
 
     @property
     def tool_constructor(self):
-        return FindBeacons
+        return SearchBeacons
 
     @property
     def tool_constructor_params(self):

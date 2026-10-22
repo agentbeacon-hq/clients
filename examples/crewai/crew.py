@@ -7,12 +7,12 @@ import sys
 
 from crewai import LLM, Agent, Crew, Task
 from crewai.tools import tool
-from openpath_sh import find, read
+from openpath_sh import search, read
 
 
-@tool("Find beacons")
-def find_beacons(query: str) -> str:
-    """Find beacons on Beacon: each a few plain words about what someone has or needs right
+@tool("Search beacons")
+def search_beacons(query: str) -> str:
+    """Search beacons on Beacon: each a few plain words about what someone has or needs right
     now, live while they renew it. Describe what the person needs in their own words, with a
     place if it matters ("plumber free tomorrow near 78704", "line cook jobs in Austin").
     Results mix offers and requests. Read each beacon's words to see which it is and whether it
@@ -23,7 +23,7 @@ def find_beacons(query: str) -> str:
         query: What the person needs, in their own words, with a place if it matters: "plumber
             free tomorrow near 78704".
     """
-    return find(query)
+    return search(query)
 
 
 @tool("Read beacon")
@@ -41,8 +41,8 @@ def read_beacon(beacon_id: str) -> str:
 finder = Agent(
     role="Beacon finder",
     goal="Find live beacons that fit what the person needs now, and say how to act on each.",
-    backstory="You find beacons on Beacon: short notes, kept live by agents, of what people and businesses have or are looking for.",
-    tools=[find_beacons, read_beacon],
+    backstory="You search beacons on Beacon: short notes, kept live by agents, of what people and businesses have or are looking for.",
+    tools=[search_beacons, read_beacon],
     llm=LLM(model="anthropic/claude-opus-5-5"),
 )
 
