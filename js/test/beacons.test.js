@@ -9,16 +9,21 @@ import { Openpath, OpenpathError } from "../index.js";
 const PAGE = '# Beacons for "plumber free tomorrow near 78704"\n\nRead as: near Austin, TX 78704. 1 beacon.\n';
 const BEACON = {
   id: "b1",
-  closed: false,
-  until: "2026-10-19T17:00:00Z",
-  renew_from: "2026-10-19T16:45:00Z",
-  deletes_at: null,
-  shown_revision: null,
-  text: null,
-  latest_revision: 1,
-  latest_text: "Free tomorrow 9–12 for leaks and clogs",
-  latest_safety: "pending",
-  conversations_waiting: 0,
+  beacon: {
+    text: "Free tomorrow 9–12 for leaks and clogs",
+    location: { lat: 30.2416, lng: -97.7695, updated: "2026-10-19T16:00:00Z" },
+    expires: "2026-10-19T17:00:00Z",
+  },
+  verification: { issuer: "openpath.sh", summary: "Nothing about who made this was checked. Active 1 day. Never reported." },
+  link: "https://openpath.sh/beacon/b1",
+  mine: {
+    closed: false,
+    renew_from: "2026-10-19T16:45:00Z",
+    deletes_at: null,
+    revision: null,
+    latest: { revision: 1, text: "Free tomorrow 9–12 for leaks and clogs", safety: "pending", reason: null },
+    conversations_waiting: 0,
+  },
 };
 
 /**
@@ -131,12 +136,19 @@ describe("a business's own beacons", () => {
   it("creates, renews, updates and deletes a beacon, with the fields the contract takes and no others", async () => {
     const api = fakeApi();
     const { op } = await client(api);
-    const created = await op.create("Free tomorrow 9–12 for leaks and clogs", { location: "78704", idempotencyKey: "k1" });
+    const point = { lat: 30.2416, lng: -97.7695 };
+    const created = await op.create("Free tomorrow 9–12 for leaks and clogs", { location: point, idempotencyKey: "k1" });
     assert.equal(created.beacon.id, "b1");
+    assert.equal(created.beacon.mine.latest.revision, 1);
     const create = api.calls.at(-1);
     assert.equal(`${create.method} ${create.path}`, "POST /v1/beacons");
-    assert.deepEqual(JSON.parse(create.body), { text: "Free tomorrow 9–12 for leaks and clogs", location: "78704" });
+    assert.deepEqual(JSON.parse(create.body), { text: "Free tomorrow 9–12 for leaks and clogs", location: point });
     assert.equal(create.headers["Idempotency-Key"], "k1");
+    await op.create("Remote bookkeeping help, evenings.");
+    assert.deepEqual(JSON.parse(api.calls.at(-1).body), { text: "Remote bookkeeping help, evenings." });
+    await op.create("Remote bookkeeping help, evenings.", { location: null });
+    assert.deepEqual(JSON.parse(api.calls.at(-1).body), { text: "Remote bookkeeping help, evenings.", location: null });
+    assert.throws(() => op.create("Free tomorrow", { location: "78704" }), TypeError);
     await op.renew("b1");
     assert.deepEqual([api.calls.at(-1).method, api.calls.at(-1).path, api.calls.at(-1).body], ["POST", "/v1/beacons/b1/renew", undefined]);
     await op.update("b1", { revision: 2, text: "Free tomorrow 10–12 only" });
@@ -144,8 +156,10 @@ describe("a business's own beacons", () => {
       [api.calls.at(-1).method, api.calls.at(-1).path, JSON.parse(api.calls.at(-1).body)],
       ["PUT", "/v1/beacons/b1", { revision: 2, text: "Free tomorrow 10–12 only" }],
     );
-    await op.update("b1", { revision: 2, location: "East Austin" });
-    assert.deepEqual(JSON.parse(api.calls.at(-1).body), { revision: 2, location: "East Austin" });
+    await op.update("b1", { revision: 2, text: "Free tomorrow 10–12 only", location: point });
+    assert.deepEqual(JSON.parse(api.calls.at(-1).body), { revision: 2, text: "Free tomorrow 10–12 only", location: point });
+    await op.update("b1", { revision: 2, location: null });
+    assert.deepEqual(JSON.parse(api.calls.at(-1).body), { revision: 2, location: null });
     await op.delete("b1");
     assert.deepEqual([api.calls.at(-1).method, api.calls.at(-1).path, api.calls.at(-1).body], ["DELETE", "/v1/beacons/b1", undefined]);
     await op.myBeacons();
@@ -158,19 +172,19 @@ describe("a business's own beacons", () => {
   });
 });
 
-describe("a live location", () => {
-  it("sends only the location as lat,lng with the revision, and renew can carry it too", async () => {
+describe("a beacon on the move", () => {
+  it("sends only the location as a point with the revision, and renew can carry it too", async () => {
     const api = fakeApi();
     const { op } = await client(api);
     await op.updateLocation("b1", 30.2672, -97.7431, 3);
     assert.deepEqual(
       [api.calls.at(-1).method, api.calls.at(-1).path, JSON.parse(api.calls.at(-1).body)],
-      ["PUT", "/v1/beacons/b1", { revision: 3, location: "30.2672,-97.7431" }],
+      ["PUT", "/v1/beacons/b1", { revision: 3, location: { lat: 30.2672, lng: -97.7431 } }],
     );
-    await op.renew("b1", { location: "30.27,-97.74" });
+    await op.renew("b1", { location: { lat: 30.27, lng: -97.74 } });
     assert.deepEqual(
       [api.calls.at(-1).method, api.calls.at(-1).path, JSON.parse(api.calls.at(-1).body)],
-      ["POST", "/v1/beacons/b1/renew", { location: "30.27,-97.74" }],
+      ["POST", "/v1/beacons/b1/renew", { location: { lat: 30.27, lng: -97.74 } }],
     );
     assert.equal(api.calls.at(-1).headers["Content-Type"], "application/json");
   });
@@ -219,22 +233,22 @@ describe("messages and conversations", () => {
   });
 
   it("says why Beacon refused, what to do next, and how long to wait", async () => {
-    const next = "Apply: https://boards.example.com/lucia/1";
+    const next = "Tell the person, and offer others.";
     const api = fakeApi({
       refuse: () =>
         Response.json(
-          { code: "apply_elsewhere", detail: "This hiring beacon takes applications at the employer’s own page.", next },
-          { status: 409, headers: { "Retry-After": "30" } },
+          { code: "beacon_closed", detail: "This beacon expired: its creator didn’t renew it.", next },
+          { status: 410, headers: { "Retry-After": "30" } },
         ),
     });
     const { op } = await client(api);
     await assert.rejects(op.message("b1", "Hi"), (error) => {
       assert.ok(error instanceof OpenpathError);
-      assert.equal(error.status, 409);
-      assert.equal(error.code, "apply_elsewhere");
+      assert.equal(error.status, 410);
+      assert.equal(error.code, "beacon_closed");
       assert.equal(error.next, next);
       assert.equal(error.retryAfter, 30);
-      assert.equal(error.message, `This hiring beacon takes applications at the employer’s own page. ${next}`);
+      assert.equal(error.message, `This beacon expired: its creator didn’t renew it. ${next}`);
       return true;
     });
   });
@@ -243,6 +257,6 @@ describe("messages and conversations", () => {
     const api = fakeApi();
     const { op } = await client(api, { app: "JobFinder/1.0" });
     await op.search("line cook jobs in Austin");
-    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 openpath-js\/0\.1\.1/);
+    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 openpath-js\/0\.1\.2/);
   });
 });

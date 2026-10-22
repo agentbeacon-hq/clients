@@ -82,11 +82,12 @@ test("the write tools share one client and call the matching method", async () =
   await t.reply.execute({ conversationId: ID, text: "Yes" }, context);
   await t.markOutcome.execute({ conversationId: ID, outcome: "booked" }, context);
   await t.reportConversation.execute({ conversationId: ID, reason: "spam", block: true }, context);
-  await t.createBeacon.execute({ text: "Free tomorrow 9–12", location: "78704" }, context);
+  await t.createBeacon.execute({ text: "Free tomorrow 9–12", location: { lat: 30.2416, lng: -97.7695 } }, context);
+  await t.createBeacon.execute({ text: "Remote bookkeeping help", location: null }, context);
   await t.renewBeacon.execute({ beaconId: ID }, context);
-  await t.renewBeacon.execute({ beaconId: ID, location: "30.27,-97.74" }, context);
+  await t.renewBeacon.execute({ beaconId: ID, location: { lat: 30.27, lng: -97.74 } }, context);
   await t.updateBeacon.execute({ beaconId: ID, revision: 2, text: "Free 10–12" }, context);
-  await t.updateBeacon.execute({ beaconId: ID, revision: 2, location: "30.2672,-97.7431" }, context);
+  await t.updateBeacon.execute({ beaconId: ID, revision: 2, location: { lat: 30.2672, lng: -97.7431 } }, context);
   await t.deleteBeacon.execute({ beaconId: ID }, context);
   await t.myBeacons.execute({}, context);
   assert.deepEqual(client.calls, [
@@ -96,11 +97,12 @@ test("the write tools share one client and call the matching method", async () =
     ["reply", ID, "Yes"],
     ["markOutcome", ID, "booked"],
     ["reportConversation", ID, "spam", { block: true }],
-    ["create", "Free tomorrow 9–12", { location: "78704" }],
+    ["create", "Free tomorrow 9–12", { location: { lat: 30.2416, lng: -97.7695 } }],
+    ["create", "Remote bookkeeping help", { location: null }],
     ["renew", ID, { location: undefined }],
-    ["renew", ID, { location: "30.27,-97.74" }],
+    ["renew", ID, { location: { lat: 30.27, lng: -97.74 } }],
     ["update", ID, { revision: 2, text: "Free 10–12" }],
-    ["update", ID, { revision: 2, location: "30.2672,-97.7431" }],
+    ["update", ID, { revision: 2, location: { lat: 30.2672, lng: -97.7431 } }],
     ["delete", ID],
     ["myBeacons"],
   ]);
@@ -108,4 +110,11 @@ test("the write tools share one client and call the matching method", async () =
   assert.deepEqual(Object.keys(t.createBeacon.inputSchema.shape).sort(), ["location", "text"]);
   assert.deepEqual(Object.keys(t.updateBeacon.inputSchema.shape).sort(), ["beaconId", "location", "revision", "text"]);
   assert.deepEqual(Object.keys(t.renewBeacon.inputSchema.shape).sort(), ["beaconId", "location"]);
+  // A location is a point or null, never a place name.
+  const create = t.createBeacon.inputSchema;
+  assert.equal(create.safeParse({ text: "Free", location: "78704" }).success, false);
+  assert.equal(create.safeParse({ text: "Free", location: { lat: 91, lng: 0 } }).success, false);
+  assert.equal(create.safeParse({ text: "Free", location: null }).success, true);
+  assert.equal(create.safeParse({ text: "Free" }).success, true);
+  assert.equal(t.updateBeacon.inputSchema.safeParse({ beaconId: ID, revision: 3, location: { lat: 30.27, lng: -97.74 } }).success, true);
 });

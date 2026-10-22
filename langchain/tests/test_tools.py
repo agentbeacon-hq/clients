@@ -78,11 +78,13 @@ def test_the_write_tools_share_one_client_and_call_the_matching_method():
     tools["reply"].invoke({"conversation_id": "c1", "text": "Yes"})
     tools["mark_outcome"].invoke({"conversation_id": "c1", "outcome": "booked"})
     tools["report_conversation"].invoke({"conversation_id": "c1", "reason": "spam"})
-    tools["create_beacon"].invoke({"text": "Free tomorrow 9–12", "location": "78704"})
+    tools["create_beacon"].invoke({"text": "Free tomorrow 9–12", "location": {"lat": 30.2416, "lng": -97.7695}})
+    tools["create_beacon"].invoke({"text": "Remote bookkeeping help"})
     tools["renew_beacon"].invoke({"beacon_id": "b1"})
-    tools["renew_beacon"].invoke({"beacon_id": "b1", "location": "30.27,-97.74"})
+    tools["renew_beacon"].invoke({"beacon_id": "b1", "location": {"lat": 30.27, "lng": -97.74}})
     tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 2, "text": "Free 10–12"})
-    tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 2, "location": "30.2672,-97.7431"})
+    tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 2, "location": {"lat": 30.2672, "lng": -97.7431}})
+    tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 3, "location": None})
     tools["delete_beacon"].invoke({"beacon_id": "b1"})
     tools["my_beacons"].invoke({})
     assert client.calls == [
@@ -92,11 +94,13 @@ def test_the_write_tools_share_one_client_and_call_the_matching_method():
         ("reply", ("c1", "Yes"), {}),
         ("mark_outcome", ("c1", "booked"), {}),
         ("report_conversation", ("c1", "spam"), {"block": True}),
-        ("create", ("Free tomorrow 9–12",), {"location": "78704"}),
-        ("renew", ("b1",), {"location": None}),
-        ("renew", ("b1",), {"location": "30.27,-97.74"}),
-        ("update", ("b1",), {"revision": 2, "text": "Free 10–12", "location": None}),
-        ("update", ("b1",), {"revision": 2, "text": None, "location": "30.2672,-97.7431"}),
+        ("create", ("Free tomorrow 9–12",), {"location": {"lat": 30.2416, "lng": -97.7695}}),
+        ("create", ("Remote bookkeeping help",), {"location": None}),
+        ("renew", ("b1",), {}),
+        ("renew", ("b1",), {"location": {"lat": 30.27, "lng": -97.74}}),
+        ("update", ("b1",), {"revision": 2, "text": "Free 10–12"}),
+        ("update", ("b1",), {"revision": 2, "location": {"lat": 30.2672, "lng": -97.7431}}),
+        ("update", ("b1",), {"revision": 3, "location": None}),
         ("delete", ("b1",), {}),
         ("my_beacons", (), {}),
     ]
@@ -109,6 +113,13 @@ def test_the_write_tools_share_one_client_and_call_the_matching_method():
     assert set(tools["create_beacon"].args) == {"text", "location"}
     assert set(tools["update_beacon"].args) == {"beacon_id", "revision", "text", "location"}
     assert set(tools["renew_beacon"].args) == {"beacon_id", "location"}
+    # A location is a point or null, never a place name.
+    for bad in ({"text": "Free", "location": "78704"}, {"text": "Free", "location": {"lat": 91, "lng": 0}}):
+        try:
+            tools["create_beacon"].invoke(bad)
+        except Exception:
+            continue
+        raise AssertionError(f"{bad} was accepted")
 
 
 class TestSearchBeaconsStandard(ToolsUnitTests):

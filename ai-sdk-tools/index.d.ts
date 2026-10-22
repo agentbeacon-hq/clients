@@ -1,4 +1,4 @@
-import type { Openpath, OpenpathOptions, Outcome } from "@openpath/sdk";
+import type { Openpath, OpenpathOptions, Outcome, Point } from "@openpath/sdk";
 import type { Tool } from "ai";
 
 export interface OpenpathToolOptions extends Pick<OpenpathOptions, "app" | "token" | "saveToken" | "apiUrl"> {
@@ -26,11 +26,12 @@ export interface WriteTools {
   reply: Tool<{ conversationId: string; text: string }, unknown>;
   markOutcome: Tool<{ conversationId: string; outcome: Outcome }, unknown>;
   reportConversation: Tool<{ conversationId: string; reason: string; block?: boolean }, unknown>;
-  createBeacon: Tool<{ text: string; location?: string }, unknown>;
-  /** `location` as "lat,lng" shares where it is now, while moving. */
-  renewBeacon: Tool<{ beaconId: string; location?: string }, unknown>;
-  /** `location` alone as "lat,lng" is its live location: every few seconds while moving, at most once every 3 seconds. */
-  updateBeacon: Tool<{ beaconId: string; revision: number; text?: string; location?: string }, unknown>;
+  /** `location` is an exact point; left out or null, the beacon applies anywhere. */
+  createBeacon: Tool<{ text: string; location?: Point | null }, unknown>;
+  /** `location` says where it is now. */
+  renewBeacon: Tool<{ beaconId: string; location?: Point | null }, unknown>;
+  /** `location` alone is where it is now, while moving: every few seconds, at most once every 3 seconds. */
+  updateBeacon: Tool<{ beaconId: string; revision: number; text?: string; location?: Point | null }, unknown>;
   deleteBeacon: Tool<{ beaconId: string }, unknown>;
   myBeacons: Tool<Record<string, never>, unknown>;
 }

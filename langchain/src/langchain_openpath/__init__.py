@@ -1,5 +1,5 @@
 """LangChain tools for Beacon: search beacons by meaning and message them, and keep
-a business's own beacons open, as tools an agent can call.
+the person's own beacons open, as tools an agent can call.
 
 They call the openpath-sh client. Searching needs no token; the first tool that does
 connects to Beacon by itself, with no key and no sign-up.
@@ -37,4 +37,4 @@ __all__ = [
     "openpath_tools",
     "__version__",
 ]
-__version__ = "0.1.1"
+__version__ = "0.1.2"

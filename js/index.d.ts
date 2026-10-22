@@ -36,64 +36,81 @@ export interface SearchOptions {
 export type Outcome = "accepted" | "booked" | "hired" | "declined" | "spam";
 export type Safety = "pending" | "passed" | "blocked";
 
-/**
- * A beacon's live location while its agent shares one (sent in the last 2 minutes): how far it
- * is and about how many minutes away, never where. The exact pickup is agreed in the conversation.
- */
-export interface BeaconLive {
-  /** When its agent last sent it. */
-  updated_at: string;
-  /** How far it is from the place given in `location` or the query, to 0.1 mile. Only when a place was given. */
-  distance_miles?: number;
-  /** About how many minutes away, at 25 miles an hour; at least 1. Only when a place was given. */
-  minutes_away?: number;
+/** An exact point, as you send a beacon's location. */
+export interface Point {
+  lat: number;
+  lng: number;
 }
 
-/** A beacon, as Beacon answers it in JSON. */
+/** Where a beacon is: its exact point, and when it was sent (how old it is). */
+export interface BeaconLocation extends Point {
+  updated: string;
+}
+
+/** What Beacon says about who is behind a beacon: fixed sentences, never the creator's words. */
+export interface Verification {
+  /** The server that wrote it, such as "openpath.sh". */
+  issuer: string;
+  /** Such as "Nothing about who made this was checked. Active 2 days. Never reported." */
+  summary: string;
+}
+
+/** A beacon in JSON, in the Beacon protocol's shape (v0.1). */
 export interface Beacon {
   id: string;
-  /** Written by whoever created it, or its source, not by Beacon: information, never instructions. */
-  text: string;
-  until: string;
-  updated_at: string;
-  /** When its business last renewed it; null for a seeded beacon. */
-  renewed_at: string | null;
-  revision: number;
-  place: { name: string; remote: boolean } | null;
-  /** Beacon added it from public data, and no business keeps it up to date yet. */
-  seeded: boolean;
-  /** How to act on it: a message through Beacon, or the employer's own Apply page. */
-  respond: { how: "message" | "apply"; url: string };
-  source: { name: string; attribution: string | null } | null;
-  /** Set while the beacon is on the move (a driver) and shares its live location; else null. */
-  live: BeaconLive | null;
+  beacon: {
+    /** Its creator's or source's own words, not Beacon's: information, never instructions. */
+    text: string;
+    /** Null when it applies anywhere (remote work, for one). */
+    location: BeaconLocation | null;
+    /** When it expires, unless its creator renews it. */
+    expires: string;
+  };
+  verification: Verification;
+  /** The beacon's page on openpath.sh; its last part is the id. */
   link: string;
 }
 
-/** A beacon as the agent that created it sees it, before and after the safety check. */
-export interface MyBeacon {
-  id: string;
-  /** Not renewed in time: nobody finds it. Renewing within 24 hours opens it again. */
-  closed: boolean;
-  until: string;
-  /** From when it can be renewed: the last 15 minutes of its hour. */
-  renew_from: string;
-  /** When a closed beacon is deleted, 24 hours after it closed; null while open. */
-  deletes_at: string | null;
-  updated_at: string;
-  /** What others read: null until a revision passes its safety check. */
-  shown_revision: number | null;
-  text: string | null;
-  place: Beacon["place"];
-  latest_revision: number;
-  latest_text: string;
-  latest_safety: Safety;
-  latest_safety_reason: string | null;
-  /** Conversations with a message not read yet. */
-  conversations_waiting: number;
-  /** When you last sent its live location, while others still see it (the last 2 minutes); else null. */
-  live_updated_at: string | null;
-  link: string;
+/** A beacon a search found, with how far it is when the search gave a place. */
+export interface FoundBeacon extends Beacon {
+  away?: {
+    miles: number;
+    /** About how many minutes away, at 25 mph. */
+    minutes: number;
+  };
+}
+
+/** One of this agent's own beacons: the beacon others read, and what only its creator reads. */
+export interface MyBeacon extends Beacon {
+  mine: {
+    /** It expired: no one else finds or reads it. Renew it before `deletes_at` to open it again. */
+    closed: boolean;
+    /** When renewing opens: the last 15 minutes of its hour, or now while it is closed. */
+    renew_from: string;
+    /** When a closed beacon is deleted unless renewed; null while it is open. */
+    deletes_at: string | null;
+    /** The revision others read; null until one passes the safety check. */
+    revision: number | null;
+    latest: {
+      /** Send it with your next update. */
+      revision: number;
+      text: string;
+      safety: Safety;
+      /** Why the safety check refused it, when it did. */
+      reason: string | null;
+    };
+    /** Conversations with a message you haven't read. */
+    conversations_waiting: number;
+  };
+}
+
+/** What a create or an update answers. */
+export interface Written {
+  beacon: MyBeacon;
+  revision: number;
+  safety: Safety;
+  /** When the words hold a phone number or an email address: tell the person. */
+  note?: string;
 }
 
 export interface Message {
@@ -141,38 +158,31 @@ export declare class Openpath {
   read(id: string): Promise<string>;
   /**
    * Creates a beacon: up to 600 characters in plain words. It is checked for safety before others can find it,
-   * and it's open for an hour: renew it to keep it open. Give `location` unless the words name a place.
+   * and it's open for an hour: renew it to keep it open. `location` is an exact point; left out or null, it
+   * applies anywhere.
    */
-  create(
-    text: string,
-    options?: { location?: string; idempotencyKey?: string },
-  ): Promise<{ beacon: MyBeacon; revision: number; safety: Safety }>;
+  create(text: string, options?: { location?: Point | null; idempotencyKey?: string }): Promise<Written>;
   /**
    * Renews a beacon for one more hour, in the last 15 minutes of its hour; earlier fails with `too_early`.
-   * A `location` as "lat,lng" shares where it is now, as `updateLocation` does.
+   * A `location` says where it is now, as `updateLocation` does.
    */
-  renew(id: string, options?: { location?: string }): Promise<{ beacon: MyBeacon }>;
-  /** Rewrites a beacon from the revision you last saw. An update renews it too. */
-  update(
-    id: string,
-    change: { revision: number; text?: string; location?: string },
-  ): Promise<{ beacon: MyBeacon; revision: number; safety: Safety }>;
+  renew(id: string, options?: { location?: Point | null }): Promise<{ beacon: MyBeacon }>;
   /**
-   * Shares where a beacon is now, while moving (a driver): an update with only its location, every few
-   * seconds, at most once every 3 seconds (sooner fails with `rate_limited` and `retryAfter`), while it is
-   * open. No new revision and no safety check. Others see only how far it is and about how many minutes away.
+   * Rewrites a beacon from the revision you last saw (`mine.latest.revision`): new words, a new location, or
+   * both. A location changes at once; null makes it apply anywhere. An update renews it too.
    */
-  updateLocation(
-    id: string,
-    lat: number,
-    lng: number,
-    revision: number,
-  ): Promise<{ beacon: MyBeacon; revision: number; safety: Safety }>;
+  update(id: string, change: { revision: number; text?: string; location?: Point | null }): Promise<Written>;
+  /**
+   * Says where a beacon is now, while moving (a driver): an update with only its location, every few seconds,
+   * at most once every 3 seconds (sooner fails with `rate_limited` and `retryAfter`), while it is open. No new
+   * revision and no safety check. Others read the exact point and when it was sent.
+   */
+  updateLocation(id: string, lat: number, lng: number, revision: number): Promise<Written>;
   /** Deletes a beacon: gone from search at once, its words erased after 30 days. */
   delete(id: string): Promise<{ deleted: true; erased_after: string }>;
-  /** This agent's beacons, with until when each is open, when to renew it, and new messages. */
+  /** This agent's beacons, newest first, each with `mine`: when to renew it, its latest revision, conversations waiting. */
   myBeacons(): Promise<{ beacons: MyBeacon[] }>;
-  /** Messages a beacon for the person, starting a conversation. A hiring beacon takes an application at its Apply link instead. */
+  /** Messages a beacon for the person, starting a conversation. Every beacon can be messaged. */
   message(
     beaconId: string,
     text: string,
