@@ -1,6 +1,6 @@
 {
   "name": "@openpath/sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Openpath for JavaScript: find beacons by meaning and message them, and keep your own beacons open. Plain Markdown for models, no sign-up.",
   "type": "module",
   "main": "index.js",

@@ -73,11 +73,11 @@ class FindingTest(ClientTest):
     def test_finds_and_reads_with_no_token_and_without_connecting(self):
         api = FakeApi()
         home, op = self.client(api)
-        self.assertEqual(op.find("plumber free tomorrow", near="78704", offset=10), PAGE)
+        self.assertEqual(op.find("plumber free tomorrow", location="78704", offset=10), PAGE)
         self.assertEqual(op.read("b1"), "## Free tomorrow\n")
         self.assertEqual(
             [f"{m} {p}" for m, p, _, _ in api.calls],
-            ["GET /v1/beacons?q=plumber+free+tomorrow&near=78704&offset=10", "GET /v1/beacons/b1"],
+            ["GET /v1/beacons?q=plumber+free+tomorrow&location=78704&offset=10", "GET /v1/beacons/b1"],
         )
         self.assertNotIn("Authorization", api.calls[0][2])
         self.assertEqual(api.calls[0][2]["Accept"], "text/markdown")
@@ -106,7 +106,7 @@ class FindingTest(ClientTest):
         api = FakeApi()
         _, op = self.client(api, app="JobFinder/1.0")
         op.find("line cook jobs in Austin")
-        self.assertRegex(api.calls[0][2]["User-Agent"], r"^JobFinder/1\.0 openpath-python/1\.0\.0")
+        self.assertRegex(api.calls[0][2]["User-Agent"], r"^JobFinder/1\.0 openpath-python/1\.0\.1")
 
 
 class ConnectingTest(ClientTest):
@@ -138,20 +138,40 @@ class BusinessTest(ClientTest):
     def test_creates_renews_updates_and_deletes_with_only_the_contract_fields(self):
         api = FakeApi()
         _, op = self.client(api)
-        created = op.create("Free tomorrow 9–12 for leaks and clogs", near="78704", idempotency_key="k1")
+        created = op.create("Free tomorrow 9–12 for leaks and clogs", location="78704", idempotency_key="k1")
         self.assertEqual(created["beacon"]["id"], "b1")
-        self.assertEqual(api.last(), ("POST", "/v1/beacons", {"text": "Free tomorrow 9–12 for leaks and clogs", "near": "78704"}))
+        self.assertEqual(api.last(), ("POST", "/v1/beacons", {"text": "Free tomorrow 9–12 for leaks and clogs", "location": "78704"}))
         self.assertEqual(api.calls[-1][2]["Idempotency-Key"], "k1")
         op.renew("b1")
         self.assertEqual(api.last(), ("POST", "/v1/beacons/b1/renew", None))
         op.update("b1", revision=2, text="Free tomorrow 10–12 only")
         self.assertEqual(api.last(), ("PUT", "/v1/beacons/b1", {"revision": 2, "text": "Free tomorrow 10–12 only"}))
+        op.update("b1", revision=2, location="East Austin")
+        self.assertEqual(api.last(), ("PUT", "/v1/beacons/b1", {"revision": 2, "location": "East Austin"}))
         op.delete("b1")
         self.assertEqual(api.last(), ("DELETE", "/v1/beacons/b1", None))
         op.my_beacons()
         self.assertEqual(api.last(), ("GET", "/v1/me/beacons", None))
         op.set_taking_messages(False)
         self.assertEqual(api.last(), ("PUT", "/v1/me/messages", {"taking_messages": False}))
+
+    def test_a_live_location_is_only_the_location_and_renew_can_carry_it(self):
+        api = FakeApi()
+        _, op = self.client(api)
+        op.update_location("b1", 30.2672, -97.7431, revision=3)
+        self.assertEqual(api.last(), ("PUT", "/v1/beacons/b1", {"revision": 3, "location": "30.2672,-97.7431"}))
+        op.renew("b1", location="30.27,-97.74")
+        self.assertEqual(api.last(), ("POST", "/v1/beacons/b1/renew", {"location": "30.27,-97.74"}))
+        self.assertEqual(api.calls[-1][2]["Content-Type"], "application/json")
+
+    def test_a_live_location_sent_too_soon_says_how_long_to_wait(self):
+        body = json.dumps({"code": "rate_limited", "detail": "Updated less than 3 seconds ago.", "next": "Send it at most once every 3 seconds."})
+        _, op = self.client(FakeApi(refuse=lambda: (429, {"Retry-After": "2"}, body)))
+        with self.assertRaises(OpenpathError) as caught:
+            op.update_location("b1", 30.2672, -97.7431, revision=3)
+        self.assertEqual(caught.exception.status, 429)
+        self.assertEqual(caught.exception.code, "rate_limited")
+        self.assertEqual(caught.exception.retry_after, 2)
 
 
 class ConversationsTest(ClientTest):

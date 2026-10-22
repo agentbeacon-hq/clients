@@ -18,8 +18,8 @@ class FakeClient:
 
         return record
 
-    def find(self, query, near=None, offset=None):
-        self.calls.append(("find", query, near, offset))
+    def find(self, query, location=None, offset=None):
+        self.calls.append(("find", query, location, offset))
         return f'# Beacons for "{query}"'
 
     def read(self, beacon_id):
@@ -29,14 +29,14 @@ class FakeClient:
 
 def test_find_passes_the_query_place_and_page():
     client = FakeClient()
-    out = FindBeacons(client=client).invoke({"query": "plumber free tomorrow", "near": "78704"})
+    out = FindBeacons(client=client).invoke({"query": "plumber free tomorrow", "location": "78704"})
     assert out == '# Beacons for "plumber free tomorrow"'
     assert client.calls == [("find", "plumber free tomorrow", "78704", None)]
 
 
 def test_the_find_input_has_no_category_and_no_side():
     tool = FindBeacons(client=FakeClient())
-    assert set(tool.args) == {"query", "near", "offset"}
+    assert set(tool.args) == {"query", "location", "offset"}
     for bad in ({"query": ""}, {"query": "movers", "offset": 110}):
         try:
             tool.invoke(bad)
@@ -78,9 +78,11 @@ def test_the_write_tools_share_one_client_and_call_the_matching_method():
     tools["reply"].invoke({"conversation_id": "c1", "text": "Yes"})
     tools["mark_outcome"].invoke({"conversation_id": "c1", "outcome": "booked"})
     tools["report_conversation"].invoke({"conversation_id": "c1", "reason": "spam"})
-    tools["create_beacon"].invoke({"text": "Free tomorrow 9–12", "near": "78704"})
+    tools["create_beacon"].invoke({"text": "Free tomorrow 9–12", "location": "78704"})
     tools["renew_beacon"].invoke({"beacon_id": "b1"})
+    tools["renew_beacon"].invoke({"beacon_id": "b1", "location": "30.27,-97.74"})
     tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 2, "text": "Free 10–12"})
+    tools["update_beacon"].invoke({"beacon_id": "b1", "revision": 2, "location": "30.2672,-97.7431"})
     tools["delete_beacon"].invoke({"beacon_id": "b1"})
     tools["my_beacons"].invoke({})
     assert client.calls == [
@@ -90,9 +92,11 @@ def test_the_write_tools_share_one_client_and_call_the_matching_method():
         ("reply", ("c1", "Yes"), {}),
         ("mark_outcome", ("c1", "booked"), {}),
         ("report_conversation", ("c1", "spam"), {"block": True}),
-        ("create", ("Free tomorrow 9–12",), {"near": "78704"}),
-        ("renew", ("b1",), {}),
-        ("update", ("b1",), {"revision": 2, "text": "Free 10–12", "near": None}),
+        ("create", ("Free tomorrow 9–12",), {"location": "78704"}),
+        ("renew", ("b1",), {"location": None}),
+        ("renew", ("b1",), {"location": "30.27,-97.74"}),
+        ("update", ("b1",), {"revision": 2, "text": "Free 10–12", "location": None}),
+        ("update", ("b1",), {"revision": 2, "text": None, "location": "30.2672,-97.7431"}),
         ("delete", ("b1",), {}),
         ("my_beacons", (), {}),
     ]
@@ -102,7 +106,9 @@ def test_the_write_tools_share_one_client_and_call_the_matching_method():
         pass
     else:
         raise AssertionError("an unknown outcome was accepted")
-    assert set(tools["create_beacon"].args) == {"text", "near"}
+    assert set(tools["create_beacon"].args) == {"text", "location"}
+    assert set(tools["update_beacon"].args) == {"beacon_id", "revision", "text", "location"}
+    assert set(tools["renew_beacon"].args) == {"beacon_id", "location"}
 
 
 class TestFindBeaconsStandard(ToolsUnitTests):

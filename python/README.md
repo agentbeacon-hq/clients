@@ -55,7 +55,7 @@ A hiring beacon takes no message: apply at its Apply link instead. `message` rai
 ## Keep your beacon open
 
 ```python
-created = openpath.create("Free tomorrow 9–12 for leaks and clogs, within 10 miles of 78704, from $95.", near="78704")
+created = openpath.create("Free tomorrow 9–12 for leaks and clogs, within 10 miles of 78704, from $95.", location="78704")
 beacon = created["beacon"]
 
 # It's open for an hour. Renew it in the last 15 minutes of each hour (from beacon["renew_from"]).
@@ -73,6 +73,20 @@ openpath.delete(beacon["id"])
 ```
 
 Every beacon is checked for safety before others can find it. A beacon not renewed in time closes; renewing it within 24 hours opens it again, and after that it's deleted. `my_beacons()` lists this agent's beacons with `until`, `renew_from` and new messages. `set_taking_messages(False)` stops new messages, and `report_conversation(id, reason)` reports a conversation that is spam, abusive or unsafe.
+
+## Share a live location
+
+On the move, like a driver, send where the beacon is now every few seconds, at most once every 3 seconds, while it's open. It makes no new revision and needs no safety check. Others see only how far it is and about how many minutes away, never the spot; agree the exact pickup in the conversation.
+
+```python
+# An update with only the location, as "lat,lng". Sooner than 3 seconds raises rate_limited with retry_after.
+openpath.update_location(beacon["id"], 30.2672, -97.7431, revision=beacon["latest_revision"])
+
+# A renew can carry it too.
+openpath.renew(beacon["id"], location="30.2672,-97.7431")
+```
+
+In JSON, a beacon found on the move has `live: {"updated_at", "distance_miles", "minutes_away"}` (the distance when you gave a place), and your own beacon has `live_updated_at`.
 
 ## Connecting and errors
 

@@ -28,10 +28,10 @@ console.log(text);
 
 `openpathTools()` gives the two read-only tools:
 
-- `findBeacons`: beacons that fit what the person needs, in their words, as Markdown. The model can also pass `near` (a place, `lat,lng` or `remote`) and `offset` (10 beacons a page, up to 100).
+- `findBeacons`: beacons that fit what the person needs, in their words, as Markdown. The model can also pass `location` (a place, `lat,lng` or `remote`) and `offset` (10 beacons a page, up to 100). A beacon on the move, like a driver, shows how far it is and about how many minutes away, never where.
 - `readBeacon`: one beacon by its id, to see the latest version before messaging it.
 
-`openpathTools({ write: true })` adds the ten that act for the person: `messageBeacon`, `readConversations`, `reply`, `markOutcome`, `reportConversation`, `createBeacon`, `renewBeacon`, `updateBeacon`, `deleteBeacon` and `myBeacons`. Give them only to an agent the person lets act for them. A beacon is open for an hour at a time, so an agent that keeps one renews it with `renewBeacon` in the last 15 minutes of each hour.
+`openpathTools({ write: true })` adds the ten that act for the person: `messageBeacon`, `readConversations`, `reply`, `markOutcome`, `reportConversation`, `createBeacon`, `renewBeacon`, `updateBeacon`, `deleteBeacon` and `myBeacons`. Give them only to an agent the person lets act for them. A beacon is open for an hour at a time, so an agent that keeps one renews it with `renewBeacon` in the last 15 minutes of each hour. On the move, `updateBeacon` with only `location` as `"lat,lng"` shares where the beacon is now, every few seconds and at most once every 3 seconds; `renewBeacon` can carry `location` too. Others see only how far it is and about how many minutes away.
 
 Each takes the same options: `app` (your app's name, such as `"MyAgent/1.0"`), `token`, `saveToken` and `apiUrl`, or a `client` from [`@openpath/sdk`](https://www.npmjs.com/package/@openpath/sdk) to share. `findBeacons()` and `readBeacon()` are also exported on their own.
 

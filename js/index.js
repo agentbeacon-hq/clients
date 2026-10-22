@@ -7,7 +7,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-export const VERSION = "1.0.0";
+export const VERSION = "1.0.1";
 export const DEFAULT_API = "https://api.openpath.sh";
 
 /** A refusal from Openpath, with what it said and how long to wait. */
@@ -96,9 +96,10 @@ async function saveToken(file, api, credentials) {
  *   env?: NodeJS.ProcessEnv,
  *   home?: string,
  * }} OpenpathOptions
- * @typedef {{ near?: string, offset?: number }} FindOptions
- * @typedef {{ near?: string, idempotencyKey?: string }} CreateOptions
- * @typedef {{ revision: number, text?: string, near?: string }} UpdateChange
+ * @typedef {{ location?: string, offset?: number }} FindOptions
+ * @typedef {{ location?: string, idempotencyKey?: string }} CreateOptions
+ * @typedef {{ revision: number, text?: string, location?: string }} UpdateChange
+ * @typedef {{ location?: string }} RenewOptions
  * @typedef {"accepted" | "booked" | "hired" | "declined" | "spam"} Outcome
  */
 
@@ -164,14 +165,15 @@ export class Openpath {
    * Beacons that fit what the person needs, found by meaning, as plain
    * Markdown: each beacon's words (quoted: written by others), when it was
    * renewed or updated, until when it's open, and how to message it or apply.
-   * Needs no token; one already saved raises the limits.
+   * A beacon on the move (a driver) says how far it is and about how many
+   * minutes away, never where. Needs no token; one already saved raises the limits.
    * @param {string} query What the person needs, in their words, with a place if it matters.
    * @param {FindOptions} [options]
    * @returns {Promise<string>}
    */
   find(query, options = {}) {
     const params = new URLSearchParams({ q: query });
-    if (options.near) params.set("near", options.near);
+    if (options.location) params.set("location", options.location);
     if (options.offset) params.set("offset", String(options.offset));
     return this.call("GET", `/v1/beacons?${params}`, { markdown: true, open: true });
   }
@@ -189,14 +191,14 @@ export class Openpath {
   /**
    * Creates a beacon: a few plain words, up to 600 characters, about what you
    * have or need right now. It's checked for safety before others can find it,
-   * and it's open for an hour: renew it to keep it open. Give `near` unless
-   * the words name a place.
+   * and it's open for an hour: renew it to keep it open. Give `location`
+   * unless the words name a place.
    * @param {string} text
    * @param {CreateOptions} [options]
    */
   create(text, options = {}) {
     return this.call("POST", "/v1/beacons", {
-      body: { text, ...(options.near ? { near: options.near } : {}) },
+      body: { text, ...(options.location ? { location: options.location } : {}) },
       headers: options.idempotencyKey ? { "Idempotency-Key": options.idempotencyKey } : {},
     });
   }
@@ -204,11 +206,15 @@ export class Openpath {
   /**
    * Renews a beacon for one more hour. It works only in the last 15 minutes of
    * its hour (`renew_from`); earlier, the error's code is `too_early`. A closed
-   * beacon renewed within 24 hours opens again.
+   * beacon renewed within 24 hours opens again. A `location` as "lat,lng"
+   * shares where it is now, as `updateLocation` does.
    * @param {string} id
+   * @param {RenewOptions} [options]
    */
-  renew(id) {
-    return this.call("POST", `/v1/beacons/${encodeURIComponent(id)}/renew`);
+  renew(id, options = {}) {
+    return this.call("POST", `/v1/beacons/${encodeURIComponent(id)}/renew`, {
+      ...(options.location ? { body: { location: options.location } } : {}),
+    });
   }
 
   /**
@@ -218,10 +224,25 @@ export class Openpath {
    * @param {UpdateChange} change
    */
   update(id, change) {
-    const { revision, text, near } = change;
+    const { revision, text, location } = change;
     return this.call("PUT", `/v1/beacons/${encodeURIComponent(id)}`, {
-      body: { revision, ...(text !== undefined ? { text } : {}), ...(near ? { near } : {}) },
+      body: { revision, ...(text !== undefined ? { text } : {}), ...(location ? { location } : {}) },
     });
+  }
+
+  /**
+   * Shares where a beacon is now, while moving (a driver): an update with only
+   * its location. Send it every few seconds, at most once every 3 seconds
+   * (sooner fails with `rate_limited` and `retryAfter`), while the beacon is
+   * open. It makes no new revision and needs no safety check. Others see only
+   * how far it is and about how many minutes away, never the spot.
+   * @param {string} id
+   * @param {number} lat
+   * @param {number} lng
+   * @param {number} revision The latest revision you saw.
+   */
+  updateLocation(id, lat, lng, revision) {
+    return this.update(id, { revision, location: `${lat},${lng}` });
   }
 
   /**

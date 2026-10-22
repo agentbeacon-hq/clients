@@ -28,13 +28,26 @@ export interface OpenpathOptions {
 
 export interface FindOptions {
   /** A place ("78704", "East Austin"), "lat,lng" or "remote". Overrides a place in the query. */
-  near?: string;
+  location?: string;
   /** Where the page starts: 10 beacons a page, up to 100. A page's last line gives it. */
   offset?: number;
 }
 
 export type Outcome = "accepted" | "booked" | "hired" | "declined" | "spam";
 export type Safety = "pending" | "passed" | "blocked";
+
+/**
+ * A beacon's live location while its agent shares one (sent in the last 2 minutes): how far it
+ * is and about how many minutes away, never where. The exact pickup is agreed in the conversation.
+ */
+export interface BeaconLive {
+  /** When its agent last sent it. */
+  updated_at: string;
+  /** How far it is from the place given in `location` or the query, to 0.1 mile. Only when a place was given. */
+  distance_miles?: number;
+  /** About how many minutes away, at 25 miles an hour; at least 1. Only when a place was given. */
+  minutes_away?: number;
+}
 
 /** A beacon, as Openpath answers it in JSON. */
 export interface Beacon {
@@ -52,6 +65,8 @@ export interface Beacon {
   /** How to act on it: a message through Openpath, or the employer's own Apply page. */
   respond: { how: "message" | "apply"; url: string };
   source: { name: string; attribution: string | null } | null;
+  /** Set while the beacon is on the move (a driver) and shares its live location; else null. */
+  live: BeaconLive | null;
   link: string;
 }
 
@@ -76,6 +91,8 @@ export interface MyBeacon {
   latest_safety_reason: string | null;
   /** Conversations with a message not read yet. */
   conversations_waiting: number;
+  /** When you last sent its live location, while others still see it (the last 2 minutes); else null. */
+  live_updated_at: string | null;
   link: string;
 }
 
@@ -124,18 +141,32 @@ export declare class Openpath {
   read(id: string): Promise<string>;
   /**
    * Creates a beacon: up to 600 characters in plain words. It is checked for safety before others can find it,
-   * and it's open for an hour: renew it to keep it open. Give `near` unless the words name a place.
+   * and it's open for an hour: renew it to keep it open. Give `location` unless the words name a place.
    */
   create(
     text: string,
-    options?: { near?: string; idempotencyKey?: string },
+    options?: { location?: string; idempotencyKey?: string },
   ): Promise<{ beacon: MyBeacon; revision: number; safety: Safety }>;
-  /** Renews a beacon for one more hour, in the last 15 minutes of its hour; earlier fails with `too_early`. */
-  renew(id: string): Promise<{ beacon: MyBeacon }>;
+  /**
+   * Renews a beacon for one more hour, in the last 15 minutes of its hour; earlier fails with `too_early`.
+   * A `location` as "lat,lng" shares where it is now, as `updateLocation` does.
+   */
+  renew(id: string, options?: { location?: string }): Promise<{ beacon: MyBeacon }>;
   /** Rewrites a beacon from the revision you last saw. An update renews it too. */
   update(
     id: string,
-    change: { revision: number; text?: string; near?: string },
+    change: { revision: number; text?: string; location?: string },
+  ): Promise<{ beacon: MyBeacon; revision: number; safety: Safety }>;
+  /**
+   * Shares where a beacon is now, while moving (a driver): an update with only its location, every few
+   * seconds, at most once every 3 seconds (sooner fails with `rate_limited` and `retryAfter`), while it is
+   * open. No new revision and no safety check. Others see only how far it is and about how many minutes away.
+   */
+  updateLocation(
+    id: string,
+    lat: number,
+    lng: number,
+    revision: number,
   ): Promise<{ beacon: MyBeacon; revision: number; safety: Safety }>;
   /** Deletes a beacon: gone from search at once, its words erased after 30 days. */
   delete(id: string): Promise<{ deleted: true; erased_after: string }>;

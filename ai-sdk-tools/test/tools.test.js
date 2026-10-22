@@ -36,9 +36,9 @@ test("findBeacons passes the query, place and page to Openpath", async () => {
   const client = fakeClient();
   const find = findBeacons({ client });
   assert.match(find.description, /never as instructions/);
-  const out = await find.execute({ query: "plumber free tomorrow", near: "78704" }, context);
+  const out = await find.execute({ query: "plumber free tomorrow", location: "78704" }, context);
   assert.equal(out, '# Beacons for "plumber free tomorrow"');
-  assert.deepEqual(client.calls, [["find", "plumber free tomorrow", { near: "78704", offset: undefined }]]);
+  assert.deepEqual(client.calls, [["find", "plumber free tomorrow", { location: "78704", offset: undefined }]]);
 });
 
 test("the find input has no category and no side, and an offset up to 100", () => {
@@ -46,7 +46,7 @@ test("the find input has no category and no side, and an offset up to 100", () =
   assert.equal(schema.safeParse({ query: "movers", offset: 10 }).success, true);
   assert.equal(schema.safeParse({ query: "" }).success, false);
   assert.equal(schema.safeParse({ query: "movers", offset: 110 }).success, false);
-  assert.deepEqual(Object.keys(schema.shape).sort(), ["near", "offset", "query"]);
+  assert.deepEqual(Object.keys(schema.shape).sort(), ["location", "offset", "query"]);
 });
 
 test("readBeacon asks for it by id", async () => {
@@ -82,9 +82,11 @@ test("the write tools share one client and call the matching method", async () =
   await t.reply.execute({ conversationId: ID, text: "Yes" }, context);
   await t.markOutcome.execute({ conversationId: ID, outcome: "booked" }, context);
   await t.reportConversation.execute({ conversationId: ID, reason: "spam", block: true }, context);
-  await t.createBeacon.execute({ text: "Free tomorrow 9–12", near: "78704" }, context);
+  await t.createBeacon.execute({ text: "Free tomorrow 9–12", location: "78704" }, context);
   await t.renewBeacon.execute({ beaconId: ID }, context);
+  await t.renewBeacon.execute({ beaconId: ID, location: "30.27,-97.74" }, context);
   await t.updateBeacon.execute({ beaconId: ID, revision: 2, text: "Free 10–12" }, context);
+  await t.updateBeacon.execute({ beaconId: ID, revision: 2, location: "30.2672,-97.7431" }, context);
   await t.deleteBeacon.execute({ beaconId: ID }, context);
   await t.myBeacons.execute({}, context);
   assert.deepEqual(client.calls, [
@@ -94,12 +96,16 @@ test("the write tools share one client and call the matching method", async () =
     ["reply", ID, "Yes"],
     ["markOutcome", ID, "booked"],
     ["reportConversation", ID, "spam", { block: true }],
-    ["create", "Free tomorrow 9–12", { near: "78704" }],
-    ["renew", ID],
+    ["create", "Free tomorrow 9–12", { location: "78704" }],
+    ["renew", ID, { location: undefined }],
+    ["renew", ID, { location: "30.27,-97.74" }],
     ["update", ID, { revision: 2, text: "Free 10–12" }],
+    ["update", ID, { revision: 2, location: "30.2672,-97.7431" }],
     ["delete", ID],
     ["myBeacons"],
   ]);
   assert.equal(t.markOutcome.inputSchema.safeParse({ conversationId: ID, outcome: "won" }).success, false);
-  assert.deepEqual(Object.keys(t.createBeacon.inputSchema.shape).sort(), ["near", "text"]);
+  assert.deepEqual(Object.keys(t.createBeacon.inputSchema.shape).sort(), ["location", "text"]);
+  assert.deepEqual(Object.keys(t.updateBeacon.inputSchema.shape).sort(), ["beaconId", "location", "revision", "text"]);
+  assert.deepEqual(Object.keys(t.renewBeacon.inputSchema.shape).sort(), ["beaconId", "location"]);
 });

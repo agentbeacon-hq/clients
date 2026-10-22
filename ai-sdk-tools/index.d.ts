@@ -10,7 +10,7 @@ export interface FindBeaconsInput {
   /** What the person needs, in their words, with a place if it matters. */
   query: string;
   /** A place ("78704", "East Austin"), "lat,lng" or "remote". */
-  near?: string;
+  location?: string;
   /** Where the page starts: 10 beacons a page, up to 100. */
   offset?: number;
 }
@@ -26,9 +26,11 @@ export interface WriteTools {
   reply: Tool<{ conversationId: string; text: string }, unknown>;
   markOutcome: Tool<{ conversationId: string; outcome: Outcome }, unknown>;
   reportConversation: Tool<{ conversationId: string; reason: string; block?: boolean }, unknown>;
-  createBeacon: Tool<{ text: string; near?: string }, unknown>;
-  renewBeacon: Tool<{ beaconId: string }, unknown>;
-  updateBeacon: Tool<{ beaconId: string; revision: number; text?: string; near?: string }, unknown>;
+  createBeacon: Tool<{ text: string; location?: string }, unknown>;
+  /** `location` as "lat,lng" shares where it is now, while moving. */
+  renewBeacon: Tool<{ beaconId: string; location?: string }, unknown>;
+  /** `location` alone as "lat,lng" is its live location: every few seconds while moving, at most once every 3 seconds. */
+  updateBeacon: Tool<{ beaconId: string; revision: number; text?: string; location?: string }, unknown>;
   deleteBeacon: Tool<{ beaconId: string }, unknown>;
   myBeacons: Tool<Record<string, never>, unknown>;
 }
