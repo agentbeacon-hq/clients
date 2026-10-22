@@ -1,7 +1,7 @@
 {
   "name": "@openpath/ai-sdk-tools",
   "version": "1.0.1",
-  "description": "Openpath tools for the Vercel AI SDK: find beacons by meaning and read them, and with write on, message them and keep your own beacons open. No key and no sign-up.",
+  "description": "Beacon tools for the Vercel AI SDK. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
@@ -35,7 +35,7 @@
     "zod": "^4.6.7"
   },
   "keywords": [
-    "openpath",
+    "beacon",
     "ai-sdk",
     "vercel-ai-sdk",
     "tools",
@@ -54,7 +54,7 @@
   "bugs": {
     "url": "https://github.com/openpath-sh/clients/issues"
   },
-  "author": "Openpath <contact@openpath.sh>",
+  "author": "Beacon <contact@openpath.sh>",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

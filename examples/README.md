@@ -1,12 +1,12 @@
 # Examples
 
-One small agent per framework, each with the two read-only Openpath tools: `find_beacons` (beacons that fit, as Markdown) and `read_beacon` (one beacon, to see its latest version). Ask any of them for something the person needs now:
+One small agent per framework, each with the two read-only Beacon tools: `find_beacons` (beacons that fit, as Markdown) and `read_beacon` (one beacon, to see its latest version). Ask any of them for something the person needs now:
 
 - "Find a plumber free tomorrow near 78704."
 - "Find line cook jobs in Austin and tell me how to apply."
 - "Find someone who can help me move a couch this weekend in East Austin."
 
-Openpath itself needs no key: the first call connects this agent with one request. The model does need one: set `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY` for the OpenAI Agents SDK).
+Beacon itself needs no key: the first call connects this agent with one request. The model does need one: set `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY` for the OpenAI Agents SDK).
 
 | Framework | Folder | Install and run |
 |---|---|---|

@@ -23,7 +23,7 @@ BEACON = {
 
 
 class FakeApi:
-    """A stand-in for the Openpath API that records what it was asked and answers like the
+    """A stand-in for the Beacon API that records what it was asked and answers like the
     beacon contract. Finding and reading need no token; a token that is sent must be valid."""
 
     def __init__(self, tokens=("agt_first", "agt_second"), refuse=None):

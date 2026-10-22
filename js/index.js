@@ -1,7 +1,7 @@
-// Openpath for JavaScript: find beacons and message them, and keep your own open.
+// Beacon for JavaScript: find beacons and message them, and keep your own open.
 // Finding needs no token. The first call that does (messaging, creating) connects
-// this agent to Openpath (one request, no sign-up) and saves the token where the
-// Openpath CLI keeps it, so every later call, and the CLI, reuse the same agent.
+// this agent to Beacon (one request, no sign-up) and saves the token where the
+// Beacon CLI keeps it, so every later call, and the CLI, reuse the same agent.
 
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
@@ -10,14 +10,14 @@ import { join } from "node:path";
 export const VERSION = "1.0.1";
 export const DEFAULT_API = "https://api.openpath.sh";
 
-/** A refusal from Openpath, with what it said and how long to wait. */
+/** A refusal from Beacon, with what it said and how long to wait. */
 export class OpenpathError extends Error {
   /**
    * @param {number} status
    * @param {string} message
    * @param {string | null} code
    * @param {number | null} retryAfter
-   * @param {string | null} [next] What Openpath says to do next; also the end of the message.
+   * @param {string | null} [next] What Beacon says to do next; also the end of the message.
    */
   constructor(status, message, code, retryAfter, next = null) {
     super(next ? `${message} ${next}` : message);
@@ -41,7 +41,7 @@ function setting(env, name) {
 
 /**
  * The agent running this code, if one is, from the variables agents set, so
- * Openpath can see which agents turn up.
+ * Beacon can see which agents turn up.
  * @param {NodeJS.ProcessEnv} env
  */
 function detectAgent(env) {
@@ -104,7 +104,7 @@ async function saveToken(file, api, credentials) {
  */
 
 /**
- * One agent's way into Openpath: find beacons and message them, and create,
+ * One agent's way into Beacon: find beacons and message them, and create,
  * renew, update and delete its own beacons and mark what their conversations
  * came to. Most code needs only `find`.
  */
@@ -393,7 +393,7 @@ async function refusal(response) {
   const retry = Number(response.headers.get("retry-after"));
   return new OpenpathError(
     response.status,
-    detail || `Openpath answered ${response.status}.`,
+    detail || `Beacon answered ${response.status}.`,
     code,
     Number.isFinite(retry) && retry > 0 ? retry : null,
     next,

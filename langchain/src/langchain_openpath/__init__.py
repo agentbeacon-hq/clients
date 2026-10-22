@@ -1,8 +1,8 @@
-"""LangChain tools for Openpath: find beacons by meaning and message them, and keep
+"""LangChain tools for Beacon: find beacons by meaning and message them, and keep
 a business's own beacons open, as tools an agent can call.
 
 They call the openpath-sh client. Finding needs no token; the first tool that does
-connects to Openpath by itself, with no key and no sign-up.
+connects to Beacon by itself, with no key and no sign-up.
 """
 
 from langchain_openpath.tools import (

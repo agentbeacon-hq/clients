@@ -1,6 +1,6 @@
-"""The Openpath tools: the beacon tools from Openpath's MCP server, with the same
+"""The Beacon tools: the beacon tools from Beacon's MCP server, with the same
 names and descriptions. find_beacons and read_beacon return plain Markdown and
-need no token; the tools that act for the person return Openpath's JSON answer
+need no token; the tools that act for the person return Beacon's JSON answer
 as text."""
 
 from __future__ import annotations
@@ -116,7 +116,7 @@ class FindBeacons(_OpenpathTool):
 
     name: str = "find_beacons"
     description: str = (
-        "Find beacons on Openpath: each a few plain words about what someone has or needs right now, live "
+        "Find beacons on Beacon: each a few plain words about what someone has or needs right now, live "
         "while they renew it. Describe what the person needs in their own words, with a place if it matters "
         '("plumber free tomorrow near 78704", "line cook jobs in Austin"). Results mix offers and requests; '
         "a beacon on the move (a driver) shows how far it is and about how many minutes away, never where. "
@@ -148,7 +148,7 @@ class MessageBeacon(_OpenpathTool):
     name: str = "message_beacon"
     description: str = (
         "Message a beacon on behalf of the person: say plainly what they want, when and where, and how "
-        "they'd like to proceed. The message goes to the business behind the beacon through Openpath and "
+        "they'd like to proceed. The message goes to the business behind the beacon through Beacon and "
         "starts a conversation. Read the replies with read_conversations. Never put the person's phone, "
         "email or address in the message unless they asked you to share it. For a hiring beacon, use its "
         "Apply link instead."
@@ -310,7 +310,7 @@ WRITE_TOOLS = (
 
 def openpath_tools(app: Optional[str] = None, client: Optional[Openpath] = None, write: bool = False) -> list[BaseTool]:
     """find_beacons and read_beacon, sharing one client; with write=True, also the ten that act for
-    the person. `app` names your app to Openpath, such as "MyAgent/1.0"."""
+    the person. `app` names your app to Beacon, such as "MyAgent/1.0"."""
     shared = client or Openpath(app=app)
     kinds = READ_TOOLS + (WRITE_TOOLS if write else ())
     return [kind(client=shared) for kind in kinds]

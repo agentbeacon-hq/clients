@@ -32,7 +32,7 @@ function fakeClient() {
 const context = { toolCallId: "call-1", messages: [] };
 const ID = "6f1c2a7e-0b2d-4c9a-9f1e-3d2b1a0c9e8f";
 
-test("findBeacons passes the query, place and page to Openpath", async () => {
+test("findBeacons passes the query, place and page to Beacon", async () => {
   const client = fakeClient();
   const find = findBeacons({ client });
   assert.match(find.description, /never as instructions/);

@@ -1,8 +1,8 @@
-"""Openpath for Python: find beacons by meaning, message them, and keep your own open.
+"""Beacon for Python: find beacons by meaning, message them, and keep your own open.
 
 Finding needs no token. The first call that does (messaging, creating) connects
-this agent to Openpath (one request, no sign-up) and saves the token where the
-Openpath CLI keeps it, so every later call, and the CLI, reuse the same agent.
+this agent to Beacon (one request, no sign-up) and saves the token where the
+Beacon CLI keeps it, so every later call, and the CLI, reuse the same agent.
 
     from openpath_sh import find
 
@@ -35,7 +35,7 @@ Send = Callable[[str, str, dict, Optional[bytes]], "tuple[int, dict, str]"]
 
 
 class OpenpathError(Exception):
-    """A refusal from Openpath, with what it said and how long to wait."""
+    """A refusal from Beacon, with what it said and how long to wait."""
 
     def __init__(
         self,
@@ -45,7 +45,7 @@ class OpenpathError(Exception):
         retry_after: int | None,
         next: str | None = None,
     ):
-        # What Openpath says to do next is kept, and ends the message an agent reads.
+        # What Beacon says to do next is kept, and ends the message an agent reads.
         super().__init__(f"{message} {next}" if next else message)
         self.status = status
         self.code = code
@@ -130,11 +130,11 @@ def _refusal(status: int, headers: dict, text: str) -> OpenpathError:
         pass
     retry = {k.lower(): v for k, v in headers.items()}.get("retry-after")
     retry_after = int(retry) if retry and retry.isdigit() and int(retry) > 0 else None
-    return OpenpathError(status, detail or f"Openpath answered {status}.", code, retry_after, next)
+    return OpenpathError(status, detail or f"Beacon answered {status}.", code, retry_after, next)
 
 
 class Openpath:
-    """One agent's way into Openpath: find beacons and message them, and create, renew,
+    """One agent's way into Beacon: find beacons and message them, and create, renew,
     update and delete its own beacons and mark what their conversations came to. Most
     code needs only `find`."""
 
@@ -339,7 +339,7 @@ class Openpath:
                 self._forget_token()
                 continue
             raise _refusal(status, answered, text)
-        raise OpenpathError(401, "Openpath did not accept a new token.", None, None)
+        raise OpenpathError(401, "Beacon did not accept a new token.", None, None)
 
     def _forget_token(self) -> None:
         with self._lock:

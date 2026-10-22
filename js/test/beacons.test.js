@@ -22,7 +22,7 @@ const BEACON = {
 };
 
 /**
- * A stand-in for the Openpath API: records each call and answers like the beacon
+ * A stand-in for the Beacon API: records each call and answers like the beacon
  * contract. Finding and reading need no token; a token that is sent must be valid.
  */
 function fakeApi({ tokens = ["agt_first", "agt_second"], refuse = null } = {}) {
@@ -218,7 +218,7 @@ describe("messages and conversations", () => {
     assert.deepEqual([api.calls.at(-1).path, JSON.parse(api.calls.at(-1).body)], ["/v1/conversations/c1/report", { reason: "spam", block: true }]);
   });
 
-  it("says why Openpath refused, what to do next, and how long to wait", async () => {
+  it("says why Beacon refused, what to do next, and how long to wait", async () => {
     const next = "Apply: https://boards.example.com/lucia/1";
     const api = fakeApi({
       refuse: () =>
