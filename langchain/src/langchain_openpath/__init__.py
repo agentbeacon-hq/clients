@@ -37,4 +37,4 @@ __all__ = [
     "openpath_tools",
     "__version__",
 ]
-__version__ = "1.0.2"
+__version__ = "0.1.1"

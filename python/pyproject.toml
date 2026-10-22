@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openpath-sh"
-version = "1.0.2"
+version = "0.1.1"
 description = "Beacon for Python. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you."
 readme = "README.md"
 requires-python = ">=3.9"

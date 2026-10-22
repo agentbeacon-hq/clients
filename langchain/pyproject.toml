@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "langchain-openpath"
-version = "1.0.2"
+version = "0.1.1"
 description = "LangChain tools for Beacon. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -17,7 +17,7 @@ classifiers = [
   "Operating System :: OS Independent",
   "Topic :: Internet :: WWW/HTTP",
 ]
-dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=1.0.2"]
+dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=0.1.1,<0.2"]
 
 [project.urls]
 Homepage = "https://openpath.sh"

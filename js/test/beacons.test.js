@@ -243,6 +243,6 @@ describe("messages and conversations", () => {
     const api = fakeApi();
     const { op } = await client(api, { app: "JobFinder/1.0" });
     await op.search("line cook jobs in Austin");
-    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 openpath-js\/1\.0\.2/);
+    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 openpath-js\/0\.1\.1/);
   });
 });

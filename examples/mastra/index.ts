@@ -20,7 +20,7 @@ export const searchBeacons = createTool({
 export const readBeacon = createTool({
   id: "read-beacon",
   description:
-    "Read one beacon by the id at the end of its Link line: its current words, until when it's open, when it was last updated, and how to message it. Use it before messaging, to see the latest version.",
+    "Read one beacon by the id at the end of its Link line: its current words, with any phone, email or link it gives (search shows them masked), until when it's open, when it was last updated, and how to message it. Use it before messaging or calling, to see the latest version.",
   inputSchema: z.object({ id: z.string().describe("The id at the end of a beacon's Link line.") }),
   outputSchema: z.string(),
   execute: async ({ id }) => read(id),

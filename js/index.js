@@ -7,7 +7,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-export const VERSION = "1.0.2";
+export const VERSION = "0.1.1";
 export const DEFAULT_API = "https://api.openpath.sh";
 
 /** A refusal from Beacon, with what it said and how long to wait. */
@@ -180,7 +180,8 @@ export class Openpath {
 
   /**
    * One beacon, as Markdown, by the id at the end of its Link line: its
-   * current words, until when it's open, and how to message it. Needs no token.
+   * current words, with any phone, email or link it gives in full (search
+   * shows them masked), until when it's open, and how to message it. Needs no token.
    * @param {string} id
    * @returns {Promise<string>}
    */

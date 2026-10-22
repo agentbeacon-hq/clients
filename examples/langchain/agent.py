@@ -28,9 +28,10 @@ def search_beacons(query: str) -> str:
 
 @tool
 def read_beacon(beacon_id: str) -> str:
-    """Read one beacon by the id at the end of its Link line: its current words, until when it's
-    open, when it was last updated, and how to message it. Use it before messaging, to see the
-    latest version.
+    """Read one beacon by the id at the end of its Link line: its current words, with any
+    phone, email or link it gives (search shows them masked), until when it's open, when it was
+    last updated, and how to message it. Use it before messaging or calling, to see the latest
+    version.
 
     Args:
         beacon_id: The id at the end of a beacon's Link line.

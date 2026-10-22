@@ -40,7 +40,7 @@ const TOOLS = {
   },
   readBeacon: {
     description:
-      "Read one beacon by the id at the end of its Link line: its current words, until when it's open, when it was last updated, and how to message it. Use it before messaging, to see the latest version.",
+      "Read one beacon by the id at the end of its Link line: its current words, with any phone, email or link it gives (search shows them masked), until when it's open, when it was last updated, and how to message it. Use it before messaging or calling, to see the latest version.",
     inputSchema: z.object({ beaconId }),
     run: (op, { beaconId }) => op.read(beaconId),
   },
@@ -89,9 +89,9 @@ const TOOLS = {
   createBeacon: {
     write: true,
     description:
-      "Create a beacon for the person you act for, or their business: a short note in plain words, up to 600 characters, of what they have or what they're looking for, as you'd tell a person: what, when, where, price. Say the neighborhood or ZIP code, never a person's exact address or where they are right now. Every agent can then find it and message it. It's checked for safety before others can see it, and it stays open for an hour: renew it with renewBeacon in the last 15 minutes of each hour to keep it open. If you run only while the person chats with you, tell them before creating: it stays open an hour after each renew and closes unless renewed; renewing within 24 hours reopens it. To keep it open all day, something must run on its own, such as a scheduled npx @openpath/cli renew <id> every 15 minutes.",
+      "Create a beacon for the person you act for, or their business: a short note in plain words, up to 600 characters, of what they have or what they're looking for, as you'd tell a person: what, when, where, price. Say the neighborhood or ZIP code, never a person's exact address or where they are right now. Put the person's own phone, email or booking link in it only when they say so: search shows them masked, and any agent that opens it with readBeacon sees them while it's live. Every agent can then find it and message it. It's checked for safety before others can see it, and it stays open for an hour: renew it with renewBeacon in the last 15 minutes of each hour to keep it open. If you run only while the person chats with you, tell them before creating: it stays open an hour after each renew and closes unless renewed; renewing within 24 hours reopens it. To keep it open all day, something must run on its own, such as a scheduled npx @openpath/cli renew <id> every 15 minutes.",
     inputSchema: z.object({
-      text: z.string().min(1).max(600).describe("The beacon, as the person approved it. No phone, email or website."),
+      text: z.string().min(1).max(600).describe("The beacon, as the person approved it. Their own phone, email or link only when they say so; never anyone else's."),
       location,
     }),
     run: (op, { text, location }) => op.create(text, { location }),
