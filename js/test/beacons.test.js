@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 
-import { Openpath, OpenpathError } from "../index.js";
+import { AgentBeacon, AgentBeaconError } from "../index.js";
 
 const PAGE = '# Beacons for "plumber free tomorrow near 78704"\n\nRead as: near Austin, TX 78704. 1 beacon.\n';
 const BEACON = {
@@ -14,8 +14,8 @@ const BEACON = {
     location: { lat: 30.2416, lng: -97.7695, updated: "2026-10-19T16:00:00Z" },
     expires: "2026-10-19T17:00:00Z",
   },
-  verification: { issuer: "openpath.sh", summary: "Nothing about who made this was checked. Active 1 day. Never reported." },
-  link: "https://openpath.sh/beacon/b1",
+  verification: { issuer: "agentbeacon.sh", summary: "Nothing about who made this was checked. Active 1 day. Never reported." },
+  link: "https://agentbeacon.sh/beacon/b1",
   mine: {
     closed: false,
     renew_from: "2026-10-19T16:45:00Z",
@@ -27,7 +27,7 @@ const BEACON = {
 };
 
 /**
- * A stand-in for the Beacon API: records each call and answers like the beacon
+ * A stand-in for the AgentBeacon API: records each call and answers like the beacon
  * contract. Searching and reading need no token; a token that is sent must be valid.
  */
 function fakeApi({ tokens = ["agt_first", "agt_second"], refuse = null } = {}) {
@@ -60,8 +60,8 @@ function fakeApi({ tokens = ["agt_first", "agt_second"], refuse = null } = {}) {
 }
 
 async function client(api, extra = {}) {
-  const home = await mkdtemp(join(tmpdir(), "openpath-js-"));
-  return { home, op: new Openpath({ fetch: api.fetch, env: {}, home, ...extra }) };
+  const home = await mkdtemp(join(tmpdir(), "agentbeacon-js-"));
+  return { home, op: new AgentBeacon({ fetch: api.fetch, env: {}, home, ...extra }) };
 }
 
 const exists = (file) => stat(file).then(() => true, () => false);
@@ -79,28 +79,28 @@ describe("searching and reading beacons", () => {
     );
     assert.equal(api.calls[0].headers.Authorization, undefined);
     assert.equal(api.calls[0].headers.Accept, "text/markdown");
-    assert.equal(await exists(join(home, ".config/openpath/credentials.json")), false);
+    assert.equal(await exists(join(home, ".config/agentbeacon/credentials.json")), false);
   });
 
   it("sends a token it already has, and searches without it when it was revoked", async () => {
     const api = fakeApi();
     const { home, op } = await client(api);
     await op.myBeacons();
-    await new Openpath({ fetch: api.fetch, env: {}, home }).search("movers");
+    await new AgentBeacon({ fetch: api.fetch, env: {}, home }).search("movers");
     assert.equal(api.calls.at(-1).headers.Authorization, "Bearer agt_first");
-    const stale = new Openpath({ fetch: api.fetch, env: {}, home: await mkdtemp(join(tmpdir(), "openpath-js-")), token: "agt_revoked" });
+    const stale = new AgentBeacon({ fetch: api.fetch, env: {}, home: await mkdtemp(join(tmpdir(), "agentbeacon-js-")), token: "agt_revoked" });
     assert.equal(await stale.search("movers"), PAGE);
     assert.equal(api.calls.at(-1).headers.Authorization, undefined);
     assert.equal(api.calls.filter((c) => c.path === "/v1/connect").length, 1);
   });
 
-  it("uses OPENPATH_TOKEN before the saved token, and ignores the old name", async () => {
+  it("uses AGENTBEACON_TOKEN before the saved token, and ignores the old name", async () => {
     const api = fakeApi();
-    const home = await mkdtemp(join(tmpdir(), "openpath-js-"));
-    await new Openpath({ fetch: api.fetch, env: { OPENPATH_TOKEN: "agt_env" }, home }).search("movers");
+    const home = await mkdtemp(join(tmpdir(), "agentbeacon-js-"));
+    await new AgentBeacon({ fetch: api.fetch, env: { AGENTBEACON_TOKEN: "agt_env" }, home }).search("movers");
     assert.equal(api.calls[0].headers.Authorization, "Bearer agt_env");
     const old = fakeApi();
-    await new Openpath({ fetch: old.fetch, env: { OPENPATH_AGENT_TOKEN: "agt_env" }, home: await mkdtemp(join(tmpdir(), "openpath-js-")) }).search("movers");
+    await new AgentBeacon({ fetch: old.fetch, env: { OPENPATH_TOKEN: "agt_env" }, home: await mkdtemp(join(tmpdir(), "agentbeacon-js-")) }).search("movers");
     assert.equal(old.calls[0].headers.Authorization, undefined);
   });
 });
@@ -115,9 +115,9 @@ describe("connecting", () => {
     assert.equal(connect.body, undefined);
     assert.equal(connect.headers["Content-Type"], undefined);
     assert.equal(api.calls[1].headers.Authorization, "Bearer agt_first");
-    const saved = JSON.parse(await readFile(join(home, ".config/openpath/credentials.json"), "utf8"));
-    assert.deepEqual(Object.keys(saved["https://api.openpath.sh"]).sort(), ["agent_id", "connected_at", "token"]);
-    await new Openpath({ fetch: api.fetch, env: {}, home }).myBeacons();
+    const saved = JSON.parse(await readFile(join(home, ".config/agentbeacon/credentials.json"), "utf8"));
+    assert.deepEqual(Object.keys(saved["https://api.agentbeacon.sh"]).sort(), ["agent_id", "connected_at", "token"]);
+    await new AgentBeacon({ fetch: api.fetch, env: {}, home }).myBeacons();
     assert.equal(api.calls.filter((c) => c.path === "/v1/connect").length, 1);
   });
 
@@ -199,7 +199,7 @@ describe("a beacon on the move", () => {
     });
     const { op } = await client(api, { token: "agt_env" });
     await assert.rejects(op.updateLocation("b1", 30.2672, -97.7431, 3), (error) => {
-      assert.ok(error instanceof OpenpathError);
+      assert.ok(error instanceof AgentBeaconError);
       assert.equal(error.status, 429);
       assert.equal(error.code, "rate_limited");
       assert.equal(error.retryAfter, 2);
@@ -232,7 +232,7 @@ describe("messages and conversations", () => {
     assert.deepEqual([api.calls.at(-1).path, JSON.parse(api.calls.at(-1).body)], ["/v1/conversations/c1/report", { reason: "spam", block: true }]);
   });
 
-  it("says why Beacon refused, what to do next, and how long to wait", async () => {
+  it("says why AgentBeacon refused, what to do next, and how long to wait", async () => {
     const next = "Tell the person, and offer others.";
     const api = fakeApi({
       refuse: () =>
@@ -243,7 +243,7 @@ describe("messages and conversations", () => {
     });
     const { op } = await client(api);
     await assert.rejects(op.message("b1", "Hi"), (error) => {
-      assert.ok(error instanceof OpenpathError);
+      assert.ok(error instanceof AgentBeaconError);
       assert.equal(error.status, 410);
       assert.equal(error.code, "beacon_closed");
       assert.equal(error.next, next);
@@ -257,6 +257,6 @@ describe("messages and conversations", () => {
     const api = fakeApi();
     const { op } = await client(api, { app: "JobFinder/1.0" });
     await op.search("line cook jobs in Austin");
-    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 openpath-js\/0\.1\.2/);
+    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 agentbeacon-js\/0\.1\.0/);
   });
 });

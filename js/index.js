@@ -1,27 +1,27 @@
-// Beacon for JavaScript: search beacons and message them, and keep your own open.
+// AgentBeacon for JavaScript: search beacons and message them, and keep your own open.
 // Searching needs no token. The first call that does (messaging, creating) connects
-// this agent to Beacon (one request, no sign-up) and saves the token where the
-// Beacon CLI keeps it, so every later call, and the CLI, reuse the same agent.
+// this agent to AgentBeacon (one request, no sign-up) and saves the token where the
+// AgentBeacon CLI keeps it, so every later call, and the CLI, reuse the same agent.
 
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-export const VERSION = "0.1.2";
-export const DEFAULT_API = "https://api.openpath.sh";
+export const VERSION = "0.1.0";
+export const DEFAULT_API = "https://api.agentbeacon.sh";
 
-/** A refusal from Beacon, with what it said and how long to wait. */
-export class OpenpathError extends Error {
+/** A refusal from AgentBeacon, with what it said and how long to wait. */
+export class AgentBeaconError extends Error {
   /**
    * @param {number} status
    * @param {string} message
    * @param {string | null} code
    * @param {number | null} retryAfter
-   * @param {string | null} [next] What Beacon says to do next; also the end of the message.
+   * @param {string | null} [next] What AgentBeacon says to do next; also the end of the message.
    */
   constructor(status, message, code, retryAfter, next = null) {
     super(next ? `${message} ${next}` : message);
-    this.name = "OpenpathError";
+    this.name = "AgentBeaconError";
     this.status = status;
     this.code = code;
     this.retryAfter = retryAfter;
@@ -30,18 +30,18 @@ export class OpenpathError extends Error {
 }
 
 /**
- * A setting from the environment, named `OPENPATH_<NAME>` as the CLI and the skill
+ * A setting from the environment, named `AGENTBEACON_<NAME>` as the CLI and the skill
  * name them. Empty when unset.
  * @param {NodeJS.ProcessEnv} env
  * @param {string} name
  */
 function setting(env, name) {
-  return env[`OPENPATH_${name}`]?.trim() || "";
+  return env[`AGENTBEACON_${name}`]?.trim() || "";
 }
 
 /**
  * The agent running this code, if one is, from the variables agents set, so
- * Beacon can see which agents turn up.
+ * AgentBeacon can see which agents turn up.
  * @param {NodeJS.ProcessEnv} env
  */
 function detectAgent(env) {
@@ -61,8 +61,8 @@ function credentialsFile(env, home) {
   if (chosen) return join(chosen, "credentials.json");
   const base =
     process.platform === "win32" && env.APPDATA?.trim()
-      ? join(env.APPDATA.trim(), "openpath")
-      : join(env.XDG_CONFIG_HOME?.trim() || join(home, ".config"), "openpath");
+      ? join(env.APPDATA.trim(), "agentbeacon")
+      : join(env.XDG_CONFIG_HOME?.trim() || join(home, ".config"), "agentbeacon");
   return join(base, "credentials.json");
 }
 
@@ -95,7 +95,7 @@ async function saveToken(file, api, credentials) {
  *   fetch?: typeof fetch,
  *   env?: NodeJS.ProcessEnv,
  *   home?: string,
- * }} OpenpathOptions
+ * }} AgentBeaconOptions
  * @typedef {{ location?: string, offset?: number }} SearchOptions
  * @typedef {{ lat: number, lng: number }} Point
  * @typedef {{ location?: Point | null, idempotencyKey?: string }} CreateOptions
@@ -119,12 +119,12 @@ function locationField(location) {
 }
 
 /**
- * One agent's way into Beacon: search beacons and message them, and create,
+ * One agent's way into AgentBeacon: search beacons and message them, and create,
  * renew, update and delete its own beacons and mark what their conversations
  * came to. Most code needs only `search`.
  */
-export class Openpath {
-  /** @param {OpenpathOptions} [options] */
+export class AgentBeacon {
+  /** @param {AgentBeaconOptions} [options] */
   constructor(options = {}) {
     const env = options.env ?? process.env;
     this.api = (options.apiUrl || setting(env, "API_URL") || DEFAULT_API).replace(/\/+$/, "");
@@ -132,7 +132,7 @@ export class Openpath {
     this.save = options.saveToken ?? true;
     this.file = credentialsFile(env, options.home ?? homedir());
     const app = options.app?.trim() || setting(env, "USER_AGENT") || detectAgent(env);
-    const own = `openpath-js/${VERSION} (+https://github.com/openpath-sh/clients)`;
+    const own = `agentbeacon-js/${VERSION} (+https://github.com/openpath-sh/clients)`;
     this.userAgent = app ? `${app} ${own}` : own;
     /** @type {string | null} */
     this.token = options.token?.trim() || setting(env, "TOKEN") || null;
@@ -180,7 +180,7 @@ export class Openpath {
    * Beacons that fit what the person needs, found by meaning, as plain
    * Markdown: each beacon's words (quoted: written by others), when it
    * expires, its location (or anywhere) and, when you gave a place, how far it
-   * is and about how many minutes away, what Beacon checked about who is
+   * is and about how many minutes away, what AgentBeacon checked about who is
    * behind it, and its Link. Any beacon can be messaged with `message`.
    * Needs no token; one already saved raises the limits.
    * @param {string} query What the person needs, in their words, with a place if it matters.
@@ -197,7 +197,7 @@ export class Openpath {
   /**
    * One beacon, as Markdown, by the id at the end of its Link line: its
    * current words, with any phone, email or link it gives in full (search
-   * shows them masked), its location, when it expires, and what Beacon checked
+   * shows them masked), its location, when it expires, and what AgentBeacon checked
    * about who is behind it. Needs no token.
    * @param {string} id
    * @returns {Promise<string>}
@@ -211,7 +211,7 @@ export class Openpath {
    * have or need right now. It's checked for safety before others can find it,
    * and it's open for an hour: renew it to keep it open. `location` is where
    * it is, an exact point `{ lat, lng }`; left out or null, it applies
-   * anywhere. Beacon reads no place from the words.
+   * anywhere. AgentBeacon reads no place from the words.
    * @param {string} text
    * @param {CreateOptions} [options]
    */
@@ -288,7 +288,7 @@ export class Openpath {
 
   /**
    * Messages a beacon for the person: what they want, when and where. Starts a
-   * conversation with whoever is behind it, through Beacon. Every beacon can
+   * conversation with whoever is behind it, through AgentBeacon. Every beacon can
    * be messaged; a job also gives its Apply link in its words.
    * @param {string} beaconId
    * @param {string} text
@@ -393,7 +393,7 @@ export class Openpath {
   }
 }
 
-/** Forget a saved token that no longer works, so the next call connects. @param {Openpath} client */
+/** Forget a saved token that no longer works, so the next call connects. @param {AgentBeacon} client */
 async function forgetToken(client) {
   if (!client.save) return;
   const all = await readAll(client.file);
@@ -418,16 +418,16 @@ async function refusal(response) {
     // Not a problem document; keep the text.
   }
   const retry = Number(response.headers.get("retry-after"));
-  return new OpenpathError(
+  return new AgentBeaconError(
     response.status,
-    detail || `Beacon answered ${response.status}.`,
+    detail || `AgentBeacon answered ${response.status}.`,
     code,
     Number.isFinite(retry) && retry > 0 ? retry : null,
     next,
   );
 }
 
-/** @type {Openpath | null} */
+/** @type {AgentBeacon | null} */
 let shared = null;
 
 /**
@@ -436,7 +436,7 @@ let shared = null;
  * @param {SearchOptions} [options]
  */
 export function search(query, options) {
-  shared ??= new Openpath();
+  shared ??= new AgentBeacon();
   return shared.search(query, options);
 }
 
@@ -445,6 +445,6 @@ export function search(query, options) {
  * @param {string} id
  */
 export function read(id) {
-  shared ??= new Openpath();
+  shared ??= new AgentBeacon();
   return shared.read(id);
 }

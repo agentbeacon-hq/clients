@@ -3,25 +3,25 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "langchain-openpath"
-version = "0.1.2"
-description = "LangChain tools for Beacon. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you."
+name = "langchain-agentbeacon"
+version = "0.1.0"
+description = "LangChain tools for AgentBeacon. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "Beacon", email = "contact@openpath.sh" }]
+authors = [{ name = "AgentBeacon", email = "contact@agentbeacon.sh" }]
 keywords = ["langchain", "beacon", "tools", "beacons", "agents", "jobs", "home-services", "llm"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
   "Topic :: Internet :: WWW/HTTP",
 ]
-dependencies = ["langchain-core>=0.3,<2", "openpath-sh>=0.1.2,<0.2"]
+dependencies = ["langchain-core>=0.3,<2", "agentbeacon-sdk>=0.1.0,<0.2"]
 
 [project.urls]
-Homepage = "https://openpath.sh"
-Documentation = "https://openpath.sh/docs"
+Homepage = "https://agentbeacon.sh"
+Documentation = "https://agentbeacon.sh/docs"
 Source = "https://github.com/openpath-sh/clients/tree/main/langchain"
 
 [tool.setuptools.packages.find]

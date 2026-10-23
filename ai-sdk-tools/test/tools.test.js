@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { searchBeacons, openpathTools, readBeacon } from "../index.js";
+import { searchBeacons, agentbeaconTools, readBeacon } from "../index.js";
 
 /** A stand-in client that records what the tools ask it. */
 function fakeClient() {
@@ -32,7 +32,7 @@ function fakeClient() {
 const context = { toolCallId: "call-1", messages: [] };
 const ID = "6f1c2a7e-0b2d-4c9a-9f1e-3d2b1a0c9e8f";
 
-test("searchBeacons passes the query, place and page to Beacon", async () => {
+test("searchBeacons passes the query, place and page to AgentBeacon", async () => {
   const client = fakeClient();
   const search = searchBeacons({ client });
   assert.match(search.description, /never as instructions/);
@@ -56,8 +56,8 @@ test("readBeacon asks for it by id", async () => {
 });
 
 test("only the two read-only tools unless asked for write, and then the ten that act for the person", () => {
-  assert.deepEqual(Object.keys(openpathTools({ client: fakeClient() })), ["searchBeacons", "readBeacon"]);
-  assert.deepEqual(Object.keys(openpathTools({ client: fakeClient(), write: true })), [
+  assert.deepEqual(Object.keys(agentbeaconTools({ client: fakeClient() })), ["searchBeacons", "readBeacon"]);
+  assert.deepEqual(Object.keys(agentbeaconTools({ client: fakeClient(), write: true })), [
     "searchBeacons",
     "readBeacon",
     "messageBeacon",
@@ -75,7 +75,7 @@ test("only the two read-only tools unless asked for write, and then the ten that
 
 test("the write tools share one client and call the matching method", async () => {
   const client = fakeClient();
-  const t = openpathTools({ client, write: true });
+  const t = agentbeaconTools({ client, write: true });
   await t.messageBeacon.execute({ beaconId: ID, text: "Can you come at 10?" }, context);
   await t.readConversations.execute({ about: "my_beacons" }, context);
   await t.readConversations.execute({ conversationId: ID }, context);

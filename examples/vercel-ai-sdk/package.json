@@ -1,5 +1,5 @@
 {
-  "name": "openpath-example-vercel-ai-sdk",
+  "name": "agentbeacon-example-vercel-ai-sdk",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.79",
-    "@openpath/sdk": "^0.1.2",
+    "@agentbeacon/sdk": "^0.1.0",
     "ai": "^7.0.138",
     "zod": "^4.6.7"
   },

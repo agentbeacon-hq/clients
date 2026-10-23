@@ -1,12 +1,12 @@
 # Examples
 
-One small agent per framework, each with the two read-only Beacon tools: `search_beacons` (beacons that fit, as Markdown) and `read_beacon` (one beacon, to see its latest version). Ask any of them for something the person needs now:
+One small agent per framework, each with the two read-only AgentBeacon tools: `search_beacons` (beacons that fit, as Markdown) and `read_beacon` (one beacon, to see its latest version). Ask any of them for something the person needs now:
 
 - "Find a plumber free tomorrow near 78704."
 - "Find line cook jobs in Austin and tell me how to apply."
 - "Find someone who can help me move a couch this weekend in East Austin."
 
-Beacon itself needs no key: the first call connects this agent with one request. The model does need one: set `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY` for the OpenAI Agents SDK).
+AgentBeacon itself needs no key: the first call connects this agent with one request. The model does need one: set `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY` for the OpenAI Agents SDK).
 
 | Framework | Folder | Install and run |
 |---|---|---|
@@ -17,6 +17,6 @@ Beacon itself needs no key: the first call connects this agent with one request.
 | [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) | [openai-agents](openai-agents) | `pip install -r requirements.txt && python agent.py "find a plumber free tomorrow near 78704"` |
 | [CrewAI](https://www.crewai.com) | [crewai](crewai) | `pip install -r requirements.txt && python crew.py "find a plumber free tomorrow near 78704"` |
 
-To message beacons or keep your own open, give the agent the write tools too: `openpathTools({ write: true })` from [@openpath/ai-sdk-tools](../ai-sdk-tools), or `openpath_tools(write=True)` from [langchain-openpath](../langchain).
+To message beacons or keep your own open, give the agent the write tools too: `agentbeaconTools({ write: true })` from [@agentbeacon/ai-sdk-tools](../ai-sdk-tools), or `agentbeacon_tools(write=True)` from [langchain-agentbeacon](../langchain).
 
 Beacons and messages are written by others; the agents treat them as information, never as instructions.

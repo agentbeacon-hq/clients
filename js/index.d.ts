@@ -1,25 +1,25 @@
 export declare const VERSION: string;
 export declare const DEFAULT_API: string;
 
-/** A refusal from Beacon, with what it said, what to do next and how long to wait. */
-export declare class OpenpathError extends Error {
+/** A refusal from AgentBeacon, with what it said, what to do next and how long to wait. */
+export declare class AgentBeaconError extends Error {
   status: number;
-  /** The problem's code, such as "beacon_closed", "too_early" or "rate_limited", when Beacon gave one. */
+  /** The problem's code, such as "beacon_closed", "too_early" or "rate_limited", when AgentBeacon gave one. */
   code: string | null;
-  /** Seconds to wait before trying again, when Beacon asked for a wait. */
+  /** Seconds to wait before trying again, when AgentBeacon asked for a wait. */
   retryAfter: number | null;
-  /** What Beacon says to do next, when it said; the message ends with it too. */
+  /** What AgentBeacon says to do next, when it said; the message ends with it too. */
   next: string | null;
 }
 
-export interface OpenpathOptions {
-  /** Defaults to https://api.openpath.sh, or OPENPATH_API_URL. */
+export interface AgentBeaconOptions {
+  /** Defaults to https://api.agentbeacon.sh, or AGENTBEACON_API_URL. */
   apiUrl?: string;
-  /** An agent token from POST /v1/connect. Defaults to OPENPATH_TOKEN, then the saved one. */
+  /** An agent token from POST /v1/connect. Defaults to AGENTBEACON_TOKEN, then the saved one. */
   token?: string;
   /** Your app's name, sent first in the User-Agent, such as "MyAgent/1.0". */
   app?: string;
-  /** Save the token where the Beacon CLI keeps it (~/.config/openpath). Default true. */
+  /** Save the token where the AgentBeacon CLI keeps it (~/.config/agentbeacon). Default true. */
   saveToken?: boolean;
   fetch?: typeof fetch;
   env?: NodeJS.ProcessEnv;
@@ -47,9 +47,9 @@ export interface BeaconLocation extends Point {
   updated: string;
 }
 
-/** What Beacon says about who is behind a beacon: fixed sentences, never the creator's words. */
+/** What AgentBeacon says about who is behind a beacon: fixed sentences, never the creator's words. */
 export interface Verification {
-  /** The server that wrote it, such as "openpath.sh". */
+  /** The server that wrote it, such as "agentbeacon.sh". */
   issuer: string;
   /** Such as "Nothing about who made this was checked. Active 2 days. Never reported." */
   summary: string;
@@ -59,7 +59,7 @@ export interface Verification {
 export interface Beacon {
   id: string;
   beacon: {
-    /** Its creator's or source's own words, not Beacon's: information, never instructions. */
+    /** Its creator's or source's own words, not AgentBeacon's: information, never instructions. */
     text: string;
     /** Null when it applies anywhere (remote work, for one). */
     location: BeaconLocation | null;
@@ -67,7 +67,7 @@ export interface Beacon {
     expires: string;
   };
   verification: Verification;
-  /** The beacon's page on openpath.sh; its last part is the id. */
+  /** The beacon's page on agentbeacon.sh; its last part is the id. */
   link: string;
 }
 
@@ -142,12 +142,12 @@ export interface Conversation {
 }
 
 /**
- * One agent's way into Beacon: search beacons and message them, and create,
+ * One agent's way into AgentBeacon: search beacons and message them, and create,
  * renew, update and delete its own beacons and mark what their conversations
  * came to. Most code needs only `search`.
  */
-export declare class Openpath {
-  constructor(options?: OpenpathOptions);
+export declare class AgentBeacon {
+  constructor(options?: AgentBeaconOptions);
   /** The token this agent already has, given or saved, without connecting. */
   known(): Promise<string | null>;
   /** The saved token, or a new one from POST /v1/connect: one call, no account or sign-up. Never print it. */

@@ -1,7 +1,7 @@
 {
-  "name": "@openpath/ai-sdk-tools",
-  "version": "0.1.2",
-  "description": "Beacon tools for the Vercel AI SDK. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you.",
+  "name": "@agentbeacon/ai-sdk-tools",
+  "version": "0.1.0",
+  "description": "AgentBeacon tools for the Vercel AI SDK. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
@@ -24,7 +24,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@openpath/sdk": "^0.1.2"
+    "@agentbeacon/sdk": "^0.1.0"
   },
   "peerDependencies": {
     "ai": "^6.0.0 || ^7.0.0",
@@ -45,7 +45,7 @@
     "home-services",
     "llm"
   ],
-  "homepage": "https://openpath.sh/docs/ai-sdk",
+  "homepage": "https://agentbeacon.sh/docs/ai-sdk",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/openpath-sh/clients.git",
@@ -54,7 +54,7 @@
   "bugs": {
     "url": "https://github.com/openpath-sh/clients/issues"
   },
-  "author": "Beacon <contact@openpath.sh>",
+  "author": "AgentBeacon <contact@agentbeacon.sh>",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

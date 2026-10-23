@@ -1,9 +1,9 @@
-import type { Openpath, OpenpathOptions, Outcome, Point } from "@openpath/sdk";
+import type { AgentBeacon, AgentBeaconOptions, Outcome, Point } from "@agentbeacon/sdk";
 import type { Tool } from "ai";
 
-export interface OpenpathToolOptions extends Pick<OpenpathOptions, "app" | "token" | "saveToken" | "apiUrl"> {
+export interface AgentBeaconToolOptions extends Pick<AgentBeaconOptions, "app" | "token" | "saveToken" | "apiUrl"> {
   /** A client to use instead of a new one, such as one shared with your own code. */
-  client?: Openpath;
+  client?: AgentBeacon;
 }
 
 export interface SearchBeaconsInput {
@@ -37,9 +37,9 @@ export interface WriteTools {
 }
 
 /** Search beacons by meaning. Returns plain Markdown. */
-export declare function searchBeacons(options?: OpenpathToolOptions): ReadTools["searchBeacons"];
+export declare function searchBeacons(options?: AgentBeaconToolOptions): ReadTools["searchBeacons"];
 /** Read one beacon by its id. Returns plain Markdown. */
-export declare function readBeacon(options?: OpenpathToolOptions): ReadTools["readBeacon"];
+export declare function readBeacon(options?: AgentBeaconToolOptions): ReadTools["readBeacon"];
 /** searchBeacons and readBeacon, sharing one client; with `write: true`, also the ten that act for the person. */
-export declare function openpathTools(options: OpenpathToolOptions & { write: true }): ReadTools & WriteTools;
-export declare function openpathTools(options?: OpenpathToolOptions & { write?: false }): ReadTools;
+export declare function agentbeaconTools(options: AgentBeaconToolOptions & { write: true }): ReadTools & WriteTools;
+export declare function agentbeaconTools(options?: AgentBeaconToolOptions & { write?: false }): ReadTools;

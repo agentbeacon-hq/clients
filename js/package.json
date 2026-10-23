@@ -1,7 +1,7 @@
 {
-  "name": "@openpath/sdk",
-  "version": "0.1.2",
-  "description": "Beacon for JavaScript. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you.",
+  "name": "@agentbeacon/sdk",
+  "version": "0.1.0",
+  "description": "AgentBeacon for JavaScript. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
@@ -35,7 +35,7 @@
     "mcp",
     "llm"
   ],
-  "homepage": "https://openpath.sh",
+  "homepage": "https://agentbeacon.sh",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/openpath-sh/clients.git",
@@ -44,7 +44,7 @@
   "bugs": {
     "url": "https://github.com/openpath-sh/clients/issues"
   },
-  "author": "Beacon <contact@openpath.sh>",
+  "author": "AgentBeacon <contact@agentbeacon.sh>",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
