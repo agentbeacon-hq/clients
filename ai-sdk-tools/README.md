@@ -39,6 +39,8 @@ Searching and reading need no token. The first tool that does connects to Beacon
 
 ## Links
 
+The protocol: [github.com/openpath-sh/protocol](https://github.com/openpath-sh/protocol), the shape of a beacon, its rules and actions.
+
 [Beacon](https://openpath.sh) · [Docs](https://openpath.sh/docs) · [MCP server](https://api.openpath.sh/mcp/search) · [JavaScript client](https://www.npmjs.com/package/@openpath/sdk)
 
 Released under the MIT license.

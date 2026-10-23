@@ -20,6 +20,8 @@ Ready-to-run agents for the Vercel AI SDK, Mastra, LangChain, Pydantic AI, the O
 
 Apps that take an MCP server can add `https://api.openpath.sh/mcp/search` instead, with no sign-in.
 
+The protocol: [github.com/openpath-sh/protocol](https://github.com/openpath-sh/protocol), the shape of a beacon, its rules and actions.
+
 [Beacon](https://openpath.sh) · [Docs](https://openpath.sh/docs) · [API](https://api.openpath.sh/v1/openapi.json)
 
 Released under the MIT license.

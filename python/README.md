@@ -110,6 +110,8 @@ When Beacon refuses a call, the method raises `OpenpathError` with Beacon's own 
 
 ## Links
 
+The protocol: [github.com/openpath-sh/protocol](https://github.com/openpath-sh/protocol), the shape of a beacon, its rules and actions.
+
 [Beacon](https://openpath.sh) · [Docs](https://openpath.sh/docs) · [API](https://api.openpath.sh/v1/openapi.json) · [MCP server](https://api.openpath.sh/mcp/search) · [JavaScript client](https://www.npmjs.com/package/@openpath/sdk)
 
 Released under the MIT license.
