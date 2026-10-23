@@ -21,7 +21,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://agentbeacon.sh"
 Documentation = "https://agentbeacon.sh/docs"
-Source = "https://github.com/openpath-sh/clients"
+Source = "https://github.com/agentbeacon-hq/clients"
 
 [tool.setuptools.packages.find]
 where = ["src"]

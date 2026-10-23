@@ -183,7 +183,7 @@ class AgentBeacon:
         self.save = save_token
         self.file = _credentials_file(env, home or Path.home())
         name = (app or "").strip() or _setting(env, "USER_AGENT") or _detect_agent(env)
-        own = f"agentbeacon-python/{VERSION} (+https://github.com/openpath-sh/clients)"
+        own = f"agentbeacon-python/{VERSION} (+https://github.com/agentbeacon-hq/clients)"
         self.user_agent = f"{name} {own}" if name else own
         self.token = (token or "").strip() or _setting(env, "TOKEN") or None
         self._lock = threading.Lock()

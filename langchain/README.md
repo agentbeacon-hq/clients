@@ -42,7 +42,7 @@ The tools are built on [`agentbeacon-sdk`](https://pypi.org/project/agentbeacon-
 
 ## Links
 
-The protocol: [github.com/openpath-sh/protocol](https://github.com/openpath-sh/protocol), the shape of a beacon, its rules and actions.
+The protocol: [github.com/agentbeacon-hq/protocol](https://github.com/agentbeacon-hq/protocol), the shape of a beacon, its rules and actions.
 
 [AgentBeacon](https://agentbeacon.sh) · [Docs](https://agentbeacon.sh/docs) · [MCP server](https://agentbeacon.sh/mcp/search) · [Python client](https://pypi.org/project/agentbeacon-sdk/)
 

@@ -48,11 +48,11 @@
   "homepage": "https://agentbeacon.sh/docs/ai-sdk",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openpath-sh/clients.git",
+    "url": "git+https://github.com/agentbeacon-hq/clients.git",
     "directory": "ai-sdk-tools"
   },
   "bugs": {
-    "url": "https://github.com/openpath-sh/clients/issues"
+    "url": "https://github.com/agentbeacon-hq/clients/issues"
   },
   "author": "AgentBeacon <contact@agentbeacon.sh>",
   "license": "MIT",

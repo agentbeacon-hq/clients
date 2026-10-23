@@ -22,7 +22,7 @@ dependencies = ["langchain-core>=0.3,<2", "agentbeacon-sdk>=0.1.0,<0.2"]
 [project.urls]
 Homepage = "https://agentbeacon.sh"
 Documentation = "https://agentbeacon.sh/docs"
-Source = "https://github.com/openpath-sh/clients/tree/main/langchain"
+Source = "https://github.com/agentbeacon-hq/clients/tree/main/langchain"
 
 [tool.setuptools.packages.find]
 where = ["src"]

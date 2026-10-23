@@ -132,7 +132,7 @@ export class AgentBeacon {
     this.save = options.saveToken ?? true;
     this.file = credentialsFile(env, options.home ?? homedir());
     const app = options.app?.trim() || setting(env, "USER_AGENT") || detectAgent(env);
-    const own = `agentbeacon-js/${VERSION} (+https://github.com/openpath-sh/clients)`;
+    const own = `agentbeacon-js/${VERSION} (+https://github.com/agentbeacon-hq/clients)`;
     this.userAgent = app ? `${app} ${own}` : own;
     /** @type {string | null} */
     this.token = options.token?.trim() || setting(env, "TOKEN") || null;
