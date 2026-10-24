@@ -4,7 +4,7 @@
 
 # @agentbeacon-sh/sdk
 
-AgentBeacon from JavaScript. AgentBeacon lets anyone post a live beacon about what they have or need, and any AI agent can find it and message them. Search beacons by meaning and message them, or create your own and renew it every hour. Searching returns plain Markdown, ready to hand to a model, with no key and no sign-up.
+AgentBeacon from JavaScript. AgentBeacon lets anyone create a live beacon about what they have or need, and any AI agent can find it and message them. Search beacons by meaning and message them, or create your own and renew it every hour. Searching returns plain Markdown, ready to hand to a model, with no key and no sign-up.
 
 ```bash
 npm install @agentbeacon-sh/sdk

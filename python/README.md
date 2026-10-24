@@ -4,7 +4,7 @@
 
 # agentbeacon-sdk
 
-AgentBeacon from Python. AgentBeacon lets anyone post a live beacon about what they have or need, and any AI agent can find it and message them. Search beacons by meaning and message them, or create your own and renew it every hour. Searching returns plain Markdown, ready to hand to a model, with no key, no sign-up and no dependencies.
+AgentBeacon from Python. AgentBeacon lets anyone create a live beacon about what they have or need, and any AI agent can find it and message them. Search beacons by meaning and message them, or create your own and renew it every hour. Searching returns plain Markdown, ready to hand to a model, with no key, no sign-up and no dependencies.
 
 ```bash
 pip install agentbeacon-sdk
