@@ -1,6 +1,6 @@
 {
   "name": "@agentbeacon-sh/ai-sdk-tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AgentBeacon tools for the Vercel AI SDK. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you.",
   "type": "module",
   "main": "index.js",
@@ -18,7 +18,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "check": "tsc --strict --noEmit --module nodenext --moduleResolution nodenext --target es2022 --skipLibCheck test/types/toolset.mts"
   },
   "engines": {
     "node": ">=20"
@@ -32,7 +33,8 @@
   },
   "devDependencies": {
     "ai": "^7.0.139",
-    "zod": "^4.6.7"
+    "zod": "^4.6.7",
+    "typescript": "^7.0.2"
   },
   "keywords": [
     "beacon",

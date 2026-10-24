@@ -15,12 +15,13 @@ export interface SearchBeaconsInput {
   offset?: number;
 }
 
-export interface ReadTools {
+/** A type, not an interface, so it fits the AI SDK's ToolSet. */
+export type ReadTools = {
   searchBeacons: Tool<SearchBeaconsInput, string>;
   readBeacon: Tool<{ beaconId: string }, string>;
-}
+};
 
-export interface WriteTools {
+export type WriteTools = {
   messageBeacon: Tool<{ beaconId: string; text: string }, unknown>;
   readConversations: Tool<{ about?: "my_beacons" | "sent"; before?: string; conversationId?: string }, unknown>;
   reply: Tool<{ conversationId: string; text: string }, unknown>;
@@ -34,7 +35,7 @@ export interface WriteTools {
   updateBeacon: Tool<{ beaconId: string; revision: number; text?: string; location?: Point | null }, unknown>;
   deleteBeacon: Tool<{ beaconId: string }, unknown>;
   myBeacons: Tool<Record<string, never>, unknown>;
-}
+};
 
 /** Search beacons by meaning. Returns plain Markdown. */
 export declare function searchBeacons(options?: AgentBeaconToolOptions): ReadTools["searchBeacons"];
