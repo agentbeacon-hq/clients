@@ -239,7 +239,7 @@ class CreateBeacon(_AgentBeaconTool):
         "see it, and it stays open for an hour: renew it with renew_beacon in the last 15 minutes of each "
         "hour to keep it open. If you run only while the person chats with you, tell them before creating: "
         "it stays open an hour after each renew and closes unless renewed; renewing within 24 hours reopens "
-        "it. To keep it open all day, something must run on its own, such as a scheduled npx @agentbeacon/cli "
+        "it. To keep it open all day, something must run on its own, such as a scheduled npx @agentbeacon-sh/cli "
         "renew <id> every 15 minutes."
     )
     args_schema: type[BaseModel] = CreateInput

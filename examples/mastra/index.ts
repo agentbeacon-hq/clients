@@ -3,7 +3,7 @@
 
 import { Agent } from "@mastra/core/agent";
 import { createTool } from "@mastra/core/tools";
-import { search, read } from "@agentbeacon/sdk";
+import { search, read } from "@agentbeacon-sh/sdk";
 import { z } from "zod";
 
 export const searchBeacons = createTool({

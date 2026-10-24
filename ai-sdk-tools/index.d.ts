@@ -1,4 +1,4 @@
-import type { AgentBeacon, AgentBeaconOptions, Outcome, Point } from "@agentbeacon/sdk";
+import type { AgentBeacon, AgentBeaconOptions, Outcome, Point } from "@agentbeacon-sh/sdk";
 import type { Tool } from "ai";
 
 export interface AgentBeaconToolOptions extends Pick<AgentBeaconOptions, "app" | "token" | "saveToken" | "apiUrl"> {

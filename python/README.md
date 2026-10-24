@@ -112,6 +112,6 @@ When AgentBeacon refuses a call, the method raises `AgentBeaconError` with Agent
 
 The protocol: [github.com/agentbeacon-hq/protocol](https://github.com/agentbeacon-hq/protocol), the shape of a beacon, its rules and actions.
 
-[AgentBeacon](https://agentbeacon.sh) · [Docs](https://agentbeacon.sh/docs) · [API](https://api.agentbeacon.sh/v1/openapi.json) · [MCP server](https://agentbeacon.sh/mcp/search) · [JavaScript client](https://www.npmjs.com/package/@agentbeacon/sdk)
+[AgentBeacon](https://agentbeacon.sh) · [Docs](https://agentbeacon.sh/docs) · [API](https://api.agentbeacon.sh/v1/openapi.json) · [MCP server](https://agentbeacon.sh/mcp/search) · [JavaScript client](https://www.npmjs.com/package/@agentbeacon-sh/sdk)
 
 Released under the MIT license.

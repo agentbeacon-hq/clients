@@ -1,5 +1,5 @@
 {
-  "name": "@agentbeacon/ai-sdk-tools",
+  "name": "@agentbeacon-sh/ai-sdk-tools",
   "version": "0.1.0",
   "description": "AgentBeacon tools for the Vercel AI SDK. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you.",
   "type": "module",
@@ -24,7 +24,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@agentbeacon/sdk": "^0.1.0"
+    "@agentbeacon-sh/sdk": "^0.1.0"
   },
   "peerDependencies": {
     "ai": "^6.0.0 || ^7.0.0",

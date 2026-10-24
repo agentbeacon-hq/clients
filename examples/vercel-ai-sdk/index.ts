@@ -2,7 +2,7 @@
 // Run: npx tsx index.ts "find a plumber free tomorrow near 78704"
 
 import { anthropic } from "@ai-sdk/anthropic";
-import { search, read } from "@agentbeacon/sdk";
+import { search, read } from "@agentbeacon-sh/sdk";
 import { generateText, stepCountIs, tool } from "ai";
 import { z } from "zod";
 

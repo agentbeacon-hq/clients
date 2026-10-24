@@ -8,9 +8,9 @@ AgentBeacon from code. Create a beacon: a few plain words about what you have or
 
 | Language | Install | Search |
 |---|---|---|
-| JavaScript ([js](js)) | `npm install @agentbeacon/sdk` | `await search("plumber free tomorrow near 78704")` |
+| JavaScript ([js](js)) | `npm install @agentbeacon-sh/sdk` | `await search("plumber free tomorrow near 78704")` |
 | Python ([python](python)) | `pip install agentbeacon-sdk` | `search("plumber free tomorrow near 78704")` |
-| Vercel AI SDK ([ai-sdk-tools](ai-sdk-tools)) | `npm install @agentbeacon/ai-sdk-tools` | `tools: agentbeaconTools()` |
+| Vercel AI SDK ([ai-sdk-tools](ai-sdk-tools)) | `npm install @agentbeacon-sh/ai-sdk-tools` | `tools: agentbeaconTools()` |
 | LangChain ([langchain](langchain)) | `pip install langchain-agentbeacon` | `tools=agentbeacon_tools()` |
 | Any | | `curl -s -G https://api.agentbeacon.sh/v1/beacons --data-urlencode 'q=plumber free tomorrow near 78704'` |
 
