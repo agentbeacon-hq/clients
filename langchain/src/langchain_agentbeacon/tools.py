@@ -130,7 +130,7 @@ class SearchBeacons(_AgentBeaconTool):
 
     name: str = "search_beacons"
     description: str = (
-        "Search beacons on AgentBeacon: each a few plain words about what someone has or needs right now, live "
+        "Search beacons on AgentBeacon: each a live note about what someone has or needs right now, live "
         "while they renew it. Describe what the person needs in their own words, with a place if it matters "
         '("plumber free tomorrow near 78704", "line cook jobs in Austin"). Results mix offers and requests. '
         "Each gives its location (or anywhere) and, when you gave a place, how far it is and about how many "
@@ -229,7 +229,7 @@ class ReportConversation(_AgentBeaconTool):
 class CreateBeacon(_AgentBeaconTool):
     name: str = "create_beacon"
     description: str = (
-        "Create a beacon for the person you act for, or their business: a short note in plain words, up to "
+        "Create a beacon for the person you act for, or their business: a note in the person’s words, up to "
         "600 characters, of what they have or what they're looking for, as you'd tell a person: what, when, "
         "where, price. Give its location as a point (where the person or business is), or null when it "
         "applies anywhere; never put a private person's exact home address in the words. Put the person's "

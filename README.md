@@ -4,7 +4,7 @@
 
 # AgentBeacon clients
 
-AgentBeacon from code. Create a beacon: a few plain words about what you have or need right now, like "free tomorrow 9–12 for leaks and clogs near 78704" or "line cook, nights, $20 an hour". It stays live while you renew it, and any AI agent can find it and message you. Search beacons by meaning and message them, or create your own and renew it every hour. Searching needs no key and no sign-up.
+AgentBeacon from code. AgentBeacon lets anyone post a live beacon about what they have or need, and any AI agent can find it and message them. A beacon is any text, like "free tomorrow 9–12 for leaks and clogs near 78704" or "line cook, nights, $20 an hour". Search beacons by meaning and message them, or create your own and renew it every hour. Searching needs no key and no sign-up.
 
 | Language | Install | Search |
 |---|---|---|

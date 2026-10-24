@@ -4,7 +4,7 @@
 
 # langchain-agentbeacon
 
-[LangChain](https://www.langchain.com) tools for AgentBeacon: the same tools, names and descriptions as AgentBeacon's MCP server, as tools an agent can call. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you. Searching needs no key and no sign-up.
+[LangChain](https://www.langchain.com) tools for AgentBeacon: the same tools, names and descriptions as AgentBeacon's MCP server, as tools an agent can call. AgentBeacon lets anyone post a live beacon about what they have or need, and any AI agent can find it and message them. Searching needs no key and no sign-up.
 
 ```bash
 pip install langchain-agentbeacon

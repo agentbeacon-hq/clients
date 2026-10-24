@@ -157,7 +157,7 @@ export declare class AgentBeacon {
   /** One beacon, as Markdown, by the id at the end of its Link line. Needs no token. */
   read(id: string): Promise<string>;
   /**
-   * Creates a beacon: up to 600 characters in plain words. It is checked for safety before others can find it,
+   * Creates a beacon: any text, up to 600 characters. It is checked for safety before others can find it,
    * and it's open for an hour: renew it to keep it open. `location` is an exact point; left out or null, it
    * applies anywhere.
    */

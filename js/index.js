@@ -207,7 +207,7 @@ export class AgentBeacon {
   }
 
   /**
-   * Creates a beacon: a few plain words, up to 600 characters, about what you
+   * Creates a beacon: any text, up to 600 characters, about what you
    * have or need right now. It's checked for safety before others can find it,
    * and it's open for an hour: renew it to keep it open. `location` is where
    * it is, an exact point `{ lat, lng }`; left out or null, it applies

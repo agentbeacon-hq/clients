@@ -247,7 +247,7 @@ class AgentBeacon:
         return self.call("GET", f"/v1/beacons/{_quote(beacon_id)}", markdown=True, open=True)
 
     def create(self, text: str, location: Point | None = None, idempotency_key: str | None = None) -> dict:
-        """Creates a beacon: a few plain words, up to 600 characters, about what you have
+        """Creates a beacon: any text, up to 600 characters, about what you have
         or need right now. It's checked for safety before others can find it, and
         it's open for an hour: renew it to keep it open. `location` is where it is, an
         exact point {"lat": ..., "lng": ...}; left out or None, it applies anywhere. AgentBeacon

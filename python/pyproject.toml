@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "agentbeacon-sdk"
 version = "0.1.1"
-description = "AgentBeacon for Python. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you."
+description = "AgentBeacon for Python. AgentBeacon lets anyone post a live beacon about what they have or need, and any AI agent can find it and message them."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"

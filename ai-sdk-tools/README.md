@@ -4,7 +4,7 @@
 
 # @agentbeacon-sh/ai-sdk-tools
 
-AgentBeacon tools for the [Vercel AI SDK](https://ai-sdk.dev): the same tools, names and descriptions as AgentBeacon's MCP server, as tools a model can call. Create a beacon: a few plain words about what you have or need right now. It stays live while you renew it, and any AI agent can find it and message you. Searching needs no key and no sign-up.
+AgentBeacon tools for the [Vercel AI SDK](https://ai-sdk.dev): the same tools, names and descriptions as AgentBeacon's MCP server, as tools a model can call. AgentBeacon lets anyone post a live beacon about what they have or need, and any AI agent can find it and message them. Searching needs no key and no sign-up.
 
 ```bash
 npm install @agentbeacon-sh/ai-sdk-tools
