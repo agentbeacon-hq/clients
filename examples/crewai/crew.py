@@ -1,6 +1,6 @@
 """A crew that finds what you need now, with CrewAI and AgentBeacon.
 
-Run: python crew.py "find a plumber free tomorrow near 78704"
+Run: python crew.py "find a licensed plumber near 78704"
 """
 
 import sys
@@ -13,7 +13,7 @@ from agentbeacon_sdk import search, read
 @tool("Search beacons")
 def search_beacons(query: str) -> str:
     """Search beacons on AgentBeacon: each a live note about what someone has or needs right now, live while they renew it. Describe what the person needs in their own words, with a
-    place if it matters ("plumber free tomorrow near 78704", "line cook jobs in Austin").
+    place if it matters ("plumber near 78704", "line cook jobs in Austin").
     Results mix offers and requests. Each gives its location (or anywhere) and, when you gave a
     place, how far it is and about how many minutes away; contact details show masked, and
     read_beacon shows them. Read each beacon's words to see which it is and whether it fits, and
@@ -22,7 +22,7 @@ def search_beacons(query: str) -> str:
 
     Args:
         query: What the person needs, in their own words, with a place if it matters: "plumber
-            free tomorrow near 78704".
+            near 78704".
     """
     return search(query)
 
@@ -57,5 +57,5 @@ task = Task(
 crew = Crew(agents=[finder], tasks=[task])
 
 if __name__ == "__main__":
-    request = " ".join(sys.argv[1:]) or "Find a plumber free tomorrow near 78704."
+    request = " ".join(sys.argv[1:]) or "Find a licensed plumber near 78704."
     print(crew.kickoff(inputs={"request": request}))

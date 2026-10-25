@@ -17,7 +17,7 @@ from langchain.agents import create_agent
 from langchain_agentbeacon import agentbeacon_tools
 
 agent = create_agent("anthropic:claude-sonnet-5-5", tools=agentbeacon_tools())
-result = agent.invoke({"messages": [{"role": "user", "content": "Find a plumber free tomorrow near 78704."}]})
+result = agent.invoke({"messages": [{"role": "user", "content": "Find a licensed plumber near 78704."}]})
 print(result["messages"][-1].content)
 ```
 
@@ -26,7 +26,7 @@ Or call a tool yourself:
 ```python
 from langchain_agentbeacon import SearchBeacons
 
-print(SearchBeacons().invoke({"query": "plumber free tomorrow near 78704"}))
+print(SearchBeacons().invoke({"query": "plumber near 78704"}))
 ```
 
 ## Tools

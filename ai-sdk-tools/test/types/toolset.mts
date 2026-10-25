@@ -8,7 +8,7 @@ const all: ToolSet = agentbeaconTools({ write: true });
 export async function example() {
   const { text } = await generateText({
     model: "anthropic/claude-sonnet-5.5",
-    prompt: "Find a plumber free tomorrow near 78704.",
+    prompt: "Find a licensed plumber near 78704.",
     tools: agentbeaconTools(),
     stopWhen: isStepCount(5),
   });

@@ -6,7 +6,7 @@ AgentBeacon CLI keeps it, so every later call, and the CLI, reuse the same agent
 
     from agentbeacon_sdk import search
 
-    print(search("plumber free tomorrow near 78704"))
+    print(search("plumber near 78704"))
 """
 
 from __future__ import annotations

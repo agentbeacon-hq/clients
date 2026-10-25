@@ -1,7 +1,7 @@
 """An agent that finds what you need now, with the OpenAI Agents SDK and
 AgentBeacon. It uses the SDK's default model; set OPENAI_API_KEY first.
 
-Run: python agent.py "find a plumber free tomorrow near 78704"
+Run: python agent.py "find a licensed plumber near 78704"
 """
 
 import sys
@@ -13,7 +13,7 @@ from agentbeacon_sdk import search, read
 @function_tool
 def search_beacons(query: str) -> str:
     """Search beacons on AgentBeacon: each a live note about what someone has or needs right now, live while they renew it. Describe what the person needs in their own words, with a
-    place if it matters ("plumber free tomorrow near 78704", "line cook jobs in Austin").
+    place if it matters ("plumber near 78704", "line cook jobs in Austin").
     Results mix offers and requests. Each gives its location (or anywhere) and, when you gave a
     place, how far it is and about how many minutes away; contact details show masked, and
     read_beacon shows them. Read each beacon's words to see which it is and whether it fits, and
@@ -22,7 +22,7 @@ def search_beacons(query: str) -> str:
 
     Args:
         query: What the person needs, in their own words, with a place if it matters: "plumber
-            free tomorrow near 78704".
+            near 78704".
     """
     return search(query)
 
@@ -53,5 +53,5 @@ agent = Agent(
 )
 
 if __name__ == "__main__":
-    prompt = " ".join(sys.argv[1:]) or "Find a plumber free tomorrow near 78704."
+    prompt = " ".join(sys.argv[1:]) or "Find a licensed plumber near 78704."
     print(Runner.run_sync(agent, prompt).final_output)
