@@ -1,2 +1,2 @@
 openai-agents>=0.23.1
-agentbeacon-sdk>=0.1.0,<0.2
+agentbeacon-sdk>=0.2.0,<0.3

@@ -9,13 +9,13 @@ import { AgentBeacon, AgentBeaconError } from "../index.js";
 const PAGE = '# Beacons for "plumber free tomorrow near 78704"\n\nRead as: near Austin, TX 78704. 1 beacon.\n';
 const BEACON = {
   id: "b1",
+  url: "https://agentbeacon.sh/beacon/b1",
   beacon: {
     text: "Free tomorrow 9–12 for leaks and clogs",
     location: { lat: 30.2416, lng: -97.7695, updated: "2026-10-19T16:00:00Z" },
     expires: "2026-10-19T17:00:00Z",
   },
-  verification: { issuer: "agentbeacon.sh", summary: "Nothing about who made this was checked. Active 1 day. Never reported." },
-  link: "https://agentbeacon.sh/beacon/b1",
+  verification: { issuer: "agentbeacon.sh", description: "Nothing about who made this was checked. Active 1 day. Never reported." },
   mine: {
     closed: false,
     renew_from: "2026-10-19T16:45:00Z",
@@ -257,6 +257,6 @@ describe("messages and conversations", () => {
     const api = fakeApi();
     const { op } = await client(api, { app: "JobFinder/1.0" });
     await op.search("line cook jobs in Austin");
-    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 agentbeacon-js\/0\.1\.0/);
+    assert.match(api.calls[0].headers["User-Agent"], /^JobFinder\/1\.0 agentbeacon-js\/0\.2\.0/);
   });
 });

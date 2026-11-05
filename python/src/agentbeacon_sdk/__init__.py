@@ -26,7 +26,7 @@ from typing import Callable, Optional, Union
 
 __all__ = ["AgentBeacon", "AgentBeaconError", "search", "read", "UNSET", "VERSION", "DEFAULT_API"]
 
-VERSION = "0.1.1"
+VERSION = "0.2.0"
 DEFAULT_API = "https://api.agentbeacon.sh"
 OUTCOMES = ("accepted", "booked", "hired", "declined", "spam")
 

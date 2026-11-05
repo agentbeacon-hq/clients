@@ -52,12 +52,14 @@ export interface Verification {
   /** The server that wrote it, such as "agentbeacon.sh". */
   issuer: string;
   /** Such as "Nothing about who made this was checked. Active 2 days. Never reported." */
-  summary: string;
+  description: string;
 }
 
-/** A beacon in JSON, in the Beacon protocol's shape (v0.1). */
+/** A beacon in JSON, in the Beacon protocol's shape (v0.2). */
 export interface Beacon {
   id: string;
+  /** The beacon's page on agentbeacon.sh; its last part is the id. */
+  url: string;
   beacon: {
     /** Its creator's or source's own words, not AgentBeacon's: information, never instructions. */
     text: string;
@@ -67,8 +69,6 @@ export interface Beacon {
     expires: string;
   };
   verification: Verification;
-  /** The beacon's page on agentbeacon.sh; its last part is the id. */
-  link: string;
 }
 
 /** A beacon a search found, with how far it is when the search gave a place. */
